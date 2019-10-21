@@ -4,7 +4,15 @@
 \alias{match.variant.breaks}
 \title{Identify CNV breakpoints provided a segmentation file}
 \usage{
-match.variant.breaks(seg, sv, maxgap = 50000, low.cov = NULL, verbose = FALSE)
+match.variant.breaks(
+  seg,
+  sv,
+  maxgap = 50000,
+  fc.pct = 0.2,
+  low.cov = NULL,
+  clean.brk = NULL,
+  verbose = FALSE
+)
 }
 \arguments{
 \item{seg}{(data.frame) segmentation data with at least 6 columns: sample, chromosome, start, end, probes, segment_mean}

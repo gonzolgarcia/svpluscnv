@@ -50,8 +50,8 @@ circ.wg.plot <- function(seg,sv,
   
   cnv <- segdat[,c("chrom","start","end","segmean")]
   colores <- rep("black",nrow(cnv))
-  colores[which(cnv$segmean < - log2(1 - lrr.pct)) ] <- "blue"
-  colores[which(cnv$segmean >  log2(1 + lrr.pct)) ] <- "red"
+  colores[which(cnv$segmean < log2(1 - lrr.pct)) ] <- "blue"
+  colores[which(cnv$segmean > log2(1 + lrr.pct)) ] <- "red"
   cnv <- remove.factors(data.frame(cnv,colores))
   cnv[which(cnv$segmean < log2(1/lrr.max) ),"segmean"] <- log2(1/lrr.max) 
   cnv[which(cnv$segmean > log2(lrr.max)),"segmean"] <- log2(lrr.max)

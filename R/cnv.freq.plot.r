@@ -67,10 +67,14 @@ cnv.freq.plot <- function(seg=NULL,
   colnames(outmat) <- unique(segdat$sample)
   rownames(outmat) <- rownames(chrbins.df)
 
-  for(i in 1:nrow(chrbins.df)){ 
+  for(i in 1:nrow(chrbins.df)){
     segtmp<- segdat[subjectHits(hits)[which(queryHits(hits) == i)],]
-    a <- aggregate(segmean~sample,segtmp, sum)  
-    outmat[i,a$sample]<- a$segmean
+    if(nrow(segtmp)>0){
+      a <- aggregate(segmean~sample,segtmp, sum)  
+      outmat[i,a$sample]<- a$segmean
+    }else{
+      outmat[i,a$sample]<- NA
+    }
   }
 
   message("Calculating gain/loss frequencies per genomic bin")

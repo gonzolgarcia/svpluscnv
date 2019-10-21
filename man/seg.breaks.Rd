@@ -10,6 +10,7 @@ seg.breaks(
   min.seg.size = NULL,
   min.num.probes = NULL,
   low.cov = NULL,
+  clean.brk = NULL,
   verbose = TRUE
 )
 }
@@ -23,6 +24,8 @@ seg.breaks(
 \item{min.num.probes}{(numeric) The minimun number of probes per segment to include in the analysis}
 
 \item{low.cov}{(data.frame) a data.frame (chr, start, end) indicating low coverage regions to exclude from the analysis}
+
+\item{clean.brk}{(numeric) identical breakpoints across multiple samples tend to be artifacts; remove breaks > N}
 }
 \description{
 Identify read-depth breakpoints provided a segmentation file

@@ -18,7 +18,8 @@
 
 
 shattered.regions.cnv <- function(seg,
-                              fc.pct = 0.2, min.seg.size = 0, min.num.probes=0, low.cov = NULL,
+                              fc.pct = 0.2, min.seg.size = 0, min.num.probes=0, 
+                              low.cov = NULL, clean.brk=clean.brk,
                               window.size = 10,slide.size = 2,
                               num.breaks = 10, num.sd = 5,
                               verbose=FALSE){
@@ -34,12 +35,14 @@ shattered.regions.cnv <- function(seg,
                        fc.pct = fc.pct, 
                        min.seg.size = min.seg.size, 
                        low.cov = low.cov, 
+                       clean.brk=clean.brk,
                        verbose = verbose)
   
   seg.brk.dens <- break.density(breaks, 
-                                     chr.lim = chr.lim, 
-                                     window.size = window.size, 
-                                     slide.size = slide.size)
+                                chr.lim = chr.lim, 
+                                window.size = window.size, 
+                                slide.size = slide.size,
+                                verbose = verbose)
   
   
   # calculate inter quantile mean and standard deviation per sample
@@ -84,7 +87,7 @@ shattered.regions.cnv <- function(seg,
       }
       agglistUniq <- list()
       for(i in 1:length(agglist)){
-        chr <- as.character(unique(tab[as.numeric(agglist[[i]]),"chr"]))
+        chr <- as.character(unique(tab[as.numeric(agglist[[i]]),"chrom"]))
         start <-min( tab[as.numeric(agglist[[i]]),"start"])
         end <- max( tab[as.numeric(agglist[[i]]),"end"])
         segNum <- length(agglist[[i]])
@@ -94,17 +97,35 @@ shattered.regions.cnv <- function(seg,
       for(i in 2:4) tabmerged[,i] <- as.numeric( tabmerged[,i] )
       colnames(tabmerged) <- c("chrom","start","end","nseg")
       restab[[cl]] <- tabmerged
-      restab_bychr[[cl]]<-aggregate(nseg~chr,tabmerged,sum) 
+      restab_bychr[[cl]]<-aggregate(nseg~chrom,tabmerged,sum) 
     }
+  }
+  
+  if(verbose == TRUE) message("Calculating breakpoint dispersion")
+  for(cl in names(restab)){
+    regions <-   restab[[cl]]
+    br1 <- breaks[which(breaks$sample == cl),2:3]
+    colnames(br1) <- c("chrom","pos")
+    br1.gr <- with(br1, GRanges(chrom, IRanges(start=pos, end=pos)))
+    regions_gr <- with(regions, GRanges(chrom, IRanges(start=start, end=end)))
+    hits_1 = GenomicAlignments::findOverlaps(regions_gr,br1.gr)
+    density <- dist.iqm <- rep(0,nrow(regions))
+    for(i in 1:nrow(regions)){
+      sites <- sort(unique(br1[subjectHits(hits_1)[which(queryHits(hits_1) == i)],"pos"]))
+      density[i] <- median(abs(sites - mean(sites)))/(regions[i,"end"]-regions[i,"start"])
+      dist.iqm[i]  <- IQM(sites[2:length(sites)] - sites[1:(length(sites)-1) ],lowQ = 0.2,upQ = 0.8)
+      n.brk <- length(sites)
+    }
+    restab[[cl]] <- data.frame(regions,density,dist.iqm,n.brk)
   }
   
   return(list(
     summary_chromo_bydensity = restab,
     summary_chromo_bydensity_bychr = restab_bychr,
-    highDensityRegions = highDensityRegions,
+    high.density.regions = highDensityRegions,
     seg.brk.dens=seg.brk.dens,
-    segbrk = segbrk,
-    segdat = segdat,
+    segbrk = breaks,
+    segdat = segdat
   ))
 }
 

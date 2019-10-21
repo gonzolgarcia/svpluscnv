@@ -30,16 +30,22 @@ shattered.eval <- function(chromo.regs,
     regions_gr <- with(regions, GRanges(chrom, IRanges(start=start, end=end)))
     hits_1 = GenomicAlignments::findOverlaps(regions_gr,br1.gr)
     hits_2 = GenomicAlignments::findOverlaps(regions_gr,br2.gr)
-    disper1 <- disper2 <- rep(0,nrow(regions))
+    density.seg <- density.sv <- dist.iqm.seg <- dist.iqm.sv <- n.brek.seg <- n.brek.sv <-  rep(0,nrow(regions))
     for(i in 1:nrow(regions)){
-      sites1 <- br1[subjectHits(hits_1)[which(queryHits(hits_1) == i)],"pos"]
-      disper1[i] <- median(abs(sites1 - mean(sites1)))/(regions[i,"end"]-regions[i,"start"])
-      sites2 <- br2[subjectHits(hits_2)[which(queryHits(hits_2) == i)],"pos"]
-      disper2[i] <- median(abs(sites2 - mean(sites2)))/(regions[i,"end"]-regions[i,"start"])
+      sites1 <- sort(unique(br1[subjectHits(hits_1)[which(queryHits(hits_1) == i)],"pos"]))
+      density.seg[i] <- median(abs(sites1 - mean(sites1)))/(regions[i,"end"]-regions[i,"start"])
+      dist.iqm.seg[i]  <- IQM(sites1[2:length(sites1)] - sites1[1:(length(sites1)-1) ],lowQ = 0.2,upQ = 0.8)
+      n.brek.seg[i] <- length(sites1)  
+      
+      sites2 <- sort(unique(br2[subjectHits(hits_2)[which(queryHits(hits_2) == i)],"pos"]))
+      density.sv[i] <- median(abs(sites2 - mean(sites2)))/(regions[i,"end"]-regions[i,"start"])
+      dist.iqm.sv[i]  <- IQM(sites2[2:length(sites2)] - sites2[1:(length(sites2)-1) ],lowQ = 0.2,upQ = 0.8)
+      n.brek.sv[i] <- length(sites2)  
+      
     }    
     
     valid <- rep("lc",nrow(chromo.regs$regions.summary[[cl]]))
-    #  regions[,"chr"] <- gsub("chr","",regions$chr)
+
     if(nrow(chromo.regs$regions.summary[[cl]]) > 1 ){
       sv_ranges_ori <-   with(svdat[which(svdat$sample == cl),], GRanges(chrom1, IRanges(start=pos1, end=pos1)))
       sv_ranges_dest <-   with(svdat[which(svdat$sample == cl),], GRanges(chrom2, IRanges(start=pos2, end=pos2)))
@@ -63,13 +69,13 @@ shattered.eval <- function(chromo.regs,
         links[i] <- paste(as.character(sort(unique(c(i, record_mat[which(record_mat[,1] == i),2]) ))),collapse=",")
         csize[i] <- sum(regions[unique(c(i,record_mat[which(record_mat[,1] == i),2])),"end"] - regions[unique(c(i,record_mat[which(record_mat[,1] == i),2])),"start"] )
       }
-      valid[sort(unique(c(intersect(which(disper1 >= disp.cut),which(disper2 >= disp.cut)),which(unlist(lapply(strsplit(as.character(links),","),length)) > 1))))] <-"HC"
-      chromo.regs$regions.summary[[cl]] <- remove.factors(data.frame(regions,links,csize,disper1,disper2,valid))
+      valid[sort(unique(c(intersect(which(density.seg >= disp.cut),which(density.sv >= disp.cut)),which(unlist(lapply(strsplit(as.character(links),","),length)) > 1))))] <-"HC"
+      chromo.regs$regions.summary[[cl]] <- remove.factors(data.frame(regions,links,csize,density.seg,density.sv,dist.iqm.seg,dist.iqm.sv,n.brek.seg,n.brek.sv,valid))
     }else{
       csize <- regions[,"end"]-regions[,"start"]
       links <- "1"
-      if(disper1 > disp.cut && disper2 > disp.cut) valid <- "HC"
-      chromo.regs$regions.summary[[cl]] <- remove.factors(data.frame(regions,links,csize,disper1,disper2,valid))
+      if(density.seg > disp.cut && density.sv > disp.cut) valid <- "HC"
+      chromo.regs$regions.summary[[cl]] <- remove.factors(data.frame(regions,links,csize,density.seg,density.sv,dist.iqm.seg,dist.iqm.sv,n.brek.seg,n.brek.sv,valid))
     }
   }
   return(chromo.regs)

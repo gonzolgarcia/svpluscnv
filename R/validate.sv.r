@@ -26,9 +26,9 @@ validate.sv <- function(sv){
   stopifnot(is.character(sv$strand1))
   stopifnot(is.character(sv$strand2))
   
-wrong_class <- setdiff(unique(sv$svclass),c("DEL","DUP","h2hINV","t2tINV","TRA","INV"))
+wrong_class <- setdiff(unique(sv$svclass),c("DEL","DUP","h2hINV","t2tINV","TRA","INV","INS"))
 try(if(length(wrong_class) > 0) message(paste("SV classes not accepted:", paste(wrong_class,collapse=",")) ))
-sv <- sv[which(sv$svclass %in% c("DEL","DUP","h2hINV","t2tINV","TRA","INV")),]
+sv <- sv[which(sv$svclass %in% c("DEL","DUP","h2hINV","t2tINV","TRA","INV","INS")),]
 
 stopifnot(nrow(sv) > 0)
 

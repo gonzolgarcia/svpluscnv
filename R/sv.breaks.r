@@ -16,13 +16,13 @@ sv.breaks <- function(sv,low.cov=NULL){
   require(GenomicRanges,quietly = TRUE,warn.conflicts = FALSE)
   
   svdat <- validate.sv(sv)
-  svdat.breaks <- data.frame(c(svdat$sample,svdat$sample),c(svdat$chrom1,svdat$chrom2),c(svdat$pos1,svdat$pos2),c(1:nrow(svdat),1:nrow(svdat)))
-  colnames(svdat.breaks) <- c("sample","chrom","pos","id")
+  svdat.breaks <- data.frame(c(svdat$sample,svdat$sample),c(svdat$chrom1,svdat$chrom2),c(svdat$pos1,svdat$pos2),c(svdat$pos1,svdat$pos2),c(1:nrow(svdat),1:nrow(svdat)))
+  colnames(svdat.breaks) <- c("sample","chrom","start","end","id")
   if(!is.null(low.cov)){
     low.cov.df <- data.frame(low.cov[,1:3])
     colnames(low.cov.df) <- c("chrom","start","end")
   
-    sv_ranges <- with(svdat.breaks, GRanges(chrom, IRanges(start=pos, end=pos)))
+    sv_ranges <- with(svdat.breaks, GRanges(chrom, IRanges(start=start, end=end)))
     low.cov_ranges <- with(low.cov.df, GRanges(chrom, IRanges(start=start, end=end)))
   
     low.cov_ranges = GenomicAlignments::findOverlaps(sv_ranges,low.cov_ranges)

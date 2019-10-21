@@ -42,8 +42,8 @@ circ.chromo.plot <- function(chromo.regs2,
   
   cnv <- segdat[,c("chrom","start","end","segmean")]
   colores <- rep("black",nrow(cnv))
-  colores[which(cnv$segmean < - log2(1 - lrr.pct)) ] <- "blue"
-  colores[which(cnv$segmean >  log2(1 + lrr.pct)) ] <- "red"
+  colores[which(cnv$segmean < log2(1 - lrr.pct)) ] <- "blue"
+  colores[which(cnv$segmean > log2(1 + lrr.pct)) ] <- "red"
   cnv <- remove.factors(data.frame(cnv,colores))
   cnv[which(cnv$segmean < log2(1/lrr.max) ),"segmean"] <- log2(1/lrr.max) 
   cnv[which(cnv$segmean > log2(lrr.max)),"segmean"] <- log2(lrr.max)
@@ -56,7 +56,6 @@ circ.chromo.plot <- function(chromo.regs2,
   linkcolors<-alllinkcolors[zoomchr]
   cnvlist <- list()
   for(i in chr.list) cnvlist[[i]] <- cnv[which(cnv$chrom == i),]
-  par(mfrow=c(1,2))
   reg.map = setNames(c("pink", "purple"), c("lc", "HC"))
   reg.col <- unname(reg.map[regions$valid])
   regions.plot <- data.frame(regions,reg.col,rep(0.1,nrow(regions)))

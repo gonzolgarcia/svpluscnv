@@ -6,6 +6,7 @@
 #' @param min.seg.size (numeric) The minimun segment size (in base pairs) to include in the analysis 
 #' @param min.num.probes (numeric) The minimun number of probes per segment to include in the analysis 
 #' @param low.cov (data.frame) a data.frame (chr, start, end) indicating low coverage regions to exclude from the analysis
+#' @param clean.brk (numeric) identical breakpoints across multiple samples tend to be artifacts; remove breaks > N 
 #' @keywords CNV, segmentation
 #' @export
 #' @examples
@@ -16,10 +17,12 @@ seg.breaks <- function(seg,
                       fc.pct = 0.2,
                       min.seg.size = NULL,
                       min.num.probes=NULL,
-                      low.cov=NULL,
+                      low.cov=NULL, 
+                      clean.brk=NULL,
                       verbose=TRUE){
 
   require(taRifx,quietly = TRUE,warn.conflicts = FALSE)  # contains remove.factors
+  require(tidyr,quietly = TRUE,warn.conflicts = FALSE)  # contains remove.factors
   
   segdat <- validate.seg(seg)
   if(!is.null(min.seg.size)) segdat <- segdat[which(segdat$end - segdat$start >= min.seg.size),]
@@ -72,5 +75,10 @@ seg.breaks <- function(seg,
     breakpoints <- breakpoints[setdiff(1:nrow(breakpoints),queryHits(overlapgr)),]
   }
   
+  if(!is.null(clean.brk)){
+    breakids <- unite(breakpoints[,c(2:4)],newcol)$newcol
+    breakids.freq <- sort(table(breakids),decreasing=T)
+    breakpoints <- breakpoints[which(breakids %in% names(which(breakids.freq < clean.brk))),]
+  }
   return(breakpoints)
 }

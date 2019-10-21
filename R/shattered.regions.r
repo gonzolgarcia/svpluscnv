@@ -17,7 +17,8 @@
 
 
 shattered.regions <- function(seg, sv,
-                              fc.pct = 0.2, min.seg.size = 0, min.num.probes=0, low.cov = NULL,
+                              fc.pct = 0.2, min.seg.size = 0, min.num.probes=0, 
+                              low.cov = NULL,clean.brk=NULL,
                               window.size = 10,slide.size = 2,
                               num.seg.breaks = 6, num.seg.sd = 5,
                               num.sv.breaks = 6, num.sv.sd = 5,
@@ -38,23 +39,20 @@ shattered.regions <- function(seg, sv,
                        fc.pct = fc.pct, 
                        min.seg.size = min.seg.size, 
                        low.cov = low.cov, 
+                       clean.brk = clean.brk,
                        verbose = verbose)
+  
   svbrk <- sv.breaks(sv = svdat, 
                       low.cov = low.cov)
   
-  common.brk <- match.variant.breaks(segdat,
-                                     svdat,
-                                     maxgap = maxgap, 
-                                     low.cov=low.cov,
-                                     verbose = verbose)
-  segbrk.common <-  common.brk$seg_validated
-  svbrk.common <-  sv.breaks(common.brk$sv_validated, 
-                              low.cov = low.cov)
+  common.brk <- match.breaks(segbrk,svbrk,
+                             maxgap = maxgap, 
+                             verbose = verbose)
   
   segbrk.dens <- break.density(segbrk,chr.lim = chr.lim, window.size = window.size, slide.size = slide.size, chrlist = chrlist,verbose = verbose)
   svbrk.dens <- break.density(svbrk,chr.lim = chr.lim, window.size = window.size, slide.size = slide.size, chrlist = chrlist,verbose = verbose)
-  segbrk.common.dens <- break.density(segbrk.common,chr.lim = chr.lim, window.size = window.size, slide.size = slide.size, chrlist = chrlist,verbose = verbose)
-  svbrk.common.dens <- break.density(svbrk.common,chr.lim = chr.lim, window.size = window.size, slide.size = slide.size, chrlist = chrlist,verbose = verbose)
+  segbrk.common.dens <- break.density(common.brk$brk1_match,chr.lim = chr.lim, window.size = window.size, slide.size = slide.size, chrlist = chrlist,verbose = verbose)
+  svbrk.common.dens <- break.density(common.brk$brk2_match,chr.lim = chr.lim, window.size = window.size, slide.size = slide.size, chrlist = chrlist,verbose = verbose)
   
   commonSamples <- intersect(segbrk$sample,svbrk$sample)
   if(length(commonSamples) == 0) stop("There is no common samples between seg and sv input datasets.") 
@@ -126,6 +124,7 @@ shattered.regions <- function(seg, sv,
   out <- list(
     regions.summary = restab,
     regions.summary.bychr = restab_bychr,
+    high.density.regions = highDensityRegions,
     seg.brk.dens = segbrk.dens,
     sv.brk.dens = svbrk.dens,
     seg.brk.common.dens = segbrk.common.dens,

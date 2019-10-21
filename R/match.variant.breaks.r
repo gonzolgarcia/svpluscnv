@@ -14,28 +14,36 @@
 
 match.variant.breaks <- function(seg, sv, 
                               maxgap=50000,
+                              fc.pct = 0.2,
                               low.cov=NULL,
+                              clean.brk=NULL,
                               verbose=FALSE){
 
   require(GenomicRanges,quietly = TRUE,warn.conflicts = FALSE)
   require(taRifx,quietly = TRUE,warn.conflicts = FALSE)
 
   segdat <- validate.seg(seg)
-  segdat.breaks <- seg.breaks(segdat, fc.pct = 0, low.cov= NULL, verbose=verbose) 
+  segdat.breaks <- seg.breaks(segdat, fc.pct = fc.pct, low.cov= low.cov, clean.brk=clean.brk, verbose=verbose) 
   
   svdat <- validate.sv(sv)
-  svdat.breaks <- sv.breaks(svdat,low.cov=NULL)
+  svdat.breaks <- sv.breaks(svdat,low.cov=low.cov)
   
   
   common_samples <- intersect(svdat$sample,segdat$sample)
   
   stopifnot(length(common_samples) > 0, local = TRUE) 
+  if(verbose){
+    message(paste("Finding common breaks for",length(common_samples),"common samples",sep=" "))
+    pb <- txtProgressBar(style=3)
+    cc <-0
+    tot <- length(unique(segdat[,1]))
+  }
   
   sv_results <- seg_results <- restab <- list()
   for(id in common_samples){
     
     svdat.breaks_i <- data.frame(svdat.breaks[which(svdat.breaks$sample == id),])
-    sv_ranges <- with(svdat.breaks_i, GRanges(chrom, IRanges(start=pos, end=pos)))
+    sv_ranges <- with(svdat.breaks_i, GRanges(chrom, IRanges(start=start, end=end)))
     
     segdat.breaks_i <- data.frame(segdat.breaks[which(segdat.breaks$sample == id),])
     seg_ranges <- with(segdat.breaks_i, GRanges(chrom, IRanges(start=start, end=end)))
@@ -50,8 +58,11 @@ match.variant.breaks <- function(seg, sv,
     
     sv_results[[id]] <- sv[svdat.breaks_i[sv_match,"id"],]
     seg_results[[id]] <- segdat.breaks_i[seg_match,]
-    if(verbose) message(paste(id,":\n\tMatched SV:",length(unique(sv_match)),"/",nrow(svdat.breaks_i),"\n\tMatched seg:",length(unique(seg_match)),"/",nrow(segdat.breaks_i),sep="") )
+    if(verbose) cc <- cc+1
+    if(verbose) setTxtProgressBar(pb, cc/tot)
   }
+  if(verbose) close(pb)
+  
   restab <- data.frame(do.call(rbind,restab))
 
   return(list(

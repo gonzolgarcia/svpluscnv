@@ -11,6 +11,7 @@ shattered.regions(
   min.seg.size = 0,
   min.num.probes = 0,
   low.cov = NULL,
+  clean.brk = NULL,
   window.size = 10,
   slide.size = 2,
   num.seg.breaks = 6,
