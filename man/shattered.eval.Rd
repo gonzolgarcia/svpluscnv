@@ -4,12 +4,19 @@
 \alias{shattered.eval}
 \title{Evaluate shattered regions}
 \usage{
-shattered.eval(chromo.regs, disp.cut = 0.05, verbose = TRUE)
+shattered.eval(
+  chromo.regs,
+  interleaved.cut = 0.5,
+  dist.iqm.cut = 1e+05,
+  verbose = TRUE
+)
 }
 \arguments{
 \item{chromo.regs}{(data.frame) segmentation data with 6 columns: sample, chromosome, start, end, probes, segment_mean}
 
-\item{disp.cut}{(numeric) copy number change between 2 consecutive segments: i.e (default) cutoff = 0.2 represents a fold change of 0.8 or 1.2}
+\item{interleaved.cut}{(numeric) the percentage of non interleaved structural variant calls}
+
+\item{dispersion.cut}{(numeric) a measure of how disperse are SV and CNV breakpoints in a shattered region;}
 }
 \description{
 Evaluate shattered regions

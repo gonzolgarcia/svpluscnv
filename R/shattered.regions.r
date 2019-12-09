@@ -23,7 +23,8 @@ shattered.regions <- function(seg, sv,
                               num.seg.breaks = 6, num.seg.sd = 5,
                               num.sv.breaks = 6, num.sv.sd = 5,
                               num.common.breaks = 3, num.common.sd = 3,
-                              maxgap=10000, chrlist=NULL,
+                              maxgap=10000, chrlist=NULL, 
+                              interleaved.cut = 0.5, dist.iqm.cut = 1e+05, 
                               verbose=TRUE){
   
 
@@ -49,9 +50,13 @@ shattered.regions <- function(seg, sv,
                              maxgap = maxgap, 
                              verbose = verbose)
   
+  if(verbose) message("Mapping CNV breakpoints across the genome:")
   segbrk.dens <- break.density(segbrk,chr.lim = chr.lim, window.size = window.size, slide.size = slide.size, chrlist = chrlist,verbose = verbose)
+  if(verbose) message("Mapping SV breakpoints across the genome:")
   svbrk.dens <- break.density(svbrk,chr.lim = chr.lim, window.size = window.size, slide.size = slide.size, chrlist = chrlist,verbose = verbose)
+  if(verbose) message("Mapping CNV validated breakpoints across the genome:")
   segbrk.common.dens <- break.density(common.brk$brk1_match,chr.lim = chr.lim, window.size = window.size, slide.size = slide.size, chrlist = chrlist,verbose = verbose)
+  if(verbose) message("Mapping SV validated breakpoints across the genome:")
   svbrk.common.dens <- break.density(common.brk$brk2_match,chr.lim = chr.lim, window.size = window.size, slide.size = slide.size, chrlist = chrlist,verbose = verbose)
   
   commonSamples <- intersect(segbrk$sample,svbrk$sample)
@@ -81,11 +86,18 @@ shattered.regions <- function(seg, sv,
   for(cl in commonSamples) highDensityRegions[cl,res[[cl]]] <- 1
   
   #res <- res[which(unlist(lapply(res,length)) >0)]
+  if(verbose){
+    message("Locating shattered regions...")
+    pb <- txtProgressBar(style=3)
+    cc <-0
+    tot <- length(res)
+  }
   
-  restab <- restab_bychr <- list()
+  restab  <- list()
   for(cl in names(res)){
+    if(verbose) cc <- cc+1
+    if(verbose) setTxtProgressBar(pb, cc/tot)
     if(length(res[[cl]]) > 0){
-      if(verbose == TRUE) message(cl)
       tab <- as.data.frame(do.call(rbind,strsplit(res[[cl]]," ")))
       tab[,2]<-as.numeric(as.character(tab[,2]))
       tab[,3]<-as.numeric(as.character(tab[,3]))
@@ -118,12 +130,12 @@ shattered.regions <- function(seg, sv,
       for(i in 2:4) tabmerged[,i] <- as.numeric( tabmerged[,i] )
       colnames(tabmerged) <- c("chrom","start","end","nseg")
       restab[[cl]] <- tabmerged
-      restab_bychr[[cl]]<-aggregate(nseg~chrom,tabmerged,sum) 
     }
   }
-  out <- list(
+  if(verbose) close(pb)
+  
+  results <- list(
     regions.summary = restab,
-    regions.summary.bychr = restab_bychr,
     high.density.regions = highDensityRegions,
     seg.brk.dens = segbrk.dens,
     sv.brk.dens = svbrk.dens,
@@ -135,6 +147,25 @@ shattered.regions <- function(seg, sv,
     segdat = segdat,
     svdat = svdat
   )
-  return(out)
+  
+  results_eval <- shattered.eval(results, interleaved.cut = interleaved.cut, dist.iqm.cut = dist.iqm.cut, verbose = verbose)
+  
+  bins <- remove.factors(data.frame(do.call(rbind,strsplit(colnames(highDensityRegions)," "))))
+  bins[,2] <- as.numeric( bins[,2])
+  bins[,3] <- as.numeric( bins[,3])
+  rownames(bins) <- colnames(highDensityRegions)
+  binsGR <- with(bins, GRanges(X1, IRanges(start=X2, end=X3)))
+  highDensityRegionsHC <- highDensityRegions
+  for(cl in names(results_eval$regions.summary)){
+    lc <- results_eval$regions.summary[[cl]][which(results_eval$regions.summary[[cl]]$conf == "lc"),]
+    if(nrow(lc) > 0){
+      lcGR<- with(lc, GRanges(chrom, IRanges(start=start, end=end)))
+      hits = GenomicAlignments::findOverlaps(binsGR,lcGR)
+      highDensityRegionsHC[cl,rownames(bins[unique(queryHits(hits)),])] <- 0
+    }
+  }
+  results_eval[["high.density.regions.hc"]] <- highDensityRegionsHC
+  
+  return(results_eval)
 }
 

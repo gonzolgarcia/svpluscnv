@@ -22,6 +22,8 @@ shattered.regions(
   num.common.sd = 3,
   maxgap = 10000,
   chrlist = NULL,
+  interleaved.cut = 0.5,
+  dist.iqm.cut = 1e+05,
   verbose = TRUE
 )
 }

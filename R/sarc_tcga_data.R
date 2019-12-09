@@ -12,3 +12,5 @@
 #' @examples
 #' data(sarc.seg)
 "sarc.seg"
+#' data(cnv.blacklist.regions)
+"cnv.blacklist.regions"

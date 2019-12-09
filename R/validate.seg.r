@@ -22,6 +22,12 @@ validate.seg <- function(seg){
   stopifnot(is.character(seg$sample))
   stopifnot(is.character(seg$chrom))
   
+  seg<- seg[order(seg$start),]
+  options(warn=-1)
+  seg<- seg[order(as.numeric(gsub("chr","",seg$chrom))),]
+  options(warn=0)
+  seg<- seg[order(seg$sample),]
+  
   return(seg)
   
 }

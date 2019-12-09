@@ -11,4 +11,8 @@
 #'
 #' @examples
 #' data(brca.ccle.seg)
+#' data(brca.ccle.sv)
 "brca.ccle.seg"
+"brca.ccle.sv"
+
+

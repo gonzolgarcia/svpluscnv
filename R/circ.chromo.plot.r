@@ -57,12 +57,13 @@ circ.chromo.plot <- function(chromo.regs2,
   cnvlist <- list()
   for(i in chr.list) cnvlist[[i]] <- cnv[which(cnv$chrom == i),]
   reg.map = setNames(c("pink", "purple"), c("lc", "HC"))
-  reg.col <- unname(reg.map[regions$valid])
-  regions.plot <- data.frame(regions,reg.col,rep(0.1,nrow(regions)))
+  reg.col <- unname(reg.map[regions$conf])
+  value <- rep(0.1,nrow(regions))
+  regions.plot <- remove.factors(data.frame(regions,reg.col,value))
   
   p.regions <- list()
   for(chr in chr.list){  
-    p.regions[[chr]] <- remove.factors(regions.plot[which(regions$chrom == chr),c(1,2,3,11,10)])
+    p.regions[[chr]] <- remove.factors(regions.plot[which(regions$chrom == chr),c("chrom","start","end","value","reg.col")])
     colnames(p.regions[[chr]]) <- c("chrom","start","end","value","color")
   }
   

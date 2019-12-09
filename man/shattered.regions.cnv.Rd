@@ -15,6 +15,7 @@ shattered.regions.cnv(
   slide.size = 2,
   num.breaks = 10,
   num.sd = 5,
+  dist.iqm.cut = 1e+05,
   verbose = FALSE
 )
 }

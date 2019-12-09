@@ -22,6 +22,7 @@ shattered.regions.cnv <- function(seg,
                               low.cov = NULL, clean.brk=clean.brk,
                               window.size = 10,slide.size = 2,
                               num.breaks = 10, num.sd = 5,
+                              dist.iqm.cut = 1e+05,
                               verbose=FALSE){
   
   require(taRifx,quietly = TRUE,warn.conflicts = FALSE)  # contains remove.factors
@@ -38,12 +39,14 @@ shattered.regions.cnv <- function(seg,
                        clean.brk=clean.brk,
                        verbose = verbose)
   
+  message("Mapping CNV breakpoints across the genome:")
   seg.brk.dens <- break.density(breaks, 
                                 chr.lim = chr.lim, 
                                 window.size = window.size, 
                                 slide.size = slide.size,
                                 verbose = verbose)
   
+
   
   # calculate inter quantile mean and standard deviation per sample
   iqmdata <- apply(seg.brk.dens,1,IQM,lowQ=0.2,upQ=0.8)
@@ -60,11 +63,20 @@ shattered.regions.cnv <- function(seg,
   
   res <- res[which(unlist(lapply(res,length)) >0)]
 
+  if(verbose){
+    message("Locating shattered regions by CNV only...")
+    pb <- txtProgressBar(style=3)
+    cc <-0
+    tot <- length(res)
+  }
   
-  restab <- restab_bychr <- list()
+  restab <- list()
   for(cl in names(res)){
-    if(length(res[[cl]]) > 0){
-      if(verbose == TRUE) message(cl)
+    if(verbose) cc <- cc+1
+    if(verbose) setTxtProgressBar(pb, cc/tot)
+
+      if(length(res[[cl]]) > 0){
+      
       tab <- as.data.frame(do.call(rbind,strsplit(res[[cl]]," ")))
       tab[,2]<-as.numeric(as.character(tab[,2]))
       tab[,3]<-as.numeric(as.character(tab[,3]))
@@ -97,32 +109,60 @@ shattered.regions.cnv <- function(seg,
       for(i in 2:4) tabmerged[,i] <- as.numeric( tabmerged[,i] )
       colnames(tabmerged) <- c("chrom","start","end","nseg")
       restab[[cl]] <- tabmerged
-      restab_bychr[[cl]]<-aggregate(nseg~chrom,tabmerged,sum) 
     }
   }
+  if(verbose) close(pb)
   
-  if(verbose == TRUE) message("Calculating breakpoint dispersion")
+  if(verbose){
+    message("Evaluating shattered regions by CNV data only...")
+    pb <- txtProgressBar(style=3)
+    cc <-0
+    tot <- length(restab)
+  }
   for(cl in names(restab)){
+    if(verbose) cc <- cc+1
+    if(verbose) setTxtProgressBar(pb, cc/tot)
     regions <-   restab[[cl]]
     br1 <- breaks[which(breaks$sample == cl),2:3]
     colnames(br1) <- c("chrom","pos")
     br1.gr <- with(br1, GRanges(chrom, IRanges(start=pos, end=pos)))
     regions_gr <- with(regions, GRanges(chrom, IRanges(start=start, end=end)))
     hits_1 = GenomicAlignments::findOverlaps(regions_gr,br1.gr)
-    density <- dist.iqm <- rep(0,nrow(regions))
+    n.brk <- dist.iqm <- start <- end <- rep(0,nrow(regions))
+    conf <- rep("HC",nrow(regions))
     for(i in 1:nrow(regions)){
       sites <- sort(unique(br1[subjectHits(hits_1)[which(queryHits(hits_1) == i)],"pos"]))
-      density[i] <- median(abs(sites - mean(sites)))/(regions[i,"end"]-regions[i,"start"])
       dist.iqm[i]  <- IQM(sites[2:length(sites)] - sites[1:(length(sites)-1) ],lowQ = 0.2,upQ = 0.8)
-      n.brk <- length(sites)
+      n.brk[i] <- length(sites)
+      start[i] <- min(sites)
+      end[i] <- max(sites)
     }
-    restab[[cl]] <- data.frame(regions,density,dist.iqm,n.brk)
+    conf[which(dist.iqm < dist.iqm.cut )] <-"lc"
+    chrom <- regions$chrom
+    nseg <- regions$nseg
+    restab[[cl]] <- data.frame(chrom,start,end,nseg,dist.iqm,n.brk,conf)
+  }
+  if(verbose) close(pb)
+  
+  bins <- remove.factors(data.frame(do.call(rbind,strsplit(colnames(highDensityRegions)," "))))
+  bins[,2] <- as.numeric( bins[,2])
+  bins[,3] <- as.numeric( bins[,3])
+  rownames(bins) <- colnames(highDensityRegions)
+  binsGR <- with(bins, GRanges(X1, IRanges(start=X2, end=X3)))
+  highDensityRegionsHC <- highDensityRegions
+  for(cl in names(restab)){
+    lc <- restab[[cl]][which(restab[[cl]]$conf == "lc"),]
+    if(nrow(lc) > 0){
+      lcGR<- with(lc, GRanges(chrom, IRanges(start=start, end=end)))
+      hits = GenomicAlignments::findOverlaps(binsGR,lcGR)
+      highDensityRegionsHC[cl,rownames(bins[unique(queryHits(hits)),])] <- 0
+    }
   }
   
   return(list(
-    summary_chromo_bydensity = restab,
-    summary_chromo_bydensity_bychr = restab_bychr,
+    regions.summary = restab,
     high.density.regions = highDensityRegions,
+    high.density.regions.hc = highDensityRegionsHC,
     seg.brk.dens=seg.brk.dens,
     segbrk = breaks,
     segdat = segdat

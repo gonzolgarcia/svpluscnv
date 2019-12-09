@@ -58,8 +58,8 @@ break.density <- function(breaks,
   fragment <- list()
   for(chr in  chrlist){
 
-    if(verbose) message(chr)
-    
+    if(verbose) cat("\r",chr)
+
     chr_breaks <- breaks[which(breaks$chr == chr),]
     frag <- seq(chr.lim[chr,"begin"],chr.lim[chr,"end"]+SS,SS)
     for(i in (1+offset):length(frag)){
@@ -70,7 +70,8 @@ break.density <- function(breaks,
       fragment[[paste(chr,start,stop)]][names(res_bp)] <- res_bp
     }
   }
-  
+  if(verbose) cat(" Done!\n")
+
   return( do.call(cbind,fragment))
   
 }

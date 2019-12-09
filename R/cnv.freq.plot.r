@@ -105,5 +105,10 @@ cnv.freq.plot <- function(seg=NULL,
   mtext(gsub("chr","",rownames(chrlimits))[seq(1,nrow(chrlimits),2)],side=1,at=chrlimits$chrlabelpos[seq(1,nrow(chrlimits),2)],las=1,col=altcols2[seq(1,nrow(chrlimits),2)],line=label.line,cex=cex.lab)
   mtext(gsub("chr","",rownames(chrlimits))[seq(2,nrow(chrlimits),2)],side=3,at=chrlimits$chrlabelpos[seq(2,nrow(chrlimits),2)],las=1,col=altcols2[seq(2,nrow(chrlimits),2)],line=label.line,cex=cex.lab)
   axis(2,c(100,50,0,50,100),at=c(-1,-0.5,0,0.5,1),las=1,line= axis.line,cex.axis=cex.axis)
+  
+  summary <- data.frame(chrbins.df[,c("chr","start","end")],allgains,allloss)
+  
+  return(list(freqsum=summary,bin.mat=outmat))
+  
 }
 
