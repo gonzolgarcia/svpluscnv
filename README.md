@@ -1,2 +1,1 @@
-# svcnvplus
-R package for handling SV and CNV datasets
+svcnvplut: an R package for tha analysis of somatic structural variations 
