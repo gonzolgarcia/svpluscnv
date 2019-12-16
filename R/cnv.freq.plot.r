@@ -12,10 +12,14 @@
 #' cnv.freq.plot()
 
 cnv.freq.plot <- function(seg=NULL,
-                          ch.pct=0.2,
-                          g.bin=1,
-                          hg="hg19",
-                          cex.axis=1,cex.lab=1,axis.line=-1.5,label.line=-1.2){
+                          ch.pct= 0.2,
+                          g.bin= 1,
+                          hg= "hg19",
+                          cex.axis= 1,
+                          cex.lab= 1,
+                          axis.line= -1.5,
+                          label.line= -1.2,
+                          verbose=TRUE){
   
   require(D3GB,quietly = TRUE,warn.conflicts = FALSE)
   require(taRifx,quietly = TRUE,warn.conflicts = FALSE)
@@ -34,11 +38,11 @@ cnv.freq.plot <- function(seg=NULL,
   chrlimits <-   chromosome.limit.coords(segdat)
   offset <- c(0,sapply(1:(nrow(chrlimits)-1), function(i) sum(chrlimits[1:i,"end"]) + length(1:i)*g.bin ))
   chrlabelpos <- offset + chrlimits$end/2
-  chrlimits <-data.frame(offset,chrlimits,chrlabelpos)
+  chrlimits <- data.frame(offset,chrlimits,chrlabelpos)
   
   g.bin.mb <- g.bin*1e6
   
-  message("Generating binned genome map ")
+  if(verbose) message("Generating binned genome map ")
   chrbins <- list()
   for(chr in rownames(chrlimits)){
     seqpos <- seq(chrlimits[chr,"begin"],chrlimits[chr,"end"]+g.bin.mb,g.bin.mb)
@@ -57,7 +61,7 @@ cnv.freq.plot <- function(seg=NULL,
   rownames(chrbins.df) <-  unite(chrbins.df[,1:3],paste)$paste
   chrbins.df<-remove.factors(chrbins.df)
   
-  message("Calculating mean segmean per genomic bin")
+  if(verbose) message("Calculating mean segmean per genomic bin")
   # find overlaps between bins and cnv segments
   binsGR <- with(chrbins.df, GRanges(chr, IRanges(start=start, end=end)))
   segGR <- with(segdat, GRanges(chrom, IRanges(start=start, end=end)))
@@ -77,7 +81,7 @@ cnv.freq.plot <- function(seg=NULL,
     }
   }
 
-  message("Calculating gain/loss frequencies per genomic bin")
+  if(verbose) message("Calculating gain/loss frequencies per genomic bin")
   outmat[which(is.na(outmat),arr.ind=T)] <- 0
   
   outmat_gain<-outmat_loss<-outmat
@@ -85,20 +89,20 @@ cnv.freq.plot <- function(seg=NULL,
   
   outmat_gain[which(outmat > log2(1+ch.pct), arr.ind=T)] <-  1
   outmat_loss[which(outmat < log2(1-ch.pct), arr.ind=T)] <-  1
-  allgains <- apply(outmat_gain,1,sum)/ncol(outmat_gain)
-  allloss <- apply(outmat_loss,1,sum)/ncol(outmat_loss)
+  freq.gains <- apply(outmat_gain,1,sum)/ncol(outmat_gain)
+  freq.loss <- apply(outmat_loss,1,sum)/ncol(outmat_loss)
   
   plot.end<- chrlimits$offset[nrow(chrlimits)]+chrlimits$end[nrow(chrlimits)]
-  bin.loc <- chrlimits[chrbins.df[names(allgains),"chr"],"offset"] + chrbins.df[names(allgains),"start"]
+  bin.loc <- chrlimits[chrbins.df[names(freq.gains),"chr"],"offset"] + chrbins.df[names(freq.gains),"start"]
   
-  message("Plotting ...")
+  if(verbose) message("Plotting ...")
   altcols <- rep(c(rgb(0.1,0.1,0.1,alpha=0.1),rgb(0.8,0.8,0.8,alpha=0.1)),12)
   altcols2<- rep(c(rgb(0.1,0.1,0.1,alpha=1),rgb(0.4,0.4,0.4,alpha=1)),12)
   
   plot(x=NULL,y=NULL,xlim=c(0,plot.end),ylim=c(-1,1),bty='n',xaxt='n',yaxt='n',xlab="",ylab="")
   for(i in 1:length(chrlimits$offset) ) rect( chrlimits$offset[i],-1,chrlimits$offset[i]+chrlimits$end[i],1, col=altcols[i],border=NA )
-  points(bin.loc,allgains,type='h',col=chrbins.df$segcol_gain)
-  points(bin.loc,-allloss,type='h',col=chrbins.df$segcol_del)
+  points(bin.loc,freq.gains,type='h',col=chrbins.df$segcol_gain)
+  points(bin.loc,-freq.loss,type='h',col=chrbins.df$segcol_del)
   lines(c(0,plot.end),c(0,0),col="lightgrey")
   lines(c(0,plot.end),c(0.5,0.5),col="lightgrey",lty=3)
   lines(c(0,plot.end),c(-0.5,-0.5),col="lightgrey",lty=3)
@@ -106,7 +110,7 @@ cnv.freq.plot <- function(seg=NULL,
   mtext(gsub("chr","",rownames(chrlimits))[seq(2,nrow(chrlimits),2)],side=3,at=chrlimits$chrlabelpos[seq(2,nrow(chrlimits),2)],las=1,col=altcols2[seq(2,nrow(chrlimits),2)],line=label.line,cex=cex.lab)
   axis(2,c(100,50,0,50,100),at=c(-1,-0.5,0,0.5,1),las=1,line= axis.line,cex.axis=cex.axis)
   
-  summary <- data.frame(chrbins.df[,c("chr","start","end")],allgains,allloss)
+  summary <- data.frame(chrbins.df[,c("chr","start","end")],freq.gains,freq.loss)
   
   return(list(freqsum=summary,bin.mat=outmat))
   

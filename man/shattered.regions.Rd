@@ -30,6 +30,8 @@ shattered.regions(
 \arguments{
 \item{seg}{(data.frame) segmentation data with 6 columns: sample, chromosome, start, end, probes, segment_mean}
 
+\item{sv}{(data.frame) structural variant table including  8 columns: sample, chrom1, pos1, strand1, chrom2, pos2, strand2, svclass}
+
 \item{fc.pct}{(numeric) copy number change between 2 consecutive segments: i.e (default) cutoff = 0.2 represents a fold change of 0.8 or 1.2}
 
 \item{min.seg.size}{(numeric) The minimun segment size (in base pairs) to include in the analysis}
@@ -38,13 +40,27 @@ shattered.regions(
 
 \item{low.cov}{(data.frame) a data.frame (chr, start, end) indicating low coverage regions to exclude from the analysis}
 
+\item{clean.brk}{(numeric) n of redundant breakpoints to filter out}
+
 \item{window.size}{(numeric) size in megabases of the genmome bin to compute break density}
 
 \item{slide.size}{(numeric) size in megabases of the sliding genmome window}
 
-\item{num.breaks}{(numeric) size in megabases of the genmome bin to compute break density}
+\item{num.seg.breaks}{(numeric) number of segmentation breakpoints per segments to be considered high-density break}
 
-\item{num.sd}{(numeric) size in megabases of the sliding genmome window}
+\item{num.seg.sd}{(numeric) number of standard deviations above the sample average for num.seg.breaks}
+
+\item{num.sv.breaks}{(numeric) number of SV breakpoints per segments to be considered high-density break}
+
+\item{num.sv.sd}{(numeric) number of standard deviations above the sample average for num.sv.breaks}
+
+\item{num.common.breaks}{(numeric) number of common SV and segmentation breakpoints per segments to be considered high-density break}
+
+\item{num.common.sd}{(numeric) number of standard deviations above the sample average for num.common.breaks}
+
+\item{interleaved.cut}{(numeric) 0-1 value indicating percentage of interleaved SV breaks}
+
+\item{dist.iqm.cut}{(numeric) interquantile average of the distance between breakpoints within a shattered region}
 }
 \description{
 Caller for shattered genomic regions based on breakpoint densities
@@ -52,5 +68,7 @@ Caller for shattered genomic regions based on breakpoint densities
 \examples{
 shattered.regions.cnv()
 }
-\keyword{CNV,}
-\keyword{segmentation}
+\keyword{chromoplexy,}
+\keyword{chromosome}
+\keyword{chromothripsis,}
+\keyword{shattering}

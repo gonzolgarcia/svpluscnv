@@ -10,6 +10,7 @@ clean.cnv.artifact(
   pc.cut = 0,
   seg.size = 5e+06,
   pc.overlap = 0.99,
+  chrlist = NULL,
   fill = TRUE,
   verbose = TRUE
 )
@@ -17,11 +18,11 @@ clean.cnv.artifact(
 \arguments{
 \item{seg}{(data.frame) segmentation data with 6 columns: sample, chromosome, start, end, probes, segment_mean}
 
+\item{n.reps}{(numeric) number of samples with identical segment to consider artifact}
+
 \item{fill}{(logical) whether to fill gaps from the segmentaed file after filtering artifacts}
 
 \item{verbose}{(logical)}
-
-\item{reps}{(numeric) number of samples with identical segment to consider artifact}
 }
 \description{
 Obtain a matrix with the weighted average CN per chromosome arm

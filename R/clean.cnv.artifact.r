@@ -2,7 +2,7 @@
 #'
 #' Obtain a matrix with the weighted average CN per chromosome arm 
 #' @param seg (data.frame) segmentation data with 6 columns: sample, chromosome, start, end, probes, segment_mean
-#' @param reps (numeric) number of samples with identical segment to consider artifact
+#' @param n.reps (numeric) number of samples with identical segment to consider artifact
 #' @param fill (logical) whether to fill gaps from the segmentaed file after filtering artifacts
 #' @param verbose  (logical)
 #' @keywords CNV, segmentation, filter
@@ -15,6 +15,7 @@ clean.cnv.artifact<- function(seg,
                               pc.cut=0,
                               seg.size=5000000,
                               pc.overlap=0.99,
+                              chrlist=NULL,
                               fill=TRUE,
                               verbose=TRUE){
 
@@ -28,7 +29,7 @@ all_artifacts_l <-list()
 segdat_short <- segdat[intersect(which(abs(segdat$segmean) >= pc.cut),which(segdat$end - segdat$start < seg.size)),]
 
 for(chr in unique(segdat$chrom)){
-  if(verbose) message(chr)
+  if(verbose) cat("\r",chr)
   segchr <- segdat_short[which(segdat_short$chrom == chr),]
   segchr.gr <- with(segchr, GRanges(chrom, IRanges(start=start, end=end)))
   hits = GenomicAlignments::findOverlaps(segchr.gr,segchr.gr)
@@ -54,7 +55,7 @@ allsegids <- unite(segdat, newcol, c(sample,chrom,start,end), remove=FALSE,sep="
 segdat_clean <- segdat[which(!allsegids %in% toremove),]
 
 if(fill){ 
-    segclean_fill <-  segment.gap(segdat_clean,chrlist = paste("chr",c(1:22,"X"),sep=""))
+    segclean_fill <-  segment.gap(segdat_clean,chrlist = chrlist,verbose=verbose)
     return(segclean_fill)
   }else{
     return(segdat_clean)

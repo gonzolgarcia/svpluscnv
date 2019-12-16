@@ -2,25 +2,30 @@ Package: svcnvplus
 Title: Bunch of CNV amd SV analysis tools
 Version: 0.0.10
 Authors@R: 
-    person(given = "Gonzalo",
-           family = "Lopez",
-           role = c("aut", "cre"),
-           email = "gonzolgarcia@gmail.com",
-           comment = c(ORCID = "0000-0002-5092-1284"))
+	person(given = "Gonzalo",
+		family = "Lopez",
+		role = c("aut", "cre"),
+		email = "gonzolgarcia@gmail.com",
+		comment = c(ORCID = "0000-0002-5092-1284"))
+Maintainer: Gonzao Lopez <gonzolgarcia@gmail.com>
 Description: Analysis focused on CNV segmentation data and SV calls; integration of CNV and SV calls; chromothripsis and chromosome shattering analyses.
 License: MIT License
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.0.2
-Imports: taRifx,
-		data.table,
-		tidyr,
-		circlize,
-		GenomicRanges,
-		D3GB,
-		org.Hs.eg.db,
-		TxDb.Hsapiens.UCSC.hg19.knownGene,
-		TxDb.Hsapiens.UCSC.hg38.knownGene
-Suggests: knitr,
-		rmarkdown
+Imports: 
+	taRifx,
+	data.table,
+	tidyr,
+	circlize,
+	GenomicRanges,
+	D3GB,
+	org.Hs.eg.db,
+	TxDb.Hsapiens.UCSC.hg19.knownGene,
+	TxDb.Hsapiens.UCSC.hg38.knownGene
+Suggests: 
+	BiocStyle,
+	knitr,
+	rmarkdown
 VignetteBuilder: knitr
+

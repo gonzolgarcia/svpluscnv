@@ -16,8 +16,8 @@ sv.breaks <- function(sv,low.cov=NULL){
   require(GenomicRanges,quietly = TRUE,warn.conflicts = FALSE)
   
   svdat <- validate.sv(sv)
-  svdat.breaks <- data.frame(c(svdat$sample,svdat$sample),c(svdat$chrom1,svdat$chrom2),c(svdat$pos1,svdat$pos2),c(svdat$pos1,svdat$pos2),c(1:nrow(svdat),1:nrow(svdat)))
-  colnames(svdat.breaks) <- c("sample","chrom","start","end","id")
+  svdat.breaks <- data.frame(c(svdat$sample,svdat$sample),c(svdat$chrom1,svdat$chrom2),c(svdat$pos1,svdat$pos2),c(svdat$pos1,svdat$pos2),c(svdat$strand1,svdat$strand2),c(svdat$svclass,svdat$svclass),c(rownames(svdat),rownames(svdat)))
+  colnames(svdat.breaks) <- c("sample","chrom","start","end","strand","svclass","id")
   if(!is.null(low.cov)){
     low.cov.df <- data.frame(low.cov[,1:3])
     colnames(low.cov.df) <- c("chrom","start","end")

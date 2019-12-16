@@ -10,7 +10,7 @@
 
 segment.gap <- function(seg,chrlist=NULL,verbose=TRUE){
   segdat <- validate.seg(seg)
-  if(is.null(chrlist)) chrlist <- paste("chr",c(1:22,"X"), sep="" )
+  if(is.null(chrlist)) chrlist <- unique(segdat$chrom)
   
   chrlims <- chromosome.limit.coords(segdat)
   

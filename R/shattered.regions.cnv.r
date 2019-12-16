@@ -39,7 +39,7 @@ shattered.regions.cnv <- function(seg,
                        clean.brk=clean.brk,
                        verbose = verbose)
   
-  message("Mapping CNV breakpoints across the genome:")
+  if(verbose) message("Mapping CNV breakpoints across the genome:")
   seg.brk.dens <- break.density(breaks, 
                                 chr.lim = chr.lim, 
                                 window.size = window.size, 
