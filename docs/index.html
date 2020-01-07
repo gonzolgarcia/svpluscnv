@@ -71,7 +71,650 @@
 
       </header><div class="row">
   <div class="contents col-md-9">
-<p>svcnvplut: an R package for tha analysis of somatic structural variations</p>
+
+<hr>
+<p>title: “svcnvplus_howto” output: html_document —</p>
+<script type="text/javascript">
+document.addEventListener("DOMContentLoaded", function() {
+  document.querySelector("h1").className = "title";
+});
+</script><script type="text/javascript">
+document.addEventListener("DOMContentLoaded", function() {
+  var links = document.links;  
+  for (var i = 0, linksLength = links.length; i < linksLength; i++)
+    if (links[i].hostname != window.location.hostname)
+      links[i].target = '_blank';
+});
+</script><style type="text/css" scoped>
+body {
+  margin: 0px auto;
+  max-width: 1134px;
+  font-family: sans-serif;
+  font-size: 10pt;
+}
+
+/* Table of contents style */
+
+div#TOC ul {
+  padding: 0px 0px 0px 45px;
+  list-style: none;
+  background-image: none;
+  background-repeat: none;
+  background-position: 0;
+  font-size: 10pt;
+  font-family: Helvetica, Arial, sans-serif;
+}
+
+div#TOC > ul {
+  padding: 0px 150px 0px 65px;
+  font-size: 12pt;
+}
+
+div#TOC > ul > li {
+  padding: 5px 0px 0px 0px;
+}
+
+div#TOC ul ul {
+  font-size: 11pt;
+}
+
+div#TOC.tocify ul {
+  padding: 0px;
+  font-size: inherit;
+  font-family: inherit;
+}
+
+div#TOC.tocify li {
+  padding: 5px;
+  font-size: inherit;
+  font-family: inherit;
+}
+
+p, dl {
+  padding: 0px 150px 0px 65px;
+  text-align: justify;
+}
+
+/* vertical content spacing */
+p, img, table {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+/* lists */
+ol, ul {
+  padding: 0px 150px 0px 100px;
+  list-style: square;
+}
+
+li ol, li ul {
+  padding: 0px 0px 0px 35px;
+}
+
+li p {
+  padding: 0;
+}
+
+pre {
+  margin: 0em 150px 0.5em 0em;
+  padding: 0px 0px 0px 65px;
+  border: 0px none;
+  background-color: #f0f0f0;
+  white-space: pre;
+  overflow-x: auto;
+  font-size: 90%;
+}
+
+li pre {
+  margin: 0em 0px 0.5em -65px;
+  padding: 0px 0px 0px 65px;
+}
+pre code {
+  background-color: inherit;
+  display: block;
+  padding: 10px 10px 10px 0px;
+  overflow-x: inherit;
+  font-size: 100%;
+}
+
+/* markdown v1 */
+pre code[class] {
+  background-color: inherit;
+}
+
+/* markdown v2 */
+pre[class] code {
+  background-color: inherit;
+}
+
+tt, code, pre {
+   font-family: 'DejaVu Sans Mono', 'Droid Sans Mono', 'Lucida Console', Consolas, Monaco, monospace;
+}
+
+h1, h2, h3, h4, h5, h6 { 
+  font-family: Helvetica, Arial, sans-serif;
+  margin: 1.2em 150px 0.6em 0em;
+/* hanging headings */
+  padding-left: 65px;
+  text-indent: -65px;
+}
+
+h1.title {
+  color: #87b13f;
+  line-height: 1.1em;
+  margin-top: 25px;
+  border-bottom: 0px;
+}
+
+h1 {
+  line-height: 1.4em;
+  border-bottom: 1px #1a81c2 solid;
+}
+
+h1, h2, h3 {
+  color: #1a81c2;
+}
+
+h1 {
+  font-size: 18.0pt;
+}
+
+h2 {
+  font-size: 14.5pt;
+}
+
+h3, h4 {
+  font-size: 12pt;
+}
+
+span.header-section-number {
+  float: left;
+  width: 65px;
+}
+
+/* document header */
+
+p.author-name {
+  font-size: 14.5pt;
+  font-weight: bold;
+  font-style: italic;
+  text-align: left;
+}
+
+.date {
+  text-indent: 0px;
+  font-weight: bold;
+}
+
+.abstract, .package {
+  font-weight: bold;
+}
+
+/* formatting of inline code */
+code { 
+  background-color: #f0f0f0;
+  color: #404040;
+  font-size: 90%;
+}
+
+/* figures */
+
+.figure { 
+  margin: 0em 0px 0.5em;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+  padding: 0px 150px 0px 130px;
+}
+
+p > img {
+  padding-left: 65px;
+  padding-right: 0px;
+}
+
+img.smallfigure {
+  padding-left: 195px;
+  padding-right: 280px;
+}
+
+p > img.smallfigure {
+  padding-left: 130px;
+  padding-right: 130px;
+}
+
+img.widefigure {
+  padding-left: 65px;
+  padding-right: 85px;
+  margin-right: -65px;
+}
+
+p > img.widefigure {
+  padding-left: 0px;
+  padding-right: 0px;
+  margin-right: -65px;
+}
+
+p.caption, caption {
+  color: inherit;
+  font-size: 8pt;
+}
+
+p.caption {
+  padding-left: 130px;
+  padding-right: 85px;
+  margin-bottom: 20px;
+}
+
+caption {
+  padding: 0px;
+  margin-bottom: 10px;
+  min-width: 583;
+}
+span.caption-title {
+  color: #1a81c2;
+  font-weight: bold;
+}
+
+span.caption-label {
+  font-weight: bold;
+}
+
+/* tables */
+
+table {
+  margin-left: 130px;
+  margin-right: 85px;
+}
+
+.table {
+  max-width: 518px;
+}
+
+/* definition lists */
+
+dd {
+  margin-left: 65px;
+  margin-bottom: 10px;
+}
+
+/* code folding buttons */
+
+.code-folding-btn {
+  position: relative;
+  margin-top: -26px;
+  top: 26px;
+}
+
+.col-md-12 {
+  min-height: 0px;
+}
+
+/* footnotes as sidenotes */
+
+.sidenote {
+  float: right;
+  clear: right;
+  margin-right: -150px;
+  width: 130px;
+  margin-top: 0;
+  margin-bottom: 1rem;
+  font-size: 8pt;
+  line-height: 1.3;
+  vertical-align: baseline;
+  position: relative;
+  text-align: left;
+}
+
+.sidenote-number, .affil-mark {
+  position: relative;
+  vertical-align: super;
+  font-size: 7.5pt;
+  font-weight: normal;
+  font-style: normal;
+  line-height: normal;
+}
+
+input.margin-toggle { display: none; }
+
+label.sidenote-number { display: inline; }
+
+label.margin-toggle:not(.sidenote-number) { display: none; }
+
+/* Class described in https://benjeffrey.com/posts/pandoc-syntax-highlighting-css
+   Colours from https://gist.github.com/robsimmons/1172277 */
+
+code > span.kw { color: #E07020; } /* Function calls */
+code > span.dt { color: #404040; } /* Function args */
+code > span.dv { color: #D02070; } /* DecVal (decimal values) */
+code > span.bn { color: #d14; } /* BaseN */
+code > span.fl { color: #D02070; } /* Float */
+code > span.ch { color: #40A040; } /* Char */
+code > span.st { color: #40A040; } /* String */
+code > span.co { color: #808080; font-style: italic; } /* Comment */
+code > span.ot { color: #2020F0; } /* Keywords */
+code > span.al { color: #ff0000; font-weight: bold; } /* AlertToken */
+code > span.fu { color: #E07020; } /* Function calls */ 
+code > span.er { color: #FF0000; } /* ErrorTok */
+
+code > span.identifier { color: #404040; }
+code > span.number { color: #D02070; }
+code > span.string { color: #40A040; }
+code > span.comment { color: #808080; font-style: italic; }
+code > span.keyword { color: #2020F0; }
+code > span.literal { color: #2020F0; }
+code > span.operator { color: #000000;}
+code > span.paren { color: #000000;}
+
+/* proper positioning of ggplotly graphics, see https://support.bioconductor.org/p/97609/ */
+
+.js-plotly-plot .plotly {
+  padding-left: 65px;
+}
+</style>
+<p><code>svncvplus</code> is an R package designed for downstream analyses of DNA copy number variations (CNV) and other structural variants (SV). CNV data can be derived from genotyping and CGH arrays, as well as next generation sequencing; different segmentation algorithms are used to obtain dosage variations (duplications and deletions) across the genome. Alternatively SV calls can be inferred from discordantly aligned reads from whole genome sequencing (WGS) using different algorithms (e.g <a href="https://github.com/Illumina/manta">manta</a>, <a href="https://github.com/arq5x/lumpy-sv">lumpy</a>, etc). SV calls provide linkage information from discordantly aligned reads and read pairs, allowing the discovery of chromosomal translocations and variants that do not necesarily involve dosage change, such as inversions and insertions. Segmentation CNVs and alignment based SV calls produce orthogonal as well as complementary results. The integration of both data types can by highly informative to understand the somatic alterations driving many cancers and is essential to characterize complex chromosomal alterations such as chromothripsis and chromoplexy. In summary, <code>svcnvplus</code> is a toolkit for the integration of SV datasets, visualization and characterization of complex somatic SVs.</p>
+<div id="index" class="section level2">
+<h2 class="hasAnchor">
+<a href="#index" class="anchor"></a>Index:</h2>
+<ul>
+<li><a href="#install-svcnvplus">Install svcnvplus</a></li>
+<li><a href="#input-data">Input data</a></li>
+<li>
+<a href="#validate-data-types">Validate data types</a>
+<ul>
+<li><a href="#validate-segmentation-data-format">Validate segmentation data format</a></li>
+<li><a href="#validate-structural-variant-data-format">Validate structural variant data format</a></li>
+</ul>
+</li>
+<li>
+<a href="#cnv-analysys-and-visualization">CNV analysys and visualization</a>
+<ul>
+<li><a href="#cnv-frequency-plot">CNV frequency plot</a></li>
+<li><a href="#gene-level-cnv">Gene-level CNV</a></li>
+<li><a href="#percent-genome-change">Percent genome change</a></li>
+</ul>
+</li>
+<li><a href="#co-localization-of-breakpoints">Co-localization of breakpoints</a></li>
+<li><a href="#breakpoint-burden">Breakpoint burden</a></li>
+<li>
+<a href="#identification-of-shattered-regions">Identification of shattered regions</a>
+<ul>
+<li><a href="#chromosome-shattering-using-segmentation-data-only">Chromosome shattering using segmentation data only</a></li>
+<li><a href="#chromosome-shattering-using-segmentation-and-sv-data">Chromosome shattering using segmentation and SV data</a></li>
+</ul>
+</li>
+<li>
+<a href="#recurrently-shattered-regions">Recurrently shattered regions</a>
+<ul>
+<li><a href="#recurrently-shattered-regions-plot">Recurrently shattered regions plot</a></li>
+</ul>
+</li>
+<li>
+<a href="#recurrently-altered-genes">Recurrently altered genes</a>
+<ul>
+<li><a href="amplifications-and-deep-deletions">Amplifications and deep deletions</a></li>
+<li><a href="#recurrently-altered-genes-using-cnv-breakpoints">Recurrently altered genes using CNV breakpoints</a></li>
+<li><a href="#recurrently-altered-genes-using-sv-breakpoints">Recurrently altered genes using SV breakpoints</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div id="install-svcnvplus" class="section level2">
+<h2 class="hasAnchor">
+<a href="#install-svcnvplus" class="anchor"></a>Install svcnvplus</h2>
+<p>Install development version from GitHub devtools::install_github(gonzolgarcia/svcnvplus")</p>
+</div>
+<div id="input-data" class="section level2">
+<h2 class="hasAnchor">
+<a href="#input-data" class="anchor"></a>Input data</h2>
+<p>Two data types are allowed: * CNV segmentation data * SV calls</p>
+<p>To explore the basic functionalities of svcnvplus, several data.frames are included <code><a href="reference/segdat_lung_ccle.html">svcnvplus::segdat_lung_ccle</a></code> and <code>svcnvplus::svdat_lung_ccle</code>. This data.frames contain information about CNV segments and structural variants respectively for lung cancer derived cell lines. This data was obtained from <a href="https://depmap.org/portal/download/" class="uri">https://depmap.org/portal/download/</a>. Both data.frames are lazy loaded with <code>svcnvplus</code></p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(svcnvplus)</a>
+<a class="sourceLine" id="cb1-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/base/dim.html">dim</a></span>(nbl_segdat)</a></code></pre></div>
+<pre><code>## [1] 17680     6</code></pre>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(nbl_segdat)</a></code></pre></div>
+<pre><code>##   Sample Chromosome    Start      End Num_markers  Seg_CN
+## 1 PAISNS          1    11000   833000         337 -0.0270
+## 2 PAISNS          1   835000  2715000         916 -1.0257
+## 3 PAISNS          1  2717000  5969000        1552 -0.8316
+## 4 PAISNS          1  5971000 12481000        3256 -0.9593
+## 5 PAISNS          1 12483000 12777000         148 -0.2305
+## 6 PAISNS          1 12779000 15551000        1287 -0.0083</code></pre>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/dim.html">dim</a></span>(nbl_svdat)</a></code></pre></div>
+<pre><code>## [1] 7366    8</code></pre>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(nbl_svdat)</a></code></pre></div>
+<pre><code>##   TARGET.USI LeftChr LeftPosition LeftStrand RightChr RightPosition RightStrand Type
+## 1     PAISNS    chr1     12481576          -     chr7     123358964           +  TRA
+## 2     PAISNS    chr1    120543859          -     chr2      65103235           -  TRA
+## 3     PAISNS    chr2    231680218          +    chr21      40045998           +  TRA
+## 4     PAISNS    chr3     54814482          -    chr17      42657036           +  TRA
+## 5     PAISNS    chr4     97761321          -     chr4      97765146           +  INV
+## 6     PAISNS    chr4    190936134          +     chr9      68411170           +  TRA</code></pre>
+</div>
+<div id="validate-data-types" class="section level2">
+<h2 class="hasAnchor">
+<a href="#validate-data-types" class="anchor"></a>Validate data types</h2>
+<ul>
+<li>
+<code><a href="reference/validate.seg.html">validate.seg()</a></code> check format for segmentation data.frame</li>
+<li>
+<code><a href="reference/validate.sv.html">validate.sv()</a></code> chrek format of a Structural variant data.frame</li>
+</ul>
+<div id="validate-segmentation-data-format" class="section level3">
+<h3 class="hasAnchor">
+<a href="#validate-segmentation-data-format" class="anchor"></a>Validate segmentation data format</h3>
+<p>Validate and format segmentation data.frame to be used by svcnvplus package toolkit</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1">segdf &lt;-<span class="st"> </span><span class="kw"><a href="reference/validate.seg.html">validate.seg</a></span>(nbl_segdat)</a>
+<a class="sourceLine" id="cb9-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(segdf)</a></code></pre></div>
+<pre><code>##   sample chrom    start      end probes segmean
+## 1 PAISNS  chr1    11000   833000    337 -0.0270
+## 2 PAISNS  chr1   835000  2715000    916 -1.0257
+## 3 PAISNS  chr1  2717000  5969000   1552 -0.8316
+## 4 PAISNS  chr1  5971000 12481000   3256 -0.9593
+## 5 PAISNS  chr1 12483000 12777000    148 -0.2305
+## 6 PAISNS  chr1 12779000 15551000   1287 -0.0083</code></pre>
+</div>
+<div id="validate-structural-variant-data-format" class="section level3">
+<h3 class="hasAnchor">
+<a href="#validate-structural-variant-data-format" class="anchor"></a>Validate structural variant data format</h3>
+<p>Validate and format structural variant data.frame to be used by svcnvplus package toolkit</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1">svdf &lt;-<span class="st"> </span><span class="kw"><a href="reference/validate.sv.html">validate.sv</a></span>(nbl_svdat)</a>
+<a class="sourceLine" id="cb11-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(svdf)</a></code></pre></div>
+<pre><code>##   sample chrom1      pos1 strand1 chrom2      pos2 strand2 svclass
+## 1 PAISNS   chr1  12481576       -   chr7 123358964       +     TRA
+## 2 PAISNS   chr1 120543859       -   chr2  65103235       -     TRA
+## 3 PAISNS   chr2 231680218       +  chr21  40045998       +     TRA
+## 4 PAISNS   chr3  54814482       -  chr17  42657036       +     TRA
+## 5 PAISNS   chr4  97761321       -   chr4  97765146       +     INV
+## 6 PAISNS   chr4 190936134       +   chr9  68411170       +     TRA</code></pre>
+</div>
+</div>
+<div id="cnv-analysys-and-visualization" class="section level2">
+<h2 class="hasAnchor">
+<a href="#cnv-analysys-and-visualization" class="anchor"></a>CNV analysys and visualization</h2>
+<div id="cnv-frequency-plot" class="section level3">
+<h3 class="hasAnchor">
+<a href="#cnv-frequency-plot" class="anchor"></a>CNV frequency plot</h3>
+<p>Visualization of CNV frequencies across the genome</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" data-line-number="1">cnv_freq &lt;-<span class="st"> </span><span class="kw"><a href="reference/cnv.freq.plot.html">cnv.freq.plot</a></span>(segdf)  <span class="co"># plot cnv frequencies</span></a></code></pre></div>
+<p><img src="figure/plot1-1.png" title="Genome wide CNV frequencies" alt="Genome wide CNV frequencies" style="display: block; margin: auto;"></p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(cnv_freq<span class="op">$</span>freqsum)  <span class="co"># data.frame contains every genomic bin </span></a></code></pre></div>
+<pre><code>##                       chr   start     end freq.gains freq.loss
+## chr1_11000_1011000   chr1   11000 1011000 0.02962963 0.3333333
+## chr1_1011000_2011000 chr1 1011000 2011000 0.02962963 0.3333333
+## chr1_2011000_3011000 chr1 2011000 3011000 0.02222222 0.3333333
+## chr1_3011000_4011000 chr1 3011000 4011000 0.02222222 0.3333333
+## chr1_4011000_5011000 chr1 4011000 5011000 0.02222222 0.3407407
+## chr1_5011000_6011000 chr1 5011000 6011000 0.02222222 0.3407407</code></pre>
+</div>
+<div id="gene-level-cnv" class="section level3">
+<h3 class="hasAnchor">
+<a href="#gene-level-cnv" class="anchor"></a>Gene level CNV</h3>
+<p>Generate a matrix with gene level CNVs from a segmentation file</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb16-1" data-line-number="1">gene_cnv &lt;-<span class="st"> </span><span class="kw"><a href="reference/gene.cnv.html">gene.cnv</a></span>(segdf_clean,<span class="dt">genome.v =</span> <span class="st">"hg19"</span>,<span class="dt">fill.gaps =</span> <span class="ot">TRUE</span>,<span class="dt">verbose=</span><span class="ot">FALSE</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/dim.html">dim</a></span>(gene_cnv<span class="op">$</span>cnvmat)</a></code></pre></div>
+<pre><code>## [1] 22886   135</code></pre>
+</div>
+<div id="percent-genome-change" class="section level3">
+<h3 class="hasAnchor">
+<a href="#percent-genome-change" class="anchor"></a>Percent genome change</h3>
+<p>Returns per sample percentage of genome with CNV</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb19-1" data-line-number="1">pct_change &lt;-<span class="st"> </span><span class="kw"><a href="reference/pct.genome.changed.html">pct.genome.changed</a></span>(segdf)</a></code></pre></div>
+</div>
+</div>
+<div id="co-localization-of-breakpoints" class="section level2">
+<h2 class="hasAnchor">
+<a href="#co-localization-of-breakpoints" class="anchor"></a>Co-localization of breakpoints</h2>
+<p>CNVs (duplications and deletions) are a subset of all structural variants; Both CNV segmentation profiles and structural variants derived from discordant alignments produce orthogonal calls for these genomic events. The function <code>match.variant.breaks</code> allows identifying common breakpoints called by both approaches.</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb20-1" data-line-number="1">common.breaks &lt;-<span class="st"> </span><span class="kw"><a href="reference/match.variant.breaks.html">match.variant.breaks</a></span>(segdf,svdf,<span class="dt">maxgap=</span><span class="dv">50000</span>,<span class="dt">low.cov =</span> <span class="ot">NULL</span>,<span class="dt">verbose=</span><span class="ot">FALSE</span>)</a></code></pre></div>
+<pre><code>## Error in match.variant.breaks(segdf, svdf, maxgap = 50000, low.cov = NULL, : could not find function "match.variant.breaks"</code></pre>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb22-1" data-line-number="1">restab &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(common.breaks<span class="op">$</span>restab)[<span class="kw"><a href="https://rdrr.io/r/base/order.html">order</a></span>(common.breaks<span class="op">$</span>restab<span class="op">$</span>total.sv),]</a></code></pre></div>
+<pre><code>## Error in data.frame(common.breaks$restab): object 'common.breaks' not found</code></pre>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb24-1" data-line-number="1">m2 &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/sprintf.html">sprintf</a></span>(<span class="st">"%.1f"</span>,<span class="dv">100</span><span class="op">*</span><span class="kw"><a href="https://rdrr.io/r/base/mean.html">mean</a></span>(restab<span class="op">$</span>matched.sv<span class="op">/</span>restab<span class="op">$</span>total.sv))</a></code></pre></div>
+<pre><code>## Error in mean(restab$matched.sv/restab$total.sv): object 'restab' not found</code></pre>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb26-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/graphics/barplot.html">barplot</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/cbind.html">rbind</a></span>(restab<span class="op">$</span>matched.sv,restab<span class="op">$</span>total.sv <span class="op">-</span><span class="st"> </span>restab<span class="op">$</span>matched.sv),</a>
+<a class="sourceLine" id="cb26-2" data-line-number="2">        <span class="dt">border=</span><span class="ot">NA</span>,<span class="dt">las=</span><span class="dv">2</span>,<span class="dt">xlab=</span><span class="st">""</span>,<span class="dt">horiz=</span><span class="ot">FALSE</span>,<span class="dt">cex.main=</span>.<span class="dv">7</span>,<span class="dt">cex.names=</span>.<span class="dv">4</span>, <span class="dt">names=</span><span class="kw"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span>(restab))</a></code></pre></div>
+<pre><code>## Error in eval(quote(list(...)), env): object 'restab' not found</code></pre>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb28-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/graphics/legend.html">legend</a></span>(<span class="st">"top"</span>,<span class="kw"><a href="https://rdrr.io/r/base/paste.html">paste</a></span>(<span class="st">"SV breaks matched by CNV breaks</span><span class="ch">\n</span><span class="st">"</span>,<span class="st">"Average = "</span>,m2,<span class="st">"%"</span>,<span class="dt">sep=</span><span class="st">""</span>),<span class="dt">bty=</span><span class="st">'n'</span>)</a></code></pre></div>
+<pre><code>## Error in eval(quote(list(...)), env): object 'm2' not found</code></pre>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb30-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/graphics/grid.html">grid</a></span>(<span class="dt">ny=</span><span class="ot">NULL</span>,<span class="dt">nx=</span><span class="ot">NA</span>)</a></code></pre></div>
+<pre><code>## Error in int_abline(a = a, b = b, h = h, v = v, untf = untf, ...): plot.new has not been called yet</code></pre>
+</div>
+<div id="breakpoint-burden" class="section level2">
+<h2 class="hasAnchor">
+<a href="#breakpoint-burden" class="anchor"></a>Breakpoint burden</h2>
+<p>In addition to percent genome changes, we can measure the total burden of breakpoints derived from CNV segments and SV calls</p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb32-1" data-line-number="1">sv_breaks_df  &lt;-<span class="st"> </span><span class="kw"><a href="reference/sv.breaks.html">sv.breaks</a></span>(svdf)  <span class="co"># define breakpoints from SV data</span></a>
+<a class="sourceLine" id="cb32-2" data-line-number="2">sv_burden &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/table.html">table</a></span>(sv_breaks_df<span class="op">$</span>sample)</a>
+<a class="sourceLine" id="cb32-3" data-line-number="3">seg_breaks_df  &lt;-<span class="st"> </span><span class="kw"><a href="reference/seg.breaks.html">seg.breaks</a></span>(segdf,<span class="dt">fc.pct =</span> <span class="fl">0.2</span>,<span class="dt">verbose=</span><span class="ot">FALSE</span>)  <span class="co"># define breakpoints from seg data based on certain CNV change cutoff</span></a>
+<a class="sourceLine" id="cb32-4" data-line-number="4">seg_burden &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/table.html">table</a></span>(seg_breaks_df<span class="op">$</span>sample)</a>
+<a class="sourceLine" id="cb32-5" data-line-number="5">common_samples &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/sets.html">intersect</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/names.html">names</a></span>(sv_burden),<span class="kw"><a href="https://rdrr.io/r/base/names.html">names</a></span>(seg_burden))</a>
+<a class="sourceLine" id="cb32-6" data-line-number="6">dat &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span>(sv_burden[common_samples],seg_burden[common_samples])</a>
+<a class="sourceLine" id="cb32-7" data-line-number="7"><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(dat,<span class="dt">xlab=</span><span class="st">"SV burden"</span>,<span class="dt">ylab=</span><span class="st">"CNV breakpoint burden"</span>)</a></code></pre></div>
+<pre><code>## Warning in min(x): no non-missing arguments to min; returning Inf</code></pre>
+<pre><code>## Warning in max(x): no non-missing arguments to max; returning -Inf</code></pre>
+<pre><code>## Warning in min(x): no non-missing arguments to min; returning Inf</code></pre>
+<pre><code>## Warning in max(x): no non-missing arguments to max; returning -Inf</code></pre>
+<pre><code>## Error in plot.window(...): need finite 'xlim' values</code></pre>
+<p><img src="figure/plot3-1.png" title="SV versus CNV breakpoint burden" alt="SV versus CNV breakpoint burden" style="display: block; margin: auto;"></p>
+<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb38-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/graphics/legend.html">legend</a></span>(<span class="st">"topright"</span>,<span class="kw"><a href="https://rdrr.io/r/base/paste.html">paste</a></span>(<span class="st">"cor="</span>,<span class="kw"><a href="https://rdrr.io/r/stats/cor.html">cor</a></span>(dat)[<span class="dv">1</span>,<span class="dv">2</span>], <span class="dt">sep=</span><span class="st">""</span>))</a></code></pre></div>
+</div>
+<div id="identification-of-shattered-regions" class="section level2">
+<h2 class="hasAnchor">
+<a href="#identification-of-shattered-regions" class="anchor"></a>Identification of shattered regions</h2>
+<p>Complex chromosomal rearrangements such as chromothripsis and chromoplexy are widespread events in many cancers and may have important pathogenic roles. <code>svcnvplus</code> incorporates tools to map and visualize shattered regions across multiple samples.</p>
+<p>We used LUNG cancer cell line profiles from the CCLE in order to illustrated these tools:</p>
+<p>Validate segmentation and SV data.frames</p>
+<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb39-1" data-line-number="1">segdf &lt;-<span class="st"> </span><span class="kw"><a href="reference/validate.seg.html">validate.seg</a></span>(segdat_lung_ccle)</a>
+<a class="sourceLine" id="cb39-2" data-line-number="2">svdf &lt;-<span class="st"> </span><span class="kw"><a href="reference/validate.sv.html">validate.sv</a></span>(svdat_lung_ccle)</a></code></pre></div>
+<div id="chromosome-shattering-using-segmentation-data-only" class="section level3">
+<h3 class="hasAnchor">
+<a href="#chromosome-shattering-using-segmentation-data-only" class="anchor"></a>Chromosome shattering using segmentation data only</h3>
+<p>The whole genome is binned into user defined <code>window.size</code> (Mb) and slided by <code>slide.size</code> (Mb) in order to identify regions with high CNV breakpoint density. Two cutoffs are considered for each genomic bin:\n * num.breaks = the minimum number of breakpoints * num.sd = the number of standard deviations above the average within a sample In addition, we evaluate the interquantile average of the distance between breakpoints in a given region:\n * dist.iqm.cut (default = 150000 b)</p>
+<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb40-1" data-line-number="1">shatt_lung_cnv &lt;-<span class="st"> </span><span class="kw"><a href="reference/shattered.regions.cnv.html">shattered.regions.cnv</a></span>(segdf, <span class="dt">fc.pct =</span> <span class="fl">0.2</span>, <span class="dt">clean.brk =</span> <span class="dv">4</span>, <span class="dt">window.size =</span> <span class="dv">10</span>,</a>
+<a class="sourceLine" id="cb40-2" data-line-number="2">                                        <span class="dt">slide.size =</span> <span class="dv">2</span>,<span class="dt">num.breaks =</span> <span class="dv">8</span>, <span class="dt">num.sd =</span> <span class="dv">5</span>,  </a>
+<a class="sourceLine" id="cb40-3" data-line-number="3">                                        <span class="dt">dist.iqm.cut =</span> <span class="dv">150000</span>,<span class="dt">verbose=</span><span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb40-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb40-5" data-line-number="5">shatt_lung_cnv<span class="op">$</span>regions.summary<span class="op">$</span>A549_LUNG</a></code></pre></div>
+<pre><code>##   chrom     start       end nseg dist.iqm n.brk conf
+## 1  chr1 110206904 112706144    5 115758.5     9   lc
+## 2  chr3    377402  16241354    6 466057.7    22   HC
+## 3  chr4 168970791 176576580    1 778410.0     8   HC
+## 4  chr6  25347255  32530221    1 166325.0     8   HC
+## 5  chr7 134278307 149847513    3 143582.3    13   lc
+## 6 chr15  20586232  30894417    2 690287.2    10   HC</code></pre>
+</div>
+<div id="chromosome-shattering-using-segmentation-and-sv-data" class="section level3">
+<h3 class="hasAnchor">
+<a href="#chromosome-shattering-using-segmentation-and-sv-data" class="anchor"></a>Chromosome shattering using segmentation and SV data</h3>
+<p>Analogously we can combine CNVs and SVs breakpoins to obtain a more robust evaluation of chromosome shattering (see <code><a href="reference/shattered.regions.html">?shattered.regions</a></code>) In addition SVs provide linkage for each SV breakpoint pair which allow for an additional parametter:\n * interleaved.cut the minimun percentage (0-1) of interleaved SVs</p>
+<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb42-1" data-line-number="1">shatt_lung &lt;-<span class="st"> </span><span class="kw"><a href="reference/shattered.regions.html">shattered.regions</a></span>(segdf, svdf, <span class="dt">fc.pct =</span> <span class="fl">0.2</span>,  <span class="dt">min.num.probes =</span> <span class="dv">5</span>, <span class="dt">clean.brk =</span> <span class="dv">8</span>,</a>
+<a class="sourceLine" id="cb42-2" data-line-number="2">                                <span class="dt">window.size =</span> <span class="dv">10</span>,<span class="dt">slide.size =</span> <span class="dv">2</span>, <span class="dt">num.seg.breaks =</span> <span class="dv">6</span>, </a>
+<a class="sourceLine" id="cb42-3" data-line-number="3">                                <span class="dt">num.seg.sd =</span> <span class="dv">5</span>, <span class="dt">num.sv.breaks =</span> <span class="dv">6</span>, <span class="dt">num.sv.sd =</span> <span class="dv">5</span>, </a>
+<a class="sourceLine" id="cb42-4" data-line-number="4">                                <span class="dt">num.common.breaks =</span> <span class="dv">3</span>, <span class="dt">num.common.sd =</span> <span class="dv">0</span>, <span class="dt">interleaved.cut =</span> <span class="fl">0.33</span>,</a>
+<a class="sourceLine" id="cb42-5" data-line-number="5">                                <span class="dt">dist.iqm.cut =</span> <span class="dv">100000</span>,<span class="dt">verbose=</span><span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb42-6" data-line-number="6">shatt_lung<span class="op">$</span>regions.summary<span class="op">$</span>SCLC21H_LUNG</a></code></pre></div>
+<pre><code>##   chrom  start       end nseg links reg.size dist.iqm.seg dist.iqm.sv n.brk.seg n.brk.sv n.orth.seg n.orth.sv interleaved conf
+## 1  chr8 601012 141936592   70     - 1.48e+08     151575.8    105171.7       567      668        446       489  0.02873563   HC</code></pre>
+<p>Circos plotting is available via <a href="https://cran.r-project.org/web/packages/circlize/index.html">circlize</a> package wrapper function:</p>
+<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb44-1" data-line-number="1"><span class="kw"><a href="reference/circ.chromo.plot.html">circ.chromo.plot</a></span>(shatt_lung,<span class="dt">sample.id =</span> <span class="st">"SCLC21H_LUNG"</span>)</a></code></pre></div>
+<p><img src="figure/plot4-1.png" title="Circos plot representing c LUNG cancer cell line with chromothripsis" alt="Circos plot representing c LUNG cancer cell line with chromothripsis" style="display: block; margin: auto;"></p>
+</div>
+<div id="recurrently-shattered-regions" class="section level3">
+<h3 class="hasAnchor">
+<a href="#recurrently-shattered-regions" class="anchor"></a>Recurrently shattered regions</h3>
+<p>We evaluate the null hipothesis that shattered regions (genomic bins) may occour throughout the genome at random; To this end we first create an empirical null distribution based on the sample set we are studying. And compare with the observed distribution. This also allows to define an empirical FDR cutoff.</p>
+<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb45-1" data-line-number="1">fdr.test &lt;-<span class="st"> </span><span class="kw"><a href="reference/freq.p.test.html">freq.p.test</a></span>(shatt_lung_cnv<span class="op">$</span>high.density.regions.hc, <span class="dt">method=</span><span class="st">"bonferroni"</span>, <span class="dt">p.cut =</span> <span class="fl">0.05</span>)</a></code></pre></div>
+</div>
+<div id="recurrently-shattered-regions-plot" class="section level3">
+<h3 class="hasAnchor">
+<a href="#recurrently-shattered-regions-plot" class="anchor"></a>Recurrently shattered regions plot</h3>
+<p>We can visualize the aggregate map of shattered regions for all samples with <code>recurrent.regions.plot</code></p>
+<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb46-1" data-line-number="1"><span class="kw"><a href="reference/recurrent.regions.plot.html">recurrent.regions.plot</a></span>(shatt_lung_cnv, <span class="dt">fdr =</span> fdr.test<span class="op">$</span>freq.cut)</a></code></pre></div>
+<pre><code>## Error in recurrent.regions.plot(shatt_lung_cnv, fdr = fdr.test$freq.cut): could not find function "recurrent.regions.plot"</code></pre>
+<p>And finally collect groups of samples with shattered chromosomes in recurrent regions as defined by a given fdr cutoff</p>
+<div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb48-1" data-line-number="1"><span class="co"># obtain genomic bins within above the FDR cutoff</span></a>
+<a class="sourceLine" id="cb48-2" data-line-number="2">freq.matrix &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/apply.html">apply</a></span>(shatt_lung_cnv<span class="op">$</span>high.density.regions.hc,<span class="dv">2</span>,sum)</a>
+<a class="sourceLine" id="cb48-3" data-line-number="3">textRegions &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/names.html">names</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/which.html">which</a></span>(freq.matrix <span class="op">&gt;=</span><span class="st"> </span>fdr.test<span class="op">$</span>freq.cut))</a>
+<a class="sourceLine" id="cb48-4" data-line-number="4">hitRegions &lt;-<span class="st"> </span><span class="kw">remove.factors</span>((<span class="kw"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/do.call.html">do.call</a></span>(rbind,<span class="kw"><a href="https://rdrr.io/r/base/strsplit.html">strsplit</a></span>(textRegions,<span class="st">" "</span>)))))</a>
+<a class="sourceLine" id="cb48-5" data-line-number="5">hitRegions[,<span class="dv">2</span>] &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span>(hitRegions[,<span class="dv">2</span>])</a>
+<a class="sourceLine" id="cb48-6" data-line-number="6">hitRegions[,<span class="dv">3</span>] &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span>(hitRegions[,<span class="dv">3</span>])</a>
+<a class="sourceLine" id="cb48-7" data-line-number="7"><span class="kw"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span>(hitRegions) &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"chr"</span>,<span class="st">"start"</span>,<span class="st">"end"</span>)</a>
+<a class="sourceLine" id="cb48-8" data-line-number="8"><span class="kw"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span>(hitRegions) &lt;-textRegions</a>
+<a class="sourceLine" id="cb48-9" data-line-number="9"></a>
+<a class="sourceLine" id="cb48-10" data-line-number="10"><span class="co"># collapes contiguous bins into unique regions</span></a>
+<a class="sourceLine" id="cb48-11" data-line-number="11">bins2remove &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>()</a>
+<a class="sourceLine" id="cb48-12" data-line-number="12"><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">2</span><span class="op">:</span><span class="kw"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span>(hitRegions)){ </a>
+<a class="sourceLine" id="cb48-13" data-line-number="13">  <span class="cf">if</span>(hitRegions[i,<span class="st">"chr"</span>] <span class="op">==</span><span class="st"> </span>hitRegions[i<span class="dv">-1</span>,<span class="st">"chr"</span>] ){</a>
+<a class="sourceLine" id="cb48-14" data-line-number="14">    <span class="cf">if</span>(hitRegions[i,<span class="st">"start"</span>] <span class="op">&lt;</span><span class="st"> </span>(hitRegions[i<span class="dv">-1</span>,<span class="st">"end"</span>])){</a>
+<a class="sourceLine" id="cb48-15" data-line-number="15">      hitRegions[i,<span class="st">"start"</span>] &lt;-<span class="st"> </span>hitRegions[i<span class="dv">-1</span>,<span class="st">"start"</span>]</a>
+<a class="sourceLine" id="cb48-16" data-line-number="16">      bins2remove &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(bins2remove,textRegions[i<span class="dv">-1</span>])</a>
+<a class="sourceLine" id="cb48-17" data-line-number="17">    }</a>
+<a class="sourceLine" id="cb48-18" data-line-number="18">  }</a>
+<a class="sourceLine" id="cb48-19" data-line-number="19">}</a>
+<a class="sourceLine" id="cb48-20" data-line-number="20">hitRegionsPost&lt;-<span class="st"> </span>hitRegions[<span class="kw"><a href="https://rdrr.io/pkg/GenomicRanges/man/setops-methods.html">setdiff</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span>(hitRegions),bins2remove),]</a>
+<a class="sourceLine" id="cb48-21" data-line-number="21"></a>
+<a class="sourceLine" id="cb48-22" data-line-number="22"><span class="kw"><a href="https://rdrr.io/r/base/library.html">require</a></span>(GenomicRanges)</a>
+<a class="sourceLine" id="cb48-23" data-line-number="23">hitRegions_gr &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/with.html">with</a></span>(hitRegions, <span class="kw"><a href="https://rdrr.io/pkg/GenomicRanges/man/GRanges-class.html">GRanges</a></span>(chr, <span class="kw">IRanges</span>(<span class="dt">start=</span>start, <span class="dt">end=</span>end)))</a>
+<a class="sourceLine" id="cb48-24" data-line-number="24">hitRegionsPost_gr &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/with.html">with</a></span>(hitRegionsPost, <span class="kw"><a href="https://rdrr.io/pkg/GenomicRanges/man/GRanges-class.html">GRanges</a></span>(chr, <span class="kw">IRanges</span>(<span class="dt">start=</span>start, <span class="dt">end=</span>end)))</a>
+<a class="sourceLine" id="cb48-25" data-line-number="25">hits &lt;-GenomicAlignments<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/GenomicAlignments/man/findOverlaps-methods.html">findOverlaps</a></span>(hitRegionsPost_gr,hitRegions_gr)</a>
+<a class="sourceLine" id="cb48-26" data-line-number="26"></a>
+<a class="sourceLine" id="cb48-27" data-line-number="27">regList &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>()</a>
+<a class="sourceLine" id="cb48-28" data-line-number="28"><span class="cf">for</span>(i <span class="cf">in</span> <span class="kw"><a href="https://rdrr.io/r/base/unique.html">unique</a></span>(<span class="kw">queryHits</span>(hits))) regList[[<span class="kw"><a href="https://rdrr.io/r/base/paste.html">paste</a></span>(hitRegionsPost[i,],<span class="dt">collapse=</span><span class="st">" "</span>) ]] &lt;-<span class="st"> </span>textRegions[<span class="kw">subjectHits</span>(hits)[<span class="kw"><a href="https://rdrr.io/r/base/which.html">which</a></span>(<span class="kw">queryHits</span>(hits) <span class="op">==</span><span class="st"> </span>i)]]</a>
+<a class="sourceLine" id="cb48-29" data-line-number="29"><span class="co"># obtain the genomic bins with maximum number of samples</span></a>
+<a class="sourceLine" id="cb48-30" data-line-number="30">regListPeak &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span>(regList, <span class="cf">function</span>(x) <span class="kw"><a href="https://rdrr.io/r/base/names.html">names</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/which.html">which</a></span>(freq.matrix[x] <span class="op">==</span><span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span>(freq.matrix[x]))))</a>
+<a class="sourceLine" id="cb48-31" data-line-number="31"><span class="co"># collect samples with shattered region in the peaks </span></a>
+<a class="sourceLine" id="cb48-32" data-line-number="32">regListPeakSamples &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span>(regListPeak, <span class="cf">function</span>(x) <span class="kw"><a href="https://rdrr.io/r/base/names.html">names</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/which.html">which</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/apply.html">apply</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span>(shatt_lung_cnv<span class="op">$</span>high.density.regions.hc[,x]),<span class="dv">1</span>,sum) <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span>)))</a></code></pre></div>
+<p>Beyond this point the user can test case/control hipothesys for chromosome shattering of specific genomic regions…</p>
+</div>
+</div>
+<div id="recurrently-altered-genes" class="section level2">
+<h2 class="hasAnchor">
+<a href="#recurrently-altered-genes" class="anchor"></a>Recurrently altered genes</h2>
+<div id="amplifications-and-deep-deletions" class="section level3">
+<h3 class="hasAnchor">
+<a href="#amplifications-and-deep-deletions" class="anchor"></a>amplifications and deep deletions</h3>
+</div>
+<div id="recurrently-altered-genes-using-cnv-breakpoints" class="section level3">
+<h3 class="hasAnchor">
+<a href="#recurrently-altered-genes-using-cnv-breakpoints" class="anchor"></a>Recurrently altered genes using CNV breakpoints</h3>
+<p>Instead of focusing on high-level dosage changes, we evaluate whether CNV break ends overlap with known genes or upstream regions.</p>
+<div class="sourceCode" id="cb49"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb49-1" data-line-number="1">results_cnv &lt;-<span class="st"> </span><span class="kw"><a href="reference/cnv.gene.breaks.html">cnv.gene.breaks</a></span>(nbl_segdat, <span class="dt">fc.pct =</span> <span class="fl">0.2</span>, <span class="dt">genome.v=</span><span class="st">"hg19"</span>,<span class="dt">clean.brk =</span> <span class="dv">8</span>,<span class="dt">upstr =</span> <span class="dv">50000</span>,<span class="dt">verbose=</span><span class="ot">FALSE</span>)</a></code></pre></div>
+<pre><code>## Error in cnv.gene.breaks(nbl_segdat, fc.pct = 0.2, genome.v = "hg19", : could not find function "cnv.gene.breaks"</code></pre>
+<p>We can obtain a ranking of altered genes by breakpoints overlapping their transcriptions start and end…</p>
+<div class="sourceCode" id="cb51"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb51-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/graphics/barplot.html">barplot</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/sort.html">sort</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/unlist.html">unlist</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span>(results_cnv<span class="op">$</span>geneSamples,length)),<span class="dt">decreasing=</span>T)[<span class="dv">1</span><span class="op">:</span><span class="dv">20</span>],<span class="dt">las=</span><span class="dv">2</span>)</a></code></pre></div>
+<pre><code>## Error in lapply(results_cnv$geneSamples, length): object 'results_cnv' not found</code></pre>
+<p>… or upstream (50Kb)</p>
+<div class="sourceCode" id="cb53"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb53-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/graphics/barplot.html">barplot</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/sort.html">sort</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/unlist.html">unlist</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span>(results_cnv<span class="op">$</span>upstreamSamples,length)),<span class="dt">decreasing=</span>T)[<span class="dv">1</span><span class="op">:</span><span class="dv">20</span>],<span class="dt">las=</span><span class="dv">2</span>)</a></code></pre></div>
+<pre><code>## Error in lapply(results_cnv$upstreamSamples, length): object 'results_cnv' not found</code></pre>
+</div>
+<div id="recurrently-altered-genes-using-sv-breakpoints" class="section level3">
+<h3 class="hasAnchor">
+<a href="#recurrently-altered-genes-using-sv-breakpoints" class="anchor"></a>Recurrently altered genes using SV breakpoints</h3>
+</div>
+</div>
+
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
