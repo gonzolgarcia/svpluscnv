@@ -9,6 +9,7 @@ cnv.freq.plot(
   ch.pct = 0.2,
   g.bin = 1,
   hg = "hg19",
+  s.list = NULL,
   cex.axis = 1,
   cex.lab = 1,
   label.line = -1.2,
@@ -23,6 +24,8 @@ cnv.freq.plot(
 \item{g.bin}{(numeric) size in megabases of the genmome bin to compute break density}
 
 \item{hg}{(hg19 or h38) reference genome version to draw chromosome limits and centromeres}
+
+\item{s.list}{(character) vector containing list of samples to include in plot. if set to NULL, all samples in the input will be used}
 
 \item{cex.axis, cex.lab, axis.line, label.line}{plot parameters}
 }

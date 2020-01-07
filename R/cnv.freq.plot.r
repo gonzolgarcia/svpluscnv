@@ -4,6 +4,7 @@
 #' @param seg (data.frame) segmentation data with 6 columns: sample, chromosome, start, end, probes, segment_mean
 #' @param ch.pct (numeric) percentage CNV gain/loss for a segment to be considered changed (i.e. 0.2 = 20 percent change 0.8 < segmean && segmean > 1.2)
 #' @param g.bin (numeric) size in megabases of the genmome bin to compute break density 
+#' @param s.list (character) vector containing list of samples to include in plot. if set to NULL, all samples in the input will be used
 #' @param hg (hg19 or h38) reference genome version to draw chromosome limits and centromeres
 #' @param cex.axis,cex.lab,axis.line,label.line plot parameters
 #' @keywords CNV, segmentation
@@ -15,6 +16,7 @@ cnv.freq.plot <- function(seg=NULL,
                           ch.pct= 0.2,
                           g.bin= 1,
                           hg= "hg19",
+                          s.list=NULL,
                           cex.axis= 1,
                           cex.lab= 1,
                           label.line= -1.2,
@@ -26,7 +28,8 @@ cnv.freq.plot <- function(seg=NULL,
   require(GenomicRanges,quietly = TRUE,warn.conflicts = FALSE)
   
   segdat <- validate.seg(seg)
-  
+  if(!is.null(s.list)) segdat <- segdat[which(segdat$sample %in% s.list),]
+      
   if(hg == "hg19"){ bands <- GRCh37.bands
   }else if(hg=="h38"){ bands <- GRCh38.bands}
   

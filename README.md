@@ -353,6 +353,8 @@ code > span.paren { color: #000000;}
   
 
 
+# `svncvplus` R toolkit for the downstream analyses of structural variant datasets
+
 `svncvplus` is an R package designed for downstream analyses of DNA copy number variations (CNV) and other structural variants (SV).`svcnvplus` is a toolkit for the integration of SV datasets, visualization and characterization of complex somatic SVs.\n  
   
 CNV data can be derived from genotyping and CGH arrays, as well as next generation sequencing; different segmentation algorithms are used to obtain dosage variations (duplications and deletions) across the genome. Alternatively SV calls can be inferred from discordantly aligned reads from whole genome sequencing (WGS) using different algorithms (e.g [manta](https://github.com/Illumina/manta), [lumpy](https://github.com/arq5x/lumpy-sv), etc).\n  
@@ -397,12 +399,17 @@ devtools::install_github("gonzolgarcia/svcnvplus")
 ## Input data
 
 Two data types are allowed:\n
-__CNV segmentation data:__ 6 columns (sample, chrom, start, end, probes & segmean). Most algorithms studying CNVs produce segmented data indicating genomic boundaries and the segment copy number value (segmean); `svcnvplus` assumes CNV expresed as log-ratios: __e.g.:__ $\log2(tumor/normal)$ Those values do not necesarily represent entire copy number states as many datasets may contain admixture or subclonal populations.\n
+  
+__CNV segmentation data:__ 6 columns (sample, chrom, start, end, probes & segmean). Most algorithms studying CNVs produce segmented data indicating genomic boundaries and the segment copy number value (segmean); `svcnvplus` assumes CNV expresed as log-ratios: __e.g.:__ $\log2(tumor/normal)$ Those values do not necesarily represent entire copy number states as many datasets may contain admixture or subclonal populations.
+  
 __Structural Variant calls:__ 8 columns (sample, chrom1, pos1, strand1, chrom2, pos2, strand2, svclass). are obtained from WGS by identifying reads and read-pairs that align discordantly to the reference genome. The types accepted in the svclass field are: duplication(DUP), deletion(DEL), inversion(INV), insertion(INS), translocation(TRA) and breakend(BND) for undefined variants.\n
+  
 As long as the sample field in both segmentation and SVs contains common sets of samples in the 'sample' column, both data types can be integrated.\n
+  
 
 
 To explore the basic functionalities of svcnvplus, several two datasets are included:
+  
 * CCLE lung cancer derived cell lines; This data.frames contain information about CNV segments and structural variants respectively for lung cancer derived cell lines. This data was obtained from <https://depmap.org/portal/download/>.
     * `svcnvplus::segdat_lung_ccle`
     * `svcnvplus::svdat_lung_ccle`.  
@@ -414,14 +421,6 @@ Both datasets are `lazy` loaded with `svcnvplus`
 
 ```r
 library(svcnvplus)
-dim(nbl_segdat)
-```
-
-```
-## [1] 17680     6
-```
-
-```r
 head(nbl_segdat)
 ```
 
@@ -433,14 +432,6 @@ head(nbl_segdat)
 ## 4 PAISNS          1  5971000 12481000        3256 -0.9593
 ## 5 PAISNS          1 12483000 12777000         148 -0.2305
 ## 6 PAISNS          1 12779000 15551000        1287 -0.0083
-```
-
-```r
-dim(nbl_svdat)
-```
-
-```
-## [1] 7366    8
 ```
 
 ```r
@@ -658,7 +649,7 @@ circ.chromo.plot(shatt_lung,sample.id = "SCLC21H_LUNG")
 circ.chromo.plot(shatt_lung,sample.id = "NCIH522_LUNG")
 ```
 
-<img src="figure/plot4-1.png" title="Circos plot representing c LUNG cancer cell line with chromothripsis" alt="Circos plot representing c LUNG cancer cell line with chromothripsis" style="display: block; margin: auto;" />
+<img src="figure/plot4-1.png" title="Circos plot representing c LUNG cancer cell lines with chromothripsis" alt="Circos plot representing c LUNG cancer cell lines with chromothripsis" style="display: block; margin: auto;" />
 
 ### Recurrently shattered regions
 
@@ -751,10 +742,10 @@ Instead of focusing on high-level dosage changes, we evaluate whether CNV break 
 
 
 ```r
-results_cnv <- cnv.break.annot(nbl_segdat, fc.pct = 0.2, genome.v="hg19",clean.brk = 8,upstr = 50000,verbose=FALSE)
+results_cnv <- cnv.break.annot(segdf_clean, fc.pct = 0.2, genome.v="hg19",clean.brk = 8,upstr = 50000,verbose=FALSE)
 par(mfrow=c(1,2),mar=c(7,4,1,1))
-barplot(sort(unlist(lapply(results_cnv$disruptSamples,length)),decreasing=T)[1:20],las=2,main="Coding region disrupted")
-barplot(sort(unlist(lapply(results_cnv$upstreamSamples,length)),decreasing=T)[1:20],las=2,main="Upstream region disrupted")
+barplot(sort(unlist(lapply(results_cnv$disruptSamples,length)),decreasing=T)[1:20],las=2,main="Gene coding region disrupted")
+barplot(sort(unlist(lapply(results_cnv$upstreamSamples,length)),decreasing=T)[1:20],las=2,main="Gene upstream region disrupted")
 ```
 
 <img src="figure/plot7-1.png" title="Recurrently altered genes with overlapping CNV breakpoints" alt="Recurrently altered genes with overlapping CNV breakpoints" style="display: block; margin: auto;" />
