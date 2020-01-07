@@ -775,29 +775,13 @@ The output returns a list of genes and associated variants that can be retrieved
 
 ```r
 results_sv <- sv.break.annot(svdf, sv.seg.size = 200000, genome.v="hg19",upstr = 50000, verbose=FALSE)
-```
-
-```
-## Error in .Call2("solve_user_SEW0", start, end, width, PACKAGE = "IRanges"): In range 1: 'end' must be >= 'start' - 1.
-```
-
-```r
 par(mfrow=c(1,2),mar=c(4,7,1,1))
 barplot(sort(unlist(lapply(results_sv$disruptSamples,length)),decreasing=FALSE)[1:20],
         las=1,main="Coding region disrupted",horiz=TRUE,xlab="#samples")
-```
-
-```
-## Error in lapply(results_sv$disruptSamples, length): object 'results_sv' not found
-```
-
-```r
 barplot(sort(unlist(lapply(results_sv$upstreamSamples,length)),decreasing=FALSE)[1:20],
         las=1,main="Upstream region disrupted",horiz=TRUE,xlab="#samples")
 ```
 
-```
-## Error in lapply(results_sv$upstreamSamples, length): object 'results_sv' not found
-```
+<img src="figure/plot8-1.png" title="Recurrently altered genes with overlapping SV breakpoints" alt="Recurrently altered genes with overlapping SV breakpoints" style="display: block; margin: auto;" />
 
 

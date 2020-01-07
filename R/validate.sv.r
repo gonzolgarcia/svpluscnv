@@ -30,6 +30,16 @@ wrong_class <- setdiff(unique(sv$svclass),c("DEL","DUP","h2hINV","t2tINV","TRA",
 try(if(length(wrong_class) > 0) message(paste("SV classes not accepted:", paste(wrong_class,collapse=",")) ))
 sv <- sv[which(sv$svclass %in% c("DEL","DUP","h2hINV","t2tINV","TRA","INV","INS","BND")),]
 
+# ensure that pos1 is upstream pos2
+intrachr <- which(unlist(lapply(apply(sv[,c("chrom1","chrom2")],1,unique),length)) == 1) 
+intrachr_rev <- intersect(which(sv$pos2 -sv$pos1 < 0),intrachr)
+
+if(length(intrachr_rev) > 0){
+    svrev <- sv[intrachr_rev,c(1,2,6,7,5,3,4,8)]
+    colnames(svrev) <- c("sample","chrom1","pos1","strand1","chrom2","pos2","strand2","svclass")
+    sv <- rbind(svrev,sv[setdiff(1:nrow(sv),intrachr_rev),])
+    }
+
 stopifnot(nrow(sv) > 0)
 
   return(sv)
