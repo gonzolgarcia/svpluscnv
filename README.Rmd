@@ -1,11 +1,11 @@
 ---
-title: "Introduction to svcnvplys"
-output: rmarkdown::html_vignette
-vignette: >
-  %\VignetteIndexEntry{Introduction to svcnvplys}
-  %\VignetteEngine{knitr::rmarkdown}
-  \usepackage[utf8]{inputenc}
+title: "svcnvplus_howto"
+output: html_document
 ---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
 
 ```{r style, echo = FALSE, results = 'asis'}
 BiocStyle::markdown()
@@ -26,6 +26,7 @@ In summary, `svcnvplus` is a toolkit for the integration of SV datasets, visuali
 
 ## Index:
 
+* [Install svcnvplus](#install-svcnvplus)
 * [Input data](#input-data)
 * [Validate data types](#validate-data-types)
     * [Validate segmentation data format](#validate-segmentation-data-format)
@@ -46,6 +47,11 @@ In summary, `svcnvplus` is a toolkit for the integration of SV datasets, visuali
     * [Recurrently altered genes using CNV breakpoints](#recurrently-altered-genes-using-cnv-breakpoints)
     * [Recurrently altered genes using SV breakpoints](#recurrently-altered-genes-using-sv-breakpoints)
 
+
+## Install svcnvplus
+
+Install development version from GitHub
+devtools::install_github(gonzolgarcia/svcnvplus")
 
 ## Input data
 
@@ -291,7 +297,3 @@ barplot(sort(unlist(lapply(results_cnv$upstreamSamples,length)),decreasing=T)[1:
 ```
 
 ### Recurrently altered genes using SV breakpoints
-
-
-results_cnv$
-

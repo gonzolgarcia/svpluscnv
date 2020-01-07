@@ -26,6 +26,7 @@ In summary, `svcnvplus` is a toolkit for the integration of SV datasets, visuali
 
 ## Index:
 
+* [Install svcnvplus](#install-svcnvplus)
 * [Input data](#input-data)
 * [Validate data types](#validate-data-types)
     * [Validate segmentation data format](#validate-segmentation-data-format)
@@ -46,6 +47,11 @@ In summary, `svcnvplus` is a toolkit for the integration of SV datasets, visuali
     * [Recurrently altered genes using CNV breakpoints](#recurrently-altered-genes-using-cnv-breakpoints)
     * [Recurrently altered genes using SV breakpoints](#recurrently-altered-genes-using-sv-breakpoints)
 
+
+## Install svcnvplus
+
+Install development version from GitHub
+devtools::install_github(gonzolgarcia/svcnvplus")
 
 ## Input data
 
