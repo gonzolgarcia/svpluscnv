@@ -19,19 +19,16 @@ gene.cnv <- function(seg,
                      verbose=TRUE){
 
 if(is.null(chrlist)) chrlist <- paste("chr",c(1:22,"X"), sep="" )
-  
-if(fill.gaps){
-  segdat <- segment.gap(seg,chrlist=chrlist,verbose=verbose)
-}else{
-  segdat <- validate.seg(seg)
-  }
 
+segdat <- validate.seg(seg)
+
+if(fill.gaps) segdat <- segment.gap(seg,chrlist=chrlist,verbose=verbose)
 
 if(genome.v %in% c("hg19","GRCh37")){
   require(TxDb.Hsapiens.UCSC.hg19.knownGene)
   require(org.Hs.eg.db)
   genesgr = genes(TxDb.Hsapiens.UCSC.hg19.knownGene)
-  if(geneid== "Symbol")genesgr@elementMetadata$gene_id <- mapIds(org.Hs.eg.db, genesgr@elementMetadata$gene_id,  'SYMBOL','ENTREZID')
+  if(geneid== "Symbol") genesgr@elementMetadata$gene_id <- mapIds(org.Hs.eg.db, genesgr@elementMetadata$gene_id,  'SYMBOL','ENTREZID')
   genesgr <- genesgr[which(!is.na(genesgr$gene_id)),]
 }else if(genome.v %in% c("hg38","GRCh38")){
   require(TxDb.Hsapiens.UCSC.hg38.knownGene)

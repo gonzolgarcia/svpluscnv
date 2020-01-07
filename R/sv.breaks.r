@@ -16,7 +16,17 @@ sv.breaks <- function(sv,low.cov=NULL){
   require(GenomicRanges,quietly = TRUE,warn.conflicts = FALSE)
   
   svdat <- validate.sv(sv)
-  svdat.breaks <- data.frame(c(svdat$sample,svdat$sample),c(svdat$chrom1,svdat$chrom2),c(svdat$pos1,svdat$pos2),c(svdat$pos1,svdat$pos2),c(svdat$strand1,svdat$strand2),c(svdat$svclass,svdat$svclass),c(rownames(svdat),rownames(svdat)))
+  
+  brk.burden <- rep(0,length(unique(svdat$sample)))
+  names(brk.burden) <- unique(svdat$sample)
+
+  svdat.breaks <- data.frame(c(svdat$sample,svdat$sample),
+                             c(svdat$chrom1,svdat$chrom2),
+                             c(svdat$pos1,svdat$pos2),
+                             c(svdat$pos1,svdat$pos2),
+                             c(svdat$strand1,svdat$strand2),
+                             c(svdat$svclass,svdat$svclass),
+                             c(rownames(svdat),rownames(svdat)))
   colnames(svdat.breaks) <- c("sample","chrom","start","end","strand","svclass","id")
   if(!is.null(low.cov)){
     low.cov.df <- data.frame(low.cov[,1:3])
@@ -27,8 +37,16 @@ sv.breaks <- function(sv,low.cov=NULL){
   
     low.cov_ranges = GenomicAlignments::findOverlaps(sv_ranges,low.cov_ranges)
     
-    return(svdat.breaks[which(!svdat.breaks$id %in% queryHits(low.cov_ranges)),])
+    svdat.breaks <- remove.factors(svdat.breaks[which(!svdat.breaks$id %in% queryHits(low.cov_ranges)),])
   }else{
-    return(svdat.breaks)
+    svdat.breaks <- remove.factors(svdat.breaks)
   }
+  brk.burden.sub <- table(svdat.breaks$sample)
+  brk.burden[names(brk.burden.sub)] <- brk.burden.sub
+  
+  return(list(breaks=svdat.breaks,
+              brk.burden=brk.burden))
+  
 }
+
+

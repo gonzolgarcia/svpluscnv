@@ -33,8 +33,8 @@ shattered.eval <- function(chromo.regs,
     if(verbose) setTxtProgressBar(pb, cc/tot)
 
     regions <-   chromo.regs$regions.summary[[cl]]
-    br1 <- segbrk[which(segbrk$sample == cl),2:3]
-    br2 <- svbrk[which(svbrk$sample == cl),2:3]
+    br1 <- segbrk$breaks[which(segbrk$breaks$sample == cl),2:3]
+    br2 <- svbrk$breaks[which(svbrk$breaks$sample == cl),2:3]
     colnames(br1) <- colnames(br2) <- c("chrom","pos")
     br1.gr <- with(br1, GRanges(chrom, IRanges(start=pos, end=pos)))
     br2.gr <- with(br2, GRanges(chrom, IRanges(start=pos, end=pos)))

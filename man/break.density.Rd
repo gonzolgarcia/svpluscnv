@@ -5,7 +5,7 @@
 \title{Identify CNV breakpoints provided a segmentation file}
 \usage{
 break.density(
-  breaks,
+  brk,
   chr.lim,
   window.size = 10,
   slide.size = 2,
@@ -14,13 +14,13 @@ break.density(
 )
 }
 \arguments{
-\item{breaks}{(data.frame) 3 column table (sample, chrom, position) i.e returned by read.depth.breaks}
-
 \item{chr.lim}{(data.frame) 3 column table (chrom, begin, end) returned by chromosome.limit.coords}
 
 \item{window.size}{(numeric) size in megabases of the genmome bin to compute break density}
 
 \item{slide.size}{(numeric) size in megabases of the sliding genmome window}
+
+\item{breaks}{(data.frame) 3 column table (sample, chrom, position) i.e returned by read.depth.breaks}
 }
 \description{
 Identify CNV breakpoints provided a segmentation file

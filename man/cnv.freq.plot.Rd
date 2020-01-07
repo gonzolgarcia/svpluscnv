@@ -11,7 +11,6 @@ cnv.freq.plot(
   hg = "hg19",
   cex.axis = 1,
   cex.lab = 1,
-  axis.line = -1.5,
   label.line = -1.2,
   verbose = TRUE
 )

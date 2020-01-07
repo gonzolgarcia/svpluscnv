@@ -69,7 +69,6 @@ circ.chromo.plot <- function(chromo.regs2,
   
     circos.initializeWithIdeogram(species=genome.v,chromosome.index=chr.list,plotType=c("axis","labels"), track.height=0.05, axis.labels.cex=0.4,labels.cex=1.3)
     circos.genomicIdeogram(track.height = 0.03)
-    text(0, 0,  gsub("_","\n",sample.id), cex = 1.3)
     circos.genomicTrack(p.regions, bg.lwd =0.01, ylim=c(0,0.02), track.height=0.05,
                         panel.fun = function(region, value, ...) {
                           circos.genomicRect(region, value, ytop = 0.02, ybottom = 0, col = p.regions[[CELL_META$sector.index]][,"color"],  border = NA, ...)
@@ -81,5 +80,6 @@ circ.chromo.plot <- function(chromo.regs2,
                                     circos.genomicLines(region, value, col=as.character(cnvlist[[CELL_META$sector.index]][,"colores"]), numeric.column = c(1), type="segment")
                                   })
     circos.genomicLink(links1, links2, col = linkcolors, border = NA)
+    text(0, 0,  gsub("_","\n",sample.id), cex = 1.3)
 }
 

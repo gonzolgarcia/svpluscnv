@@ -18,7 +18,7 @@ match.breaks <- function(brk1, brk2,
   require(GenomicRanges,quietly = TRUE,warn.conflicts = FALSE)
   require(taRifx,quietly = TRUE,warn.conflicts = FALSE)
  
-  common_samples <- intersect(brk1$sample,brk2$sample)
+  common_samples <- intersect(names(brk1$brk.burden),names(brk2$brk.burden))
   stopifnot(length(common_samples) > 0, local = TRUE) 
   
   if(verbose){
@@ -31,12 +31,13 @@ match.breaks <- function(brk1, brk2,
   brk1_match <- brk2_match <- restab <- list()
   for(id in common_samples){
     
-    brk1_i <- brk1[which(brk1$sample == id),]
+    brk1_i <- brk1$breaks[which(brk1$breaks$sample == id),]
     brk_ranges1 <- with(brk1_i, GRanges(chrom, IRanges(start=start, end=end)))
-    
-    brk2_i <- brk2[which(brk2$sample == id),]
+
+    brk2_i <- brk2$breaks[which(brk2$breaks$sample == id),]
     brk_ranges2 <- with(brk2_i, GRanges(chrom, IRanges(start=start, end=end)))
     
+
     options(warn=-1)
     seg_seg = GenomicAlignments::findOverlaps(brk_ranges1,brk_ranges2,maxgap=maxgap)
     options(warn=0)

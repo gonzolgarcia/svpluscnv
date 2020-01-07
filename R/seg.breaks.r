@@ -25,6 +25,10 @@ seg.breaks <- function(seg,
   require(tidyr,quietly = TRUE,warn.conflicts = FALSE)  # contains remove.factors
   
   segdat <- validate.seg(seg)
+  
+  brk.burden <- rep(0,length(unique(segdat$sample)))
+  names(brk.burden) <- unique(segdat$sample)
+  
   if(!is.null(min.seg.size)) segdat <- segdat[which(segdat$end - segdat$start >= min.seg.size),]
   if(!is.null(min.num.probes)) segdat <- segdat[which(segdat$probes  >= min.num.probes),]
   if(verbose){
@@ -80,5 +84,10 @@ seg.breaks <- function(seg,
     breakids.freq <- sort(table(breakids),decreasing=T)
     breakpoints <- breakpoints[which(breakids %in% names(which(breakids.freq < clean.brk))),]
   }
-  return(breakpoints)
+  
+  brk.burden.sub <- table(breakpoints$sample)
+  brk.burden[names(brk.burden.sub)] <- brk.burden.sub
+  
+  return(list(breaks=remove.factors(breakpoints),
+              brk.burden=brk.burden))
 }

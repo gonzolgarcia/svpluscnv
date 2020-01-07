@@ -17,7 +17,6 @@ cnv.freq.plot <- function(seg=NULL,
                           hg= "hg19",
                           cex.axis= 1,
                           cex.lab= 1,
-                          axis.line= -1.5,
                           label.line= -1.2,
                           verbose=TRUE){
   
@@ -86,11 +85,12 @@ cnv.freq.plot <- function(seg=NULL,
   
   outmat_gain<-outmat_loss<-outmat
   outmat_gain[]<-outmat_loss[]<-0
+  nsamples <- ncol(outmat_gain)
   
   outmat_gain[which(outmat > log2(1+ch.pct), arr.ind=T)] <-  1
   outmat_loss[which(outmat < log2(1-ch.pct), arr.ind=T)] <-  1
-  freq.gains <- apply(outmat_gain,1,sum)/ncol(outmat_gain)
-  freq.loss <- apply(outmat_loss,1,sum)/ncol(outmat_loss)
+  freq.gains <- apply(outmat_gain,1,sum)/nsamples
+  freq.loss <- apply(outmat_loss,1,sum)/nsamples
   
   plot.end<- chrlimits$offset[nrow(chrlimits)]+chrlimits$end[nrow(chrlimits)]
   bin.loc <- chrlimits[chrbins.df[names(freq.gains),"chr"],"offset"] + chrbins.df[names(freq.gains),"start"]
@@ -99,6 +99,7 @@ cnv.freq.plot <- function(seg=NULL,
   altcols <- rep(c(rgb(0.1,0.1,0.1,alpha=0.1),rgb(0.8,0.8,0.8,alpha=0.1)),12)
   altcols2<- rep(c(rgb(0.1,0.1,0.1,alpha=1),rgb(0.4,0.4,0.4,alpha=1)),12)
   
+  par(mar=c(3,4,3,4))
   plot(x=NULL,y=NULL,xlim=c(0,plot.end),ylim=c(-1,1),bty='n',xaxt='n',yaxt='n',xlab="",ylab="")
   for(i in 1:length(chrlimits$offset) ) rect( chrlimits$offset[i],-1,chrlimits$offset[i]+chrlimits$end[i],1, col=altcols[i],border=NA )
   points(bin.loc,freq.gains,type='h',col=chrbins.df$segcol_gain)
@@ -108,7 +109,10 @@ cnv.freq.plot <- function(seg=NULL,
   lines(c(0,plot.end),c(-0.5,-0.5),col="lightgrey",lty=3)
   mtext(gsub("chr","",rownames(chrlimits))[seq(1,nrow(chrlimits),2)],side=1,at=chrlimits$chrlabelpos[seq(1,nrow(chrlimits),2)],las=1,col=altcols2[seq(1,nrow(chrlimits),2)],line=label.line,cex=cex.lab)
   mtext(gsub("chr","",rownames(chrlimits))[seq(2,nrow(chrlimits),2)],side=3,at=chrlimits$chrlabelpos[seq(2,nrow(chrlimits),2)],las=1,col=altcols2[seq(2,nrow(chrlimits),2)],line=label.line,cex=cex.lab)
-  axis(2,c(100,50,0,50,100),at=c(-1,-0.5,0,0.5,1),las=1,line= axis.line,cex.axis=cex.axis)
+  mtext("Frequency",side=4,line=1)
+  mtext("#samples",side=2,line=1)
+  axis(4,c(100,50,0,50,100),at=c(-1,-0.5,0,0.5,1),las=1,pos=plot.end, cex.axis=cex.axis)
+  axis(2,c(nsamples,round(nsamples/2),0,round(nsamples/2),nsamples),at=c(-1,-0.5,0,0.5,1),las=1, pos=0, cex.axis=cex.axis)
   
   summary <- data.frame(chrbins.df[,c("chr","start","end")],freq.gains,freq.loss)
   

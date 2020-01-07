@@ -62,21 +62,34 @@ shattered.regions <- function(seg, sv,
   segbrk.dens <- break.density(segbrk,chr.lim = chr.lim, window.size = window.size, slide.size = slide.size, chrlist = chrlist,verbose = verbose)
   if(verbose) message("Mapping SV breakpoints across the genome:")
   svbrk.dens <- break.density(svbrk,chr.lim = chr.lim, window.size = window.size, slide.size = slide.size, chrlist = chrlist,verbose = verbose)
-  if(verbose) message("Mapping CNV validated breakpoints across the genome:")
-  segbrk.common.dens <- break.density(common.brk$brk1_match,chr.lim = chr.lim, window.size = window.size, slide.size = slide.size, chrlist = chrlist,verbose = verbose)
-  if(verbose) message("Mapping SV validated breakpoints across the genome:")
-  svbrk.common.dens <- break.density(common.brk$brk2_match,chr.lim = chr.lim, window.size = window.size, slide.size = slide.size, chrlist = chrlist,verbose = verbose)
+
+  common.brk1 <- common.brk2 <- list()
+  common.brk1[["breaks"]] <- common.brk$brk1_match
+  common.brk1[["brk.burden"]] <- common.brk$restab$matched.brk1
+  common.brk2[["breaks"]] <- common.brk$brk2_match
+  common.brk2[["brk.burden"]] <- common.brk$restab$matched.brk2
+  names(common.brk1[["brk.burden"]]) <- names(common.brk2[["brk.burden"]])  <- rownames(common.brk$restab)
   
-  commonSamples <- intersect(segbrk$sample,svbrk$sample)
+  if(verbose) message("Mapping CNV validated breakpoints across the genome:")
+  segbrk.common.dens <- break.density(common.brk1,chr.lim = chr.lim, window.size = window.size, slide.size = slide.size, chrlist = chrlist,verbose = verbose)
+  if(verbose) message("Mapping SV validated breakpoints across the genome:")
+  svbrk.common.dens <- break.density(common.brk2,chr.lim = chr.lim, window.size = window.size, slide.size = slide.size, chrlist = chrlist,verbose = verbose)
+  
+  commonSamples <- intersect(names(segbrk$brk.burden),names(svbrk$brk.burden))
   if(length(commonSamples) == 0) stop("There is no common samples between seg and sv input datasets.") 
   
   # calculate inter quantile mean and standard deviation per sample
-  iqmdata1 <- apply(segbrk.dens,1,IQM,lowQ=0.2,upQ=0.8)
-  sddata1  <- apply(segbrk.dens,1,IQSD,lowQ=0.2,upQ=0.8)
-  iqmdata2 <- apply(svbrk.dens,1,IQM,lowQ=0.2,upQ=0.8)
-  sddata2  <- apply(svbrk.dens,1,IQSD,lowQ=0.2,upQ=0.8)
-  iqmdata3 <- apply(segbrk.common.dens,1,IQM,lowQ=0.2,upQ=0.8)
-  sddata3  <- apply(segbrk.common.dens,1,IQSD,lowQ=0.2,upQ=0.8)
+  iqmdata1<- rep(0,length(commonSamples))
+  names(iqmdata1) <- commonSamples
+  
+  sddata1 <- iqmdata2 <- sddata2<- iqmdata3<- sddata3 <- iqmdata1
+  iqmdata1[names(apply(segbrk.dens,1,IQM,lowQ=.1,upQ=.9))] <- apply(segbrk.dens,1,IQM,lowQ=.1,upQ=.9)
+  sddata1[names(apply(segbrk.dens,1,IQSD,lowQ=.1,upQ=.9))]  <- apply(segbrk.dens,1,IQSD,lowQ=.1,upQ=.9)
+  iqmdata2[names(apply(svbrk.dens,1,IQM,lowQ=.1,upQ=.9))] <- apply(svbrk.dens,1,IQM,lowQ=.1,upQ=.9)
+  sddata2[names(apply(svbrk.dens,1,IQSD,lowQ=.1,upQ=.9))]  <- apply(svbrk.dens,1,IQSD,lowQ=.1,upQ=.9)
+  iqmdata3[names(apply(segbrk.common.dens,1,IQM,lowQ=.1,upQ=.9))] <- apply(segbrk.common.dens,1,IQM,lowQ=.1,upQ=.9)
+  sddata3[names(apply(segbrk.common.dens,1,IQSD,lowQ=.1,upQ=.9))]  <- apply(segbrk.common.dens,1,IQSD,lowQ=.1,upQ=.9)
+  
   
   a <- sapply(commonSamples, function(i) names(which(segbrk.dens[i,] > iqmdata1[i]+num.seg.sd*sddata1[i] )))
   b <- sapply(commonSamples, function(i) names(which(segbrk.dens[i,] >= num.seg.breaks)))

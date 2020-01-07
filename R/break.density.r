@@ -11,7 +11,7 @@
 #' break.density()
 
 
-break.density <- function(breaks, 
+break.density <- function(brk, 
                          chr.lim, 
                          window.size = 10, 
                          slide.size=2,
@@ -20,39 +20,26 @@ break.density <- function(breaks,
   
   require(taRifx,quietly = TRUE,warn.conflicts = FALSE)  # contains remove.factors
   
-
-  stopifnot(window.size%%1 == 0, local = TRUE) 
-  stopifnot(slide.size%%1 == 0, local = TRUE) 
-  stopifnot((window.size/slide.size)%%1 == 0, local = TRUE) 
-
-  stopifnot(ncol(breaks) >=3 , local = TRUE) 
-  
   # make sure breaks format is correct
-  breaks <- remove.factors(breaks[,1:3])
-  colnames(breaks) <- c("sample","chr","pos")
-  stopifnot(is.character(breaks$sample))
-  stopifnot(is.character(breaks$chr))
-  stopifnot(is.numeric(breaks$pos))
+  breaks <-brk$breaks
   
   # make sure chr.lim format is correct
-  chr.lim<-chr.lim[,1:2]
+  chr.lim<- chr.lim[,1:2]
   colnames(chr.lim) <- c("begin","end")
-  stopifnot(is.numeric(chr.lim$begin))
-  stopifnot(is.numeric(chr.lim$end))
   
   # make sure both chr.lim and breaks have same chromosome names 
   seqnames <- intersect(rownames(chr.lim),breaks$chr)
   stopifnot(length(seqnames) > 0) 
   
   # a template vector to save breakpoint counts 
-  templatevector <- rep(0,length( unique(breaks$sample)))
-  names(templatevector) <- unique(breaks$sample)
+  templatevector <- brk$brk.burden
+  templatevector[]<-0
   
   WS <- window.size * 1e+6
   SS <- slide.size * 1e+6
   offset <- window.size/slide.size
   
-  if(is.null(chrlist)) chrlist <- paste("chr",c(1:22,"X"),sep="")
+  if(is.null(chrlist)) chrlist <- rownames(chr.lim)
   
   # count breaks for each chromosome for each fragment
   fragment <- list()
@@ -66,7 +53,8 @@ break.density <- function(breaks,
       start <- frag[i - offset]
       stop <- frag[i]
       fragment[[paste(chr,start,stop)]] <- templatevector
-      res_bp <-table(chr_breaks[intersect(which(chr_breaks$pos > start),which(chr_breaks$pos < stop)),"sample"])
+      break.position <- chr_breaks$start + (chr_breaks$end - chr_breaks$start)/2
+      res_bp <- table(chr_breaks[intersect(which(break.position > start),which(break.position < stop)),"sample"])
       fragment[[paste(chr,start,stop)]][names(res_bp)] <- res_bp
     }
   }

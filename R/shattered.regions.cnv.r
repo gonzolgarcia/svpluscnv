@@ -49,6 +49,9 @@ shattered.regions.cnv <- function(seg,
 
   
   # calculate inter quantile mean and standard deviation per sample
+  iqmdata1<- sddata<- breaks$brk.burden
+  iqmdata1[] <- sddata[] <- 0
+  
   iqmdata <- apply(seg.brk.dens,1,IQM,lowQ=0.2,upQ=0.8)
   sddata <- apply(seg.brk.dens,1,IQSD,lowQ=0.2,upQ=0.8)
 
@@ -123,7 +126,7 @@ shattered.regions.cnv <- function(seg,
     if(verbose) cc <- cc+1
     if(verbose) setTxtProgressBar(pb, cc/tot)
     regions <-   restab[[cl]]
-    br1 <- breaks[which(breaks$sample == cl),2:3]
+    br1 <- breaks$breaks[which(breaks$breaks$sample == cl),2:3]
     colnames(br1) <- c("chrom","pos")
     br1.gr <- with(br1, GRanges(chrom, IRanges(start=pos, end=pos)))
     regions_gr <- with(regions, GRanges(chrom, IRanges(start=start, end=end)))
