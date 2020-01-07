@@ -45,8 +45,8 @@ Most currently available cancer genomics datasets incorporate CNV characterizati
 * [CNV analysys and visualization](#cnv-analysys-and-visualization)
     * [CNV frequency plot](#cnv-frequency-plot)
     * [Percent genome change](#percent-genome-change)
-* [Co-localization of breakpoints](#co\-localization-of-breakpoints)
 * [Breakpoint burden](#breakpoint-burden)
+* [Co-localization of breakpoints](#co\-localization-of-breakpoints)
 * [Identification of shattered regions](#identification-of-shattered-regions)
     * [Chromosome shattering using segmentation data only](#chromosome-shattering-using-segmentation-data-only)
     * [Chromosome shattering using segmentation and SV data](#chromosome-shattering-using-segmentation-and-sv-data)
@@ -144,27 +144,33 @@ pct_change <- pct.genome.changed(segdf, ch.pct = 0.2)
 
 In addition to percentage of genome changed, we can measure the total burden of breakpoints derived from CNV segments and SV calls. 
 
-```{r plot2, fig.width=5, fig.height=5, fig.align='center', fig.cap = "SV versus CNV breakpoint burden",  message=FALSE}
+```{r plot2, fig.width=9, fig.height=5, fig.align='center', fig.cap = "SV versus CNV breakpoint burden",  message=FALSE}
 # define breakpoints from SV data
 sv_breaks  <- sv.breaks(svdf)  
 
 # define breakpoints from seg data based on certain CNV change cutoff
 cnv_breaks  <- seg.breaks(segdf,fc.pct = 0.2,verbose=FALSE)  
 
-# scatter plot comparing snv and sv breakpoint burden for a set of common samples
+# scatter plot comparing CNV and SV breakpoint burden for a set of common samples
 common_samples <- intersect(names(sv_breaks$brk.burden),names(cnv_breaks$brk.burden))
 
-dat <- log2(1+cbind(sv_breaks$brk.burden[common_samples],
+dat1 <- log2(1+cbind(sv_breaks$brk.burden[common_samples],
                     cnv_breaks$brk.burden[common_samples]))
 
-plot(dat, xlab="SV burden", ylab="CNV breakpoint burden")
-legend("topright",paste("cor=",cor(dat)[1,2], sep=""))
+dat2 <- log2(1+cbind(pct_change, 
+                     cnv_breaks$brk.burden[names(pct_change)]))
+
+par(mfrow=c(1,2))
+plot(dat1, xlab="SV burden", ylab="CNV breakpoint burden")
+legend("topright",paste("cor=",cor(dat1)[1,2], sep=""))
+plot(dat2, xlab="percentage genome changed", ylab="CNV breakpoint burden")
+legend("topright",paste("cor=",cor(dat2)[1,2], sep=""))
 
 ```
 
 ## Co-localization of breakpoints
 
-Both CNV segmentation profiles and structural variants calls produce orthogonal results for variants that involve dosage changes (duplications andn deletions). The function `match.breaks` can be used to compare both approaches as well as comparing calls from alternative algorithms.
+Both CNV segmentation profiles and SV calls produce orthogonal results for variants that involve dosage changes (duplications and deletions). The function `match.breaks` compare both approaches by identifying colocalizing breakpoints. This function can also be used to compare two sets of CNV brekpoints obtaind from different algorithms or SV callers since the format of both CNV and SV breaks objects have the same format.  
 
 ```{r plot3,  fig.width=9, fig.height=5, fig.align='center', fig.cap = "Common breakpoints by sample",  message=FALSE}
 
@@ -187,7 +193,7 @@ grid(ny=NULL,nx=NA)
 
 Complex chromosomal rearrangements such as chromothripsis and chromoplexy are widespread events in many cancers and may have important pathogenic roles. `svcnvplus` incorporates tools to map and visualize shattered regions across multiple samples.
 
-We used LUNG cancer cell line profiles from the CCLE in order to illustrated these tools:
+We used LUNG cancer cell line profiles from the CCLE in order to illustrate these tools:
 
 Validate segmentation and SV data.frames
 ```{r message=FALSE}
@@ -195,7 +201,7 @@ segdf <- validate.seg(segdat_lung_ccle)
 svdf <- validate.sv(svdat_lung_ccle)
 ```
 
-### Chromosome shattering using segmentation data only
+### Chromosome shattering using CNV segmentation data only
 
 The whole genome is binned into user defined `window.size` (Mb) and slided by `slide.size` (Mb) in order to identify regions with high CNV breakpoint density. Two cutoffs are considered for each genomic bin:\n
     * num.breaks = the minimum number of breakpoints
@@ -205,8 +211,8 @@ In addition, we evaluate the interquantile average of the distance between break
 
 ```{r message=FALSE}
 shatt_lung_cnv <- shattered.regions.cnv(segdf, fc.pct = 0.2, clean.brk = 4, window.size = 10,
-                                        slide.size = 2,num.breaks = 8, num.sd = 5,  
-                                        dist.iqm.cut = 150000,verbose=FALSE)
+                                        min.num.probes = 3, slide.size = 2,num.breaks = 8, 
+                                        num.sd = 5, dist.iqm.cut = 150000,verbose=FALSE)
 shatt_lung_cnv$regions.summary$A549_LUNG
 ```
 
@@ -218,10 +224,10 @@ In addition SVs provide linkage for each SV breakpoint pair which allow for an a
     * interleaved.cut the minimun percentage (0-1) of interleaved SVs
     
 ```{r message=FALSE}
-shatt_lung <- shattered.regions(segdf, svdf, fc.pct = 0.2,  min.num.probes = 5, clean.brk = 8,
+shatt_lung <- shattered.regions(segdf, svdf, fc.pct = 0.05,  min.num.probes = 3, clean.brk = 4,
                                 window.size = 10, slide.size = 2, num.seg.breaks = 6, 
                                 num.seg.sd = 5, num.sv.breaks = 6, num.sv.sd = 5, 
-                                num.common.breaks = 2, num.common.sd = 0, interleaved.cut = 0.5,
+                                num.common.breaks = 2, num.common.sd = 0, interleaved.cut = 0.33,
                                 dist.iqm.cut = 100000,verbose=FALSE)
 shatt_lung$regions.summary$NCIH522_LUNG
 ```
@@ -231,20 +237,21 @@ Circos plotting is available via [circlize](https://cran.r-project.org/web/packa
 ```{r plot4, fig.width=9, fig.height=5, fig.align='center', fig.cap = "Circos plot representing c LUNG cancer cell lines with chromothripsis",  message=FALSE}
 par(mfrow=c(1,2))
 circ.chromo.plot(shatt_lung,sample.id = "SCLC21H_LUNG")
-circ.chromo.plot(shatt_lung,sample.id = "NCIH522_LUNG")
+circ.chromo.plot(shatt_lung,sample.id = "NCIH510_LUNG")
 ```
+
 
 ### Recurrently shattered regions
 
-We evaluate the null hipothesis that shattered regions occour throughout the genome at random; To this end we first create an empirical null distribution based on given sample set under study. The null is then compared with the observed distribution. This also allows defining an empirical FDR cutoff above which regions are considered under selection presure for chromosome shattering.
+We evaluate the null hipothesis that shattered regions occour throughout the genome at random; To this end we first create an empirical null distribution based on the sample set under study. The null is then compared with the observed distribution to obtain empirical p-values corrected for multiple hypothesis testing. The corrected p-calues under statistical significance define regions  under selection presure for chromosome shattering.
 
 ```{r message=FALSE}
-fdr.test <- freq.p.test(shatt_lung_cnv$high.density.regions.hc, method="bonferroni", p.cut = 0.05)
+fdr.test <- freq.p.test(shatt_lung_cnv$high.density.regions.hc, method="fdr", p.cut = 0.01)
 ```
 
 ### Recurrently shattered regions plot
 
-We can visualize the aggregate map of shattered regions for all samples with `shattered.map.plot`
+We can visualize the aggregate map of shattered regions for all samples with `shattered.map.plot`; 
 
 ```{r plot5,  fig.width=9, fig.height=4, fig.align='center', fig.cap = "Recurrently shattered regions map", message=FALSE}
 shattered.map.plot(shatt_lung_cnv, fdr = fdr.test$freq.cut)
@@ -310,10 +317,10 @@ deepdel <- apply(gene_cnv$cnvmat, 1, function(x) which(x < -2))
 
 ```{r plot6,  fig.width=9, fig.height=5, fig.align='center', fig.cap = "Recurrently altered genes with overlapping CNV breakpoints", message=FALSE}
 par(mfrow=c(1,2),mar=c(4,7,1,1))
-barplot(sort(unlist(lapply(amplified,length)),decreasing=TRUE)[1:20],col="red",
-        las=1,main="Amplified genes",horiz=TRUE)
-barplot(sort(unlist(lapply(deepdel,length)),decreasing=TRUE)[1:20],col="blue",
-        las=1,main="Candidate homozigously deleted genes",horiz=TRUE)
+barplot(sort(unlist(lapply(amplified,length)),decreasing=FALSE)[1:20],col="red",
+        las=1,main="Amplified genes",horiz=TRUE,xlab="#samples")
+barplot(sort(unlist(lapply(deepdel,length)),decreasing=FALSE)[1:20],col="blue",
+        las=1,main="Candidate homozigously deleted genes",horiz=TRUE,xlab="#samples")
 ```
 
 ### Recurrently altered genes overlapping with CNV breakpoints
@@ -323,10 +330,10 @@ Instead of focusing on high-level dosage changes, we evaluate whether CNV break 
 ```{r plot7,  fig.width=9, fig.height=5, fig.align='center', fig.cap = "Recurrently altered genes with overlapping CNV breakpoints", message=FALSE}
 results_cnv <- cnv.break.annot(segdf_clean, fc.pct = 0.2, genome.v="hg19",clean.brk = 8,upstr = 50000,verbose=FALSE)
 par(mfrow=c(1,2),mar=c(4,7,1,1))
-barplot(sort(unlist(lapply(results_cnv$disruptSamples,length)),decreasing=T)[1:20],
-        las=1,main="Gene coding region disrupted",horiz=TRUE)
-barplot(sort(unlist(lapply(results_cnv$upstreamSamples,length)),decreasing=T)[1:20],
-        las=1,main="Gene upstream region disrupted",horiz=TRUE)
+barplot(sort(unlist(lapply(results_cnv$disruptSamples,length)),decreasing=FALSE)[1:20],
+        las=1,main="Gene coding region disrupted",horiz=TRUE,xlab="#samples")
+barplot(sort(unlist(lapply(results_cnv$upstreamSamples,length)),decreasing=FALSE)[1:20],
+        las=1,main="Gene upstream region disrupted",horiz=TRUE,xlab="#samples")
 ```
 
 ### Recurrently altered genes overlapping with structural variants calls
@@ -337,10 +344,10 @@ The output returns a list of genes and associated variants that can be retrieved
 ```{r plot8,  fig.width=9, fig.height=5, fig.align='center', fig.cap = "Recurrently altered genes with overlapping SV breakpoints", message=FALSE}
 results_sv <- sv.break.annot(svdf, sv.seg.size = 200000, genome.v="hg19",upstr = 50000, verbose=FALSE)
 par(mfrow=c(1,2),mar=c(4,7,1,1))
-barplot(sort(unlist(lapply(results_sv$disruptSamples,length)),decreasing=T)[1:20],
-        las=1,main="Coding region disrupted",horiz=TRUE)
-barplot(sort(unlist(lapply(results_sv$upstreamSamples,length)),decreasing=T)[1:20],
-        las=1,main="Upstream region disrupted",horiz=TRUE)
+barplot(sort(unlist(lapply(results_sv$disruptSamples,length)),decreasing=FALSE)[1:20],
+        las=1,main="Coding region disrupted",horiz=TRUE,xlab="#samples")
+barplot(sort(unlist(lapply(results_sv$upstreamSamples,length)),decreasing=FALSE)[1:20],
+        las=1,main="Upstream region disrupted",horiz=TRUE,xlab="#samples")
 ```
 
 
