@@ -202,7 +202,6 @@ In addition, we evaluate the interquantile average of the distance between break
 shatt_lung_cnv <- shattered.regions.cnv(segdf, fc.pct = 0.2, clean.brk = 4, window.size = 10,
                                         slide.size = 2,num.breaks = 8, num.sd = 5,  
                                         dist.iqm.cut = 150000,verbose=FALSE)
-
 shatt_lung_cnv$regions.summary$A549_LUNG
 ```
 
@@ -223,7 +222,7 @@ shatt_lung <- shattered.regions(segdf, svdf, fc.pct = 0.2,  min.num.probes = 5, 
                                 num.seg.sd = 5, num.sv.breaks = 6, num.sv.sd = 5, 
                                 num.common.breaks = 2, num.common.sd = 0, interleaved.cut = 0.5,
                                 dist.iqm.cut = 100000,verbose=FALSE)
-shatt_lung$regions.summary$SCLC21H_LUNG
+shatt_lung$regions.summary$NCIH522_LUNG
 ```
 
 Circos plotting is available via [circlize](https://cran.r-project.org/web/packages/circlize/index.html) package wrapper function:
@@ -281,10 +280,13 @@ hits <-GenomicAlignments::findOverlaps(hitRegionsPost_gr,hitRegions_gr)
 
 regList <- list()
 for(i in unique(queryHits(hits))) regList[[paste(hitRegionsPost[i,],collapse=" ") ]] <- textRegions[subjectHits(hits)[which(queryHits(hits) == i)]]
+
 # obtain the genomic bins with maximum number of samples
-regListPeak <- lapply(regList, function(x) names(which(freq.matrix[x] == max(freq.matrix[x]))))
+regListPeak <- lapply(regList, function(x) 
+    names(which(freq.matrix[x] == max(freq.matrix[x]))))
 # collect samples with shattered region in the peaks 
-regListPeakSamples <- lapply(regListPeak, function(x) names(which(apply(cbind(shatt_lung_cnv$high.density.regions.hc[,x]),1,sum) > 0)))
+regListPeakSamples <- lapply(regListPeak, function(x) 
+    names(which(apply(cbind(shatt_lung_cnv$high.density.regions.hc[,x]),1,sum) > 0)))
 ```
 
 Beyond this point the user can test case/control hipothesys for chromosome shattering of specific genomic regions...
@@ -305,9 +307,12 @@ deepdel <- apply(gene_cnv$cnvmat, 1, function(x) which(x < -2))
 Obtain genes amplified and deleted at certain logR cutoff
 ```{r plot6,  fig.width=9, fig.height=4, fig.align='center', fig.cap = "Recurrently altered genes with overlapping CNV breakpoints", message=FALSE}
 par(mfrow=c(1,2),mar=c(7,4,1,1))
-barplot(sort(unlist(lapply(amplified,length)),decreasing=TRUE)[1:20],col="red",las=2,main="Amplified genes")
-barplot(sort(unlist(lapply(deepdel,length)),decreasing=TRUE)[1:20],col="blue",las=2,main="Candidate homozigously deleted genes")
+barplot(sort(unlist(lapply(amplified,length)),decreasing=TRUE)[1:20],col="red",
+        las=2,main="Amplified genes")
+barplot(sort(unlist(lapply(deepdel,length)),decreasing=TRUE)[1:20],col="blue",
+        las=2,main="Candidate homozigously deleted genes")
 ```
+###### Recurrently altered genes with overlapping CNV breakpoints
 
 ### Recurrently altered genes overlapping with CNV breakpoints
 
@@ -317,8 +322,10 @@ Instead of focusing on high-level dosage changes, we evaluate whether CNV break 
 ```{r plot7,  fig.width=9, fig.height=4, fig.align='center', fig.cap = "Recurrently altered genes with overlapping CNV breakpoints", message=FALSE}
 results_cnv <- cnv.break.annot(segdf_clean, fc.pct = 0.2, genome.v="hg19",clean.brk = 8,upstr = 50000,verbose=FALSE)
 par(mfrow=c(1,2),mar=c(7,4,1,1))
-barplot(sort(unlist(lapply(results_cnv$disruptSamples,length)),decreasing=T)[1:20],las=2,main="Gene coding region disrupted")
-barplot(sort(unlist(lapply(results_cnv$upstreamSamples,length)),decreasing=T)[1:20],las=2,main="Gene upstream region disrupted")
+barplot(sort(unlist(lapply(results_cnv$disruptSamples,length)),decreasing=T)[1:20],
+        las=2,main="Gene coding region disrupted")
+barplot(sort(unlist(lapply(results_cnv$upstreamSamples,length)),decreasing=T)[1:20],
+        las=2,main="Gene upstream region disrupted")
 ```
 
 ### Recurrently altered genes overlapping with structural variants
@@ -326,9 +333,11 @@ barplot(sort(unlist(lapply(results_cnv$upstreamSamples,length)),decreasing=T)[1:
 We can obtain a ranking of altered genes that overlap with structural variants; The annotation identifies segmental variants overlaping with genes. For translocations (TRA) and large segmenral variants (default > 200Kb) only the break ens locations are considered.
 The output returns a list of genes and associated variants that can be retrieved for further analyses. In addition every gene is associated via list to the sample ids harboring variants
 ```{r plot8,  fig.width=9, fig.height=4, fig.align='center', fig.cap = "Recurrently altered genes with overlapping SV breakpoints", message=FALSE}
-results_sv <- sv.break.annot(nbl_svdat, sv.seg.size = 200000, genome.v="hg19",upstr = 50000, verbose=FALSE)
+results_sv <- sv.break.annot(svdf, sv.seg.size = 200000, genome.v="hg19",upstr = 50000, verbose=FALSE)
 par(mfrow=c(1,2),mar=c(7,4,1,1))
-barplot(sort(unlist(lapply(results_sv$disruptSamples,length)),decreasing=T)[1:20],las=2,main="Coding region disrupted")
-barplot(sort(unlist(lapply(results_sv$upstreamSamples,length)),decreasing=T)[1:20],las=2,main="Upstream region disrupted")
+barplot(sort(unlist(lapply(results_sv$disruptSamples,length)),decreasing=T)[1:20],
+        las=2,main="Coding region disrupted")
+barplot(sort(unlist(lapply(results_sv$upstreamSamples,length)),decreasing=T)[1:20],
+        las=2,main="Upstream region disrupted")
 ```
 

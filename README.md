@@ -600,7 +600,6 @@ In addition, we evaluate the interquantile average of the distance between break
 shatt_lung_cnv <- shattered.regions.cnv(segdf, fc.pct = 0.2, clean.brk = 4, window.size = 10,
                                         slide.size = 2,num.breaks = 8, num.sd = 5,  
                                         dist.iqm.cut = 150000,verbose=FALSE)
-
 shatt_lung_cnv$regions.summary$A549_LUNG
 ```
 
@@ -632,12 +631,16 @@ shatt_lung <- shattered.regions(segdf, svdf, fc.pct = 0.2,  min.num.probes = 5, 
                                 num.seg.sd = 5, num.sv.breaks = 6, num.sv.sd = 5, 
                                 num.common.breaks = 2, num.common.sd = 0, interleaved.cut = 0.5,
                                 dist.iqm.cut = 100000,verbose=FALSE)
-shatt_lung$regions.summary$SCLC21H_LUNG
+shatt_lung$regions.summary$NCIH522_LUNG
 ```
 
 ```
-##   chrom  start       end nseg links reg.size dist.iqm.seg dist.iqm.sv n.brk.seg n.brk.sv n.orth.seg n.orth.sv interleaved conf
-## 1  chr8 601012 141936592   70     - 1.48e+08     151575.8    105171.7       567      668        446       489  0.02873563   HC
+##   chrom     start       end nseg links reg.size dist.iqm.seg dist.iqm.sv n.brk.seg n.brk.sv n.orth.seg n.orth.sv interleaved conf
+## 1  chr2 184162747 192989418    3     -  1.4e+07     393135.8   535717.60        13       10          6         6  0.80000000   lc
+## 2  chr6  10394318  28148876    6   3,4  2.0e+07     368925.2    57651.52        21       46         14        16  0.15151515   HC
+## 3  chr6  39012920  45302501    2   2,4  1.2e+07     204034.0   157078.00         9       13          5         6  0.00000000   HC
+## 4  chr6  53985510  70945739    7   2,3  2.2e+07     167862.6    71656.24        32       52         19        24  0.12195122   HC
+## 5 chr21  10934998  47273167   15     -  3.8e+07     278635.8   267349.74        70       67         30        33  0.08333333   HC
 ```
 
 Circos plotting is available via [circlize](https://cran.r-project.org/web/packages/circlize/index.html) package wrapper function:
@@ -703,10 +706,13 @@ hits <-GenomicAlignments::findOverlaps(hitRegionsPost_gr,hitRegions_gr)
 
 regList <- list()
 for(i in unique(queryHits(hits))) regList[[paste(hitRegionsPost[i,],collapse=" ") ]] <- textRegions[subjectHits(hits)[which(queryHits(hits) == i)]]
+
 # obtain the genomic bins with maximum number of samples
-regListPeak <- lapply(regList, function(x) names(which(freq.matrix[x] == max(freq.matrix[x]))))
+regListPeak <- lapply(regList, function(x) 
+    names(which(freq.matrix[x] == max(freq.matrix[x]))))
 # collect samples with shattered region in the peaks 
-regListPeakSamples <- lapply(regListPeak, function(x) names(which(apply(cbind(shatt_lung_cnv$high.density.regions.hc[,x]),1,sum) > 0)))
+regListPeakSamples <- lapply(regListPeak, function(x) 
+    names(which(apply(cbind(shatt_lung_cnv$high.density.regions.hc[,x]),1,sum) > 0)))
 ```
 
 Beyond this point the user can test case/control hipothesys for chromosome shattering of specific genomic regions...
@@ -729,11 +735,14 @@ Obtain genes amplified and deleted at certain logR cutoff
 
 ```r
 par(mfrow=c(1,2),mar=c(7,4,1,1))
-barplot(sort(unlist(lapply(amplified,length)),decreasing=TRUE)[1:20],col="red",las=2,main="Amplified genes")
-barplot(sort(unlist(lapply(deepdel,length)),decreasing=TRUE)[1:20],col="blue",las=2,main="Candidate homozigously deleted genes")
+barplot(sort(unlist(lapply(amplified,length)),decreasing=TRUE)[1:20],col="red",
+        las=2,main="Amplified genes")
+barplot(sort(unlist(lapply(deepdel,length)),decreasing=TRUE)[1:20],col="blue",
+        las=2,main="Candidate homozigously deleted genes")
 ```
 
 <img src="figure/plot6-1.png" title="Recurrently altered genes with overlapping CNV breakpoints" alt="Recurrently altered genes with overlapping CNV breakpoints" style="display: block; margin: auto;" />
+###### Recurrently altered genes with overlapping CNV breakpoints
 
 ### Recurrently altered genes overlapping with CNV breakpoints
 
@@ -744,8 +753,10 @@ Instead of focusing on high-level dosage changes, we evaluate whether CNV break 
 ```r
 results_cnv <- cnv.break.annot(segdf_clean, fc.pct = 0.2, genome.v="hg19",clean.brk = 8,upstr = 50000,verbose=FALSE)
 par(mfrow=c(1,2),mar=c(7,4,1,1))
-barplot(sort(unlist(lapply(results_cnv$disruptSamples,length)),decreasing=T)[1:20],las=2,main="Gene coding region disrupted")
-barplot(sort(unlist(lapply(results_cnv$upstreamSamples,length)),decreasing=T)[1:20],las=2,main="Gene upstream region disrupted")
+barplot(sort(unlist(lapply(results_cnv$disruptSamples,length)),decreasing=T)[1:20],
+        las=2,main="Gene coding region disrupted")
+barplot(sort(unlist(lapply(results_cnv$upstreamSamples,length)),decreasing=T)[1:20],
+        las=2,main="Gene upstream region disrupted")
 ```
 
 <img src="figure/plot7-1.png" title="Recurrently altered genes with overlapping CNV breakpoints" alt="Recurrently altered genes with overlapping CNV breakpoints" style="display: block; margin: auto;" />
@@ -756,10 +767,19 @@ We can obtain a ranking of altered genes that overlap with structural variants; 
 The output returns a list of genes and associated variants that can be retrieved for further analyses. In addition every gene is associated via list to the sample ids harboring variants
 
 ```r
-results_sv <- sv.break.annot(nbl_svdat, sv.seg.size = 200000, genome.v="hg19",upstr = 50000, verbose=FALSE)
+results_sv <- sv.break.annot(svdf, sv.seg.size = 200000, genome.v="hg19",upstr = 50000, verbose=FALSE)
+```
+
+```
+## Error in .Call2("solve_user_SEW0", start, end, width, PACKAGE = "IRanges"): In range 1: 'end' must be >= 'start' - 1.
+```
+
+```r
 par(mfrow=c(1,2),mar=c(7,4,1,1))
-barplot(sort(unlist(lapply(results_sv$disruptSamples,length)),decreasing=T)[1:20],las=2,main="Coding region disrupted")
-barplot(sort(unlist(lapply(results_sv$upstreamSamples,length)),decreasing=T)[1:20],las=2,main="Upstream region disrupted")
+barplot(sort(unlist(lapply(results_sv$disruptSamples,length)),decreasing=T)[1:20],
+        las=2,main="Coding region disrupted")
+barplot(sort(unlist(lapply(results_sv$upstreamSamples,length)),decreasing=T)[1:20],
+        las=2,main="Upstream region disrupted")
 ```
 
 <img src="figure/plot8-1.png" title="Recurrently altered genes with overlapping SV breakpoints" alt="Recurrently altered genes with overlapping SV breakpoints" style="display: block; margin: auto;" />
