@@ -743,9 +743,9 @@ deepdel <- apply(gene_cnv$cnvmat, 1, function(x) which(x < -2))
 
 ```r
 par(mfrow=c(1,2),mar=c(4,7,1,1))
-barplot(sort(unlist(lapply(amplified,length)),decreasing=FALSE)[1:20],col="red",
+barplot(sort(unlist(lapply(amplified,length)),decreasing=TRUE)[20:1],col="red",
         las=1,main="Amplified genes",horiz=TRUE,xlab="#samples")
-barplot(sort(unlist(lapply(deepdel,length)),decreasing=FALSE)[1:20],col="blue",
+barplot(sort(unlist(lapply(deepdel,length)),decreasing=TRUE)[20:1],col="blue",
         las=1,main="Candidate homozigously deleted genes",horiz=TRUE,xlab="#samples")
 ```
 
@@ -759,9 +759,9 @@ Instead of focusing on high-level dosage changes, we evaluate whether CNV break 
 ```r
 results_cnv <- cnv.break.annot(segdf_clean, fc.pct = 0.2, genome.v="hg19",clean.brk = 8,upstr = 50000,verbose=FALSE)
 par(mfrow=c(1,2),mar=c(4,7,1,1))
-barplot(sort(unlist(lapply(results_cnv$disruptSamples,length)),decreasing=FALSE)[1:20],
+barplot(sort(unlist(lapply(results_cnv$disruptSamples,length)),decreasing=TRUE)[20:1],
         las=1,main="Gene coding region disrupted",horiz=TRUE,xlab="#samples")
-barplot(sort(unlist(lapply(results_cnv$upstreamSamples,length)),decreasing=FALSE)[1:20],
+barplot(sort(unlist(lapply(results_cnv$upstreamSamples,length)),decreasing=TRUE)[20:1],
         las=1,main="Gene upstream region disrupted",horiz=TRUE,xlab="#samples")
 ```
 
@@ -776,9 +776,9 @@ The output returns a list of genes and associated variants that can be retrieved
 ```r
 results_sv <- sv.break.annot(svdf, sv.seg.size = 200000, genome.v="hg19",upstr = 50000, verbose=FALSE)
 par(mfrow=c(1,2),mar=c(4,7,1,1))
-barplot(sort(unlist(lapply(results_sv$disruptSamples,length)),decreasing=FALSE)[1:20],
+barplot(sort(unlist(lapply(results_sv$disruptSamples,length)),decreasing=TRUE)[20:1],
         las=1,main="Coding region disrupted",horiz=TRUE,xlab="#samples")
-barplot(sort(unlist(lapply(results_sv$upstreamSamples,length)),decreasing=FALSE)[1:20],
+barplot(sort(unlist(lapply(results_sv$upstreamSamples,length)),decreasing=TRUE)[20:1],
         las=1,main="Upstream region disrupted",horiz=TRUE,xlab="#samples")
 ```
 
