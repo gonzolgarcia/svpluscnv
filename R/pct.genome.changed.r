@@ -2,12 +2,16 @@
 #'
 #' Calculate the percentage of genome changed by CNV
 #' @param seg (data.frame) segmentation data with 6 columns: sample, chromosome, start, end, probes, segment_mean
-#' @param ch.pct (numeric) percentage CNV gain/loss for a segment to be considered changed (i.e. 0.2 = 20 percent change 0.8 < segmean && segmean > 1.2)
+#' @param fc.pct (numeric) percentage CNV gain/loss for a segment to be considered changed (i.e. 0.2 = 20 percent change 0.8 < segmean && segmean > 1.2)
 #' @param discard.sex (logical) whether sex chromosomes should be included or not
 #' @keywords CNV, segmentation
 #' @export
 #' @examples
-#' break.density()
+#' 
+#' ## validate input data.frames
+#' seg <- validate.seg(segdat_lung_ccle)
+#' 
+#' pct.genome.changed(seg)
 
 pct.genome.changed <- function(seg, 
                                fc.pct=0.2, 

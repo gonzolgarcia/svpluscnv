@@ -35,7 +35,11 @@ cnv.freq.plot(
 Plot CNV frequency across the human genome from a seg file sontaining multiple samples
 }
 \examples{
-cnv.freq.plot()
+
+## validate input data.frame
+seg <- validate.seg(nbl_segdat)
+
+cnv.freq.plot(seg, genome.v = "hg19")
 }
 \keyword{CNV,}
 \keyword{plot}

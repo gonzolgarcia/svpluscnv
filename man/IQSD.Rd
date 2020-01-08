@@ -17,7 +17,9 @@ IQSD(x, lowQ = 0.1, upQ = 0.9)
 Obtains inter quantile standard deviation for a defined 'x' vector and both lower and upper quantiles
 }
 \examples{
-IQSD()
+
+x <- rnorm(100)
+IQSD(x)
 }
 \keyword{interquartile}
 \keyword{statistics,}

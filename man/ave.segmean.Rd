@@ -13,7 +13,9 @@ ave.segmean(seg)
 Obtain the average weighted segment mean from each sample in a segmentaton file
 }
 \examples{
-ave.segmean()
+
+seg <- validate.seg(segdat_lung_ccle)
+ave.segmean(seg)
 }
 \keyword{CNV,}
 \keyword{segmentation}

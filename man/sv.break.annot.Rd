@@ -28,6 +28,10 @@ sv.break.annot(
 Identify recurrently altered genes by strutural variants
 }
 \examples{
+
+## Obtain breakpoints from SV calls data
+sv <- validate.sv(svdat_lung_ccle)
+
 sv.break.annot(sv, genome.v="hg19")
 }
 \keyword{Structural}

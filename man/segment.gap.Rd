@@ -2,7 +2,8 @@
 % Please edit documentation in R/segment.gap.r
 \name{segment.gap}
 \alias{segment.gap}
-\title{Filling gaps in a segmentation dat abased on chromosome limits defined withing the complete segmentation dataset}
+\title{Fills the gaps in a segmentation data.frame. Chromosome limits are defined for the complete segmentation dataset then segments fill the missing terminal regions. 
+The CN log-ratio of the added segments is set to the average of the closest neighbours in each sample.}
 \usage{
 segment.gap(seg, chrlist = NULL, verbose = TRUE)
 }
@@ -14,9 +15,14 @@ segment.gap(seg, chrlist = NULL, verbose = TRUE)
 \item{verbose}{(logical)}
 }
 \description{
-Filling gaps in a segmentation dat abased on chromosome limits defined withing the complete segmentation dataset
+Fills the gaps in a segmentation data.frame. Chromosome limits are defined for the complete segmentation dataset then segments fill the missing terminal regions. 
+The CN log-ratio of the added segments is set to the average of the closest neighbours in each sample.
 }
 \examples{
+
+## validate input data.frames
+seg <- validate.seg(segdat_lung_ccle)
+
 segment.gap()
 }
 \keyword{CNV,}

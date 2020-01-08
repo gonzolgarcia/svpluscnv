@@ -11,7 +11,11 @@
 #' @keywords CNV, segmentation, plot
 #' @export
 #' @examples
-#' cnv.freq.plot()
+#' 
+#' ## validate input data.frame
+#' seg <- validate.seg(nbl_segdat)
+#' 
+#' cnv.freq.plot(seg, genome.v = "hg19")
 
 cnv.freq.plot <- function(seg=NULL,
                           fc.pct= 0.2,

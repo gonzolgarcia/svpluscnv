@@ -7,17 +7,21 @@
 #' @keywords statistics, interquartile 
 #' @export
 #' @examples
-#' IQM()
+#' 
+#' x <- rnorm(100)
+#' IQM(x)
 
 
-IQM <- function(x,lowQ=0.1,upQ=0.9){
+IQM <- function(x, lowQ=0.1, upQ=0.9){
 
   stopifnot(is.numeric(x))
 
   rx <- rank(x,ties.method ='random')
   qt1<-quantile(rx,lowQ)
   qt2<-quantile(rx,upQ)
+  
   inter_quantile_mean <- mean(x[intersect(which(rx > qt1),which(rx < qt2))])
+  
   return(inter_quantile_mean)
 }
 

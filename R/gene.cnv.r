@@ -10,7 +10,11 @@
 #' @keywords CNV, segmentation, genes
 #' @export
 #' @examples
-#' gene.cnv()
+#' 
+#' ## validate input data.frames
+#' seg <- validate.seg(segdat_lung_ccle)
+#' 
+#' gene.cnv(seg)
 
 
 gene.cnv <- function(seg, 

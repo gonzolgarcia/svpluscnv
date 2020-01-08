@@ -66,7 +66,12 @@ shattered.regions(
 Caller for shattered genomic regions based on breakpoint densities
 }
 \examples{
-shattered.regions.cnv()
+
+## validate input data.frames
+seg <- validate.seg(segdat_lung_ccle)
+sv <- validate.sv(svdat_lung_ccle)
+
+shattered.regions(seg,sv)
 }
 \keyword{chromoplexy,}
 \keyword{chromosome}

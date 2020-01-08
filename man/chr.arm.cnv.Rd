@@ -17,7 +17,9 @@ chr.arm.cnv(seg, genome.v = "hg19", verbose = TRUE)
 Obtain a matrix with the weighted average CN per chromosome arm
 }
 \examples{
-chr.arm.cnv()
+
+seg <- validate.seg(segdat_lung_ccle)
+chr.arm.cnv(seg, genome.v="hg19")
 }
 \keyword{CNV,}
 \keyword{arm}

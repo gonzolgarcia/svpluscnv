@@ -46,7 +46,11 @@ shattered.regions.cnv(
 Caller for shattered genomic regions based on breakpoint densities
 }
 \examples{
-shattered.regions.cnv()
+
+## validate input data.frames
+seg <- validate.seg(segdat_lung_ccle)
+
+shattered.regions.cnv(seg)
 }
 \keyword{CNV,}
 \keyword{segmentation}

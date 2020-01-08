@@ -5,7 +5,11 @@
 #' @keywords CNV, segmentation
 #' @export
 #' @examples
-#' med.segmean()
+#' 
+#' ## validate input data.frames
+#' seg <- validate.seg(segdat_lung_ccle)
+#' 
+#' med.segmean(seg)
 
 
 ####################

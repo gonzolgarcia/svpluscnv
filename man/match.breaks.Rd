@@ -19,7 +19,26 @@ match.breaks(brk1, brk2, maxgap = 50000, verbose = FALSE)
 Identify CNV breakpoints provided a segmentation file
 }
 \examples{
-match.breaks()
+
+## Obtain breakpoints from segmentation data
+seg <- validate.seg(segdat_lung_ccle)
+brk1 <- seg.breaks(seg)
+
+## Obtain breakpoints from SV calls data
+sv <- validate.sv(svdat_lung_ccle)
+brk2 <- sv.breaks(sv)
+
+common.brk <- match.breaks(brk1, brk2)
+
+## average percentage of colocalizing breaks
+restab <- data.frame(common.breaks$restab)[order(common.breaks$restab$total.brk2),]
+m2 <- sprintf("\%.1f",100*mean(restab$matched.brk2/restab$total.brk2)) 
+
+## Plot the proportion of SV breakpoints that have colocalizing CNV breakpoints
+barplot(rbind(restab$matched.brk2, restab$total.brk2 - restab$matched.brk2),
+        border=NA,las=2,xlab="",horiz=FALSE,cex.main=.7,cex.names=.4, names=rownames(restab))
+legend("top",paste("SV breaks matched by CNV breaks\n","Average = ",m2,"\%",sep=""),bty='n')
+grid(ny=NULL,nx=NA)
 }
 \keyword{CNV,}
 \keyword{SV,}

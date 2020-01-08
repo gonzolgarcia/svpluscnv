@@ -1,13 +1,14 @@
 #' 
 #'
-#' Obtains inter quantile standard deviation for a defined 'x' vector and both lower and upper quantiles
+#' Generates n unique random character strings of a given length
 #' @param n character vector length to return 
 #' @param strlen random string length
 #' @param seed set.seed value
 #' @keywords random string 
 #' @export
 #' @examples
-#' createRandomString()
+#' 
+#' createRandomString(n=10 strlen=12)
 
 
 createRandomString <- function(n=1, strlen=12, seed=123456789){

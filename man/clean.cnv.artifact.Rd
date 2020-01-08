@@ -18,6 +18,10 @@ clean.cnv.artifact(
 
 \item{n.reps}{(numeric) number of samples with identical segment to consider artifact}
 
+\item{seg.size}{(numeric) only smaller segments will be modified in the seg data.frame}
+
+\item{pc.overlap}{(numeric) minimun percentage overlap for a pair of segments to be consider identical}
+
 \item{fill}{(logical) whether to fill gaps from the segmentaed file after filtering artifacts}
 
 \item{verbose}{(logical)}
@@ -26,7 +30,11 @@ clean.cnv.artifact(
 Obtain a matrix with the weighted average CN per chromosome arm
 }
 \examples{
-clean.cnv.artifact()
+
+## validate input data.frame
+seg <- validate.seg(segdat_lung_ccle)
+
+clean.cnv.artifact(seg)
 }
 \keyword{CNV,}
 \keyword{filter}

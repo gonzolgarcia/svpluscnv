@@ -19,7 +19,15 @@ freq.p.test(mat, method = "fdr", p.cut = 0.05, iter = 100)
 Obtains significance cutoff for the frequency of binary events encoded in a matrix
 }
 \examples{
-freq.p.test()
+
+## validate input data.frames
+seg <- validate.seg(segdat_lung_ccle)
+
+## obtain a matrix of genomic bins vs samples indicating high density of breaks
+shatt.regions <- shattered.regions.cnv(seg)
+mat <- shatt.regions$high.density.regions.hc
+
+freq.p.test(mat)
 }
 \keyword{empirical}
 \keyword{p.adjust}

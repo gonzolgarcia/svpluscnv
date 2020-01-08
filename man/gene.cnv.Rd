@@ -30,7 +30,11 @@ gene.cnv(
 Obtain a matrix with the weighted average CN per chromosome arm
 }
 \examples{
-gene.cnv()
+
+## validate input data.frames
+seg <- validate.seg(segdat_lung_ccle)
+
+gene.cnv(seg)
 }
 \keyword{CNV,}
 \keyword{genes}

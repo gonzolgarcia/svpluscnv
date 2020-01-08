@@ -13,7 +13,11 @@ med.segmean(seg)
 Obtain the median segment mean from a segmentaton file
 }
 \examples{
-med.segmean()
+
+## validate input data.frames
+seg <- validate.seg(segdat_lung_ccle)
+
+med.segmean(seg)
 }
 \keyword{CNV,}
 \keyword{segmentation}

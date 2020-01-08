@@ -21,18 +21,33 @@
 #' @keywords chromothripsis, chromoplexy, chromosome shattering
 #' @export
 #' @examples
-#' shattered.regions.cnv()
+#' 
+#' ## validate input data.frames
+#' seg <- validate.seg(segdat_lung_ccle)
+#' sv <- validate.sv(svdat_lung_ccle)
+#' 
+#' shattered.regions(seg,sv)
 
 
-shattered.regions <- function(seg, sv,
-                              fc.pct = 0.2, min.seg.size = 0, min.num.probes=0, 
-                              low.cov = NULL,clean.brk=NULL,
-                              window.size = 10,slide.size = 2,
-                              num.seg.breaks = 6, num.seg.sd = 5,
-                              num.sv.breaks = 6, num.sv.sd = 5,
-                              num.common.breaks = 3, num.common.sd = 3,
-                              maxgap=10000, chrlist=NULL, 
-                              interleaved.cut = 0.5, dist.iqm.cut = 1e+05, 
+shattered.regions <- function(seg, 
+                              sv,
+                              fc.pct = 0.2, 
+                              min.seg.size = 0, 
+                              min.num.probes=0, 
+                              low.cov = NULL,
+                              clean.brk=NULL,
+                              window.size = 10,
+                              slide.size = 2,
+                              num.seg.breaks = 6, 
+                              num.seg.sd = 5,
+                              num.sv.breaks = 6, 
+                              num.sv.sd = 5,
+                              num.common.breaks = 3, 
+                              num.common.sd = 3,
+                              maxgap=10000, 
+                              chrlist=NULL, 
+                              interleaved.cut = 0.5, 
+                              dist.iqm.cut = 1e+05, 
                               verbose=TRUE){
   
 

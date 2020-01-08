@@ -11,19 +11,29 @@
 #' @keywords CNV, segmentation, structural variant, visualization, circular plot
 #' @export
 #' @examples
-#' circ.wg.plot()
+#' 
+#' require(circlize)
+#' 
+#' ## validate input data.frames
+#' seg <- validate.seg(segdat_lung_ccle)
+#' sv <- validate.sv(svdat_lung_ccle)
+#' 
+#' ## select a random sample id
+#' id <-  sample(intersect(seg$sample,sv$sample))[1]
+#' 
+#' circ.wg.plot(seg, sv, sample.id=id)
 
 
-circ.wg.plot <- function(seg, sv, 
+circ.wg.plot <- function(seg, 
+                         sv, 
                          sample.id=NULL,
                          lrr.pct = 0.2,
-                         lrr.max= 4,
-                         genome.v="hg19",
+                         lrr.max = 4,
+                         genome.v = "hg19",
                          chrlist=NULL){
   
   require(circlize, quietly = F, warn.conflicts = FALSE)
-  require(taRifx,quietly = TRUE,warn.conflicts = FALSE)
-  
+
   segdat <- validate.seg(seg)
   svdat <- validate.sv(sv)
   

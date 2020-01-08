@@ -7,7 +7,7 @@
 shattered.map.plot(
   shatt.regions,
   conf = "hc",
-  hg = "hg19",
+  genome.v = "hg19",
   fdr_cut = NULL,
   add.legend = "top"
 )
@@ -17,7 +17,7 @@ shattered.map.plot(
 
 \item{conf}{(character) either 'hc' for high confidence objects or else all included}
 
-\item{hg}{(hg19 or h38) reference genome version to draw chromosome limits and centromeres}
+\item{genome.v}{(hg19 or hg38) reference genome version to draw chromosome limits and centromeres}
 
 \item{fdr_cut}{the value to draw an horizontal line based}
 
@@ -27,7 +27,18 @@ shattered.map.plot(
 Plot CNV frequency across the human genome from a seg file sontaining multiple samples
 }
 \examples{
-shattered.map.plot()
+
+
+require(circlize)
+
+## validate input data.frames
+seg <- validate.seg(segdat_lung_ccle)
+sv <- validate.sv(svdat_lung_ccle)
+
+## obtain shattered regions
+shatt.regions <- shattered.regions(seg,sv)
+
+shattered.map.plot(shatt.regions)
 }
 \keyword{chromosome}
 \keyword{genome}

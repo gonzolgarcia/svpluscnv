@@ -15,7 +15,11 @@
 #' @keywords CNV, segmentation
 #' @export
 #' @examples
-#' shattered.regions.cnv()
+#' 
+#' ## validate input data.frames
+#' seg <- validate.seg(segdat_lung_ccle)
+#' 
+#' shattered.regions.cnv(seg)
 
 shattered.regions.cnv <- function(seg,
                               fc.pct = 0.2,

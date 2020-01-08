@@ -30,7 +30,11 @@ break.density(
 Identify CNV breakpoints provided a segmentation file
 }
 \examples{
-break.density()
+
+seg <- validate.seg(segdat_lung_ccle)
+brk <- seg.breaks(seg)
+chr.lim <- chromosome.limit.coords(seg)
+break.density(brk,chr.lim)
 }
 \keyword{CNV,}
 \keyword{segmentation}

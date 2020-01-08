@@ -2,7 +2,7 @@
 % Please edit documentation in R/shattered.eval.r
 \name{shattered.eval}
 \alias{shattered.eval}
-\title{Evaluate shattered regions}
+\title{Evaluate shattered regions based on interleaved breaks and breakpoint dispersion parameters}
 \usage{
 shattered.eval(
   chromo.regs,
@@ -21,12 +21,5 @@ shattered.eval(
 \item{verbose}{(logical)}
 }
 \description{
-Evaluate shattered regions
+Evaluate shattered regions based on interleaved breaks and breakpoint dispersion parameters
 }
-\examples{
-shattered.eval()
-}
-\keyword{chromothripsis,}
-\keyword{segmentation,}
-\keyword{structural}
-\keyword{variants}

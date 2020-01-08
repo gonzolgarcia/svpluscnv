@@ -14,7 +14,11 @@
 #' @keywords CNV, segmentation
 #' @export
 #' @examples
-#' cnv.break.annot()
+#' 
+#' ## validate input data.frame
+#' seg <- validate.seg(segdat_lung_ccle)
+#' 
+#' cnv.break.annot(seg)
 
 cnv.break.annot <- function(seg, 
                             fc.pct = 0.2, 

@@ -7,9 +7,9 @@
 circ.chromo.plot(
   shatt.regions,
   sample.id,
+  genome.v = "hg19",
   lrr.pct = 0.2,
   lrr.max = 4,
-  genome.v = "hg19",
   chrlist = NULL
 )
 }
@@ -18,11 +18,11 @@ circ.chromo.plot(
 
 \item{sample.id}{(character) the id of a sample to be plotted within names(shatt.regions$regions.summ)}
 
+\item{genome.v}{(hg19 or h38) reference genome version to draw chromosome limits and centromeres}
+
 \item{lrr.pct}{(numeric) copy number change between 2 consecutive segments: i.e (default) cutoff = 0.2 represents 20 percent fold change}
 
 \item{lrr.max}{(numeric) CNV plot limit}
-
-\item{genome.v}{(hg19 or h38) reference genome version to draw chromosome limits and centromeres}
 
 \item{chrlist}{(character) vector containing chromosomes to plot; by default only chromosomes with shattered regions are ploted}
 }
@@ -30,7 +30,18 @@ circ.chromo.plot(
 Circos plot combining segmentation and SV calls
 }
 \examples{
-circ.chromo.plot()
+
+require(circlize)
+
+## validate input data.frames
+seg <- validate.seg(segdat_lung_ccle)
+sv <- validate.sv(svdat_lung_ccle)
+
+## obtain shattered regions
+shatt.regions <- shattered.regions(seg,sv)
+
+id <-  names(shatt.regions$regions.summary)[1]
+circ.chromo.plot(shatt.regions, sample.id = id)
 }
 \keyword{CNV,}
 \keyword{circular}

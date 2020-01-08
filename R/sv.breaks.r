@@ -6,7 +6,11 @@
 #' @keywords CNV, segmentation
 #' @export
 #' @examples
-#' read.depth.breaks()
+#' 
+#' ## Obtain breakpoints from SV calls data
+#' sv <- validate.sv(svdat_lung_ccle)
+#' 
+#' sv.breaks(sv)
 
 
 

@@ -3,17 +3,28 @@
 #' Plot CNV frequency across the human genome from a seg file sontaining multiple samples 
 #' @param shatt.regions  object returned by 'shattered.regions' or 'shattered.regions.cnv'
 #' @param conf (character) either 'hc' for high confidence objects or else all included
-#' @param hg (hg19 or h38) reference genome version to draw chromosome limits and centromeres
+#' @param genome.v (hg19 or hg38) reference genome version to draw chromosome limits and centromeres
 #' @param fdr_cut the value to draw an horizontal line based 
 #' @param add.legend the position of the legend in the plot; if null, no legend will be draw
 #' @keywords chromosome shattering, genome map
 #' @export
 #' @examples
-#' shattered.map.plot()
+#' 
+#' 
+#' require(circlize)
+#' 
+#' ## validate input data.frames
+#' seg <- validate.seg(segdat_lung_ccle)
+#' sv <- validate.sv(svdat_lung_ccle)
+#' 
+#' ## obtain shattered regions
+#' shatt.regions <- shattered.regions(seg,sv)
+#' 
+#' shattered.map.plot(shatt.regions)
 
 shattered.map.plot <- function(shatt.regions,
                           conf="hc",
-                          hg= "hg19",
+                          genome.v = "hg19",
                           fdr_cut=NULL,
                           add.legend="top"){
 
@@ -21,8 +32,8 @@ shattered.map.plot <- function(shatt.regions,
     require(taRifx,quietly = TRUE,warn.conflicts = FALSE)
     require(tidyr,quietly = TRUE,warn.conflicts = FALSE)
 
-    if(hg == "hg19"){ bands <- remove.factors(GRCh37.bands)
-    }else if(hg=="h38"){ bands <- remove.factors(GRCh38.bands)}
+    if(genome.v == "hg19"){ bands <- remove.factors(GRCh37.bands)
+    }else if(genome.v=="hg38"){ bands <- remove.factors(GRCh38.bands)}
     
     centromeres <- bands[intersect(which(bands$score == "acen"),grep("q",bands$name)),"start"]
     names(centromeres) <- paste("chr",bands[intersect(which(bands$score == "acen"),grep("q",bands$name)),"chr"],sep="")

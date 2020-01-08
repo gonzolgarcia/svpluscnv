@@ -10,18 +10,28 @@
 #' @keywords CNV, segmentation, structural variant, visualization, circular plot
 #' @export
 #' @examples
-#' circ.chromo.plot()
+#' 
+#' require(circlize)
+#' 
+#' ## validate input data.frames
+#' seg <- validate.seg(segdat_lung_ccle)
+#' sv <- validate.sv(svdat_lung_ccle)
+#' 
+#' ## obtain shattered regions
+#' shatt.regions <- shattered.regions(seg,sv)
+#' 
+#' id <-  names(shatt.regions$regions.summary)[1]
+#' circ.chromo.plot(shatt.regions, sample.id = id)
 
 circ.chromo.plot <- function(shatt.regions, 
                              sample.id,
+                             genome.v = "hg19",
                              lrr.pct = 0.2,
                              lrr.max = 4,
-                             genome.v = "hg19",
                              chrlist=NULL
                              ){
 
   require(circlize)
-  library(taRifx)  # contains remove.factors
 
   segdat <- shatt.regions$segdat[which(shatt.regions$segdat$sample == sample.id),]
   svdat <- shatt.regions$svdat[which(shatt.regions$svdat$sample == sample.id),]

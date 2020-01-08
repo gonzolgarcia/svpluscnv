@@ -15,7 +15,11 @@ sv.breaks(sv, low.cov = NULL)
 Identify SV call breakpoints and filter low cov regions if provided
 }
 \examples{
-read.depth.breaks()
+
+## Obtain breakpoints from SV calls data
+sv <- validate.sv(svdat_lung_ccle)
+
+sv.breaks(sv)
 }
 \keyword{CNV,}
 \keyword{segmentation}

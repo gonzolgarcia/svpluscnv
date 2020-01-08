@@ -1,12 +1,18 @@
 #' 
 #' 
-#' Filling gaps in a segmentation dat abased on chromosome limits defined withing the complete segmentation dataset
+#' Fills the gaps in a segmentation data.frame. Chromosome limits are defined for the complete segmentation dataset then segments fill the missing terminal regions. 
+#' The CN log-ratio of the added segments is set to the average of the closest neighbours in each sample.
+#' 
 #' @param seg (data.frame) segmentation data with 6 columns: sample, chromosome, start, end, probes, segment_mean
 #' @param chrlist (character) list of chromosomes to include chr1, chr2, etc...
 #' @param verbose (logical)
 #' @keywords CNV, segmentation
 #' @export
 #' @examples
+#' 
+#' ## validate input data.frames
+#' seg <- validate.seg(segdat_lung_ccle)
+#' 
 #' segment.gap()
 
 segment.gap <- function(seg,

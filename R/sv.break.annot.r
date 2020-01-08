@@ -9,6 +9,10 @@
 #' @keywords Structural variants, annotation
 #' @export
 #' @examples
+#' 
+#' ## Obtain breakpoints from SV calls data
+#' sv <- validate.sv(svdat_lung_ccle)
+#' 
 #' sv.break.annot(sv, genome.v="hg19")
 
 

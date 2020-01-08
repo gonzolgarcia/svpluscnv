@@ -31,7 +31,11 @@ seg.breaks(
 Identify read-depth breakpoints provided a segmentation file
 }
 \examples{
-read.depth.breaks()
+
+## Obtain breakpoints from segmentation data
+seg <- validate.seg(segdat_lung_ccle)
+
+seg.breaks(seg)
 }
 \keyword{CNV,}
 \keyword{segmentation}

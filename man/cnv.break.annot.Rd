@@ -42,7 +42,11 @@ cnv.break.annot(
 Identify recurrently altered genes
 }
 \examples{
-cnv.break.annot()
+
+## validate input data.frame
+seg <- validate.seg(segdat_lung_ccle)
+
+cnv.break.annot(seg)
 }
 \keyword{CNV,}
 \keyword{segmentation}

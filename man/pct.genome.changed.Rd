@@ -9,15 +9,19 @@ pct.genome.changed(seg, fc.pct = 0.2, discard.sex = TRUE)
 \arguments{
 \item{seg}{(data.frame) segmentation data with 6 columns: sample, chromosome, start, end, probes, segment_mean}
 
-\item{discard.sex}{(logical) whether sex chromosomes should be included or not}
+\item{fc.pct}{(numeric) percentage CNV gain/loss for a segment to be considered changed (i.e. 0.2 = 20 percent change 0.8 < segmean && segmean > 1.2)}
 
-\item{ch.pct}{(numeric) percentage CNV gain/loss for a segment to be considered changed (i.e. 0.2 = 20 percent change 0.8 < segmean && segmean > 1.2)}
+\item{discard.sex}{(logical) whether sex chromosomes should be included or not}
 }
 \description{
 Calculate the percentage of genome changed by CNV
 }
 \examples{
-break.density()
+
+## validate input data.frames
+seg <- validate.seg(segdat_lung_ccle)
+
+pct.genome.changed(seg)
 }
 \keyword{CNV,}
 \keyword{segmentation}

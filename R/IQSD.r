@@ -7,7 +7,9 @@
 #' @keywords statistics, interquartile 
 #' @export
 #' @examples
-#' IQSD()
+#' 
+#' x <- rnorm(100)
+#' IQSD(x)
 
 
 IQSD <- function(x,lowQ=0.1,upQ=0.9){

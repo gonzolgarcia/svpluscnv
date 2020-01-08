@@ -3,12 +3,18 @@
 #' Obtain a matrix with the weighted average CN per chromosome arm 
 #' @param seg (data.frame) segmentation data with 6 columns: sample, chromosome, start, end, probes, segment_mean
 #' @param n.reps (numeric) number of samples with identical segment to consider artifact
+#' @param seg.size (numeric) only smaller segments will be modified in the seg data.frame
+#' @param pc.overlap (numeric) minimun percentage overlap for a pair of segments to be consider identical 
 #' @param fill (logical) whether to fill gaps from the segmentaed file after filtering artifacts
 #' @param verbose  (logical)
 #' @keywords CNV, segmentation, filter
 #' @export
 #' @examples
-#' clean.cnv.artifact()
+#' 
+#' ## validate input data.frame
+#' seg <- validate.seg(segdat_lung_ccle)
+#' 
+#' clean.cnv.artifact(seg)
 
 clean.cnv.artifact<- function(seg,
                               n.reps=4,

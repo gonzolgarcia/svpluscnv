@@ -8,7 +8,15 @@
 #' @keywords empirical p.value, p.adjust  
 #' @export
 #' @examples
-#' freq.p.test()
+#' 
+#' ## validate input data.frames
+#' seg <- validate.seg(segdat_lung_ccle)
+#' 
+#' ## obtain a matrix of genomic bins vs samples indicating high density of breaks
+#' shatt.regions <- shattered.regions.cnv(seg)
+#' mat <- shatt.regions$high.density.regions.hc
+#' 
+#' freq.p.test(mat)
 
 
 

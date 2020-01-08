@@ -17,7 +17,9 @@ IQM(x, lowQ = 0.1, upQ = 0.9)
 Obtains inter quantile average for a defined 'x' vector and both lower and upper quantiles
 }
 \examples{
-IQM()
+
+x <- rnorm(100)
+IQM(x)
 }
 \keyword{interquartile}
 \keyword{statistics,}

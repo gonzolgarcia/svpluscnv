@@ -7,17 +7,18 @@
 #' @keywords CNV, segmentation, chromosome arm
 #' @export
 #' @examples
-#' chr.arm.cnv()
+#' 
+#' seg <- validate.seg(segdat_lung_ccle)
+#' chr.arm.cnv(seg, genome.v="hg19")
 
 
 chr.arm.cnv <- function(seg,
                     genome.v="hg19",
                     verbose=TRUE){
-
-  require(D3GB,quietly = TRUE, warn.conflicts = FALSE)
-  require(taRifx,quietly = TRUE, warn.conflicts = FALSE)
-  require(tidyr,quietly = TRUE, warn.conflicts = FALSE)
-  require(GenomicRanges,quietly = TRUE, warn.conflicts = FALSE)
+  
+  require(taRifx,quietly = TRUE,warn.conflicts = FALSE)  # contains remove.factors
+  require(D3GB, quietly = TRUE, warn.conflicts = FALSE)
+  require(GenomicRanges, quietly = TRUE, warn.conflicts = FALSE)
   
   segdat <- validate.seg(seg)
   

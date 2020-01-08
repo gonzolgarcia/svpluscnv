@@ -33,7 +33,17 @@ circ.wg.plot(
 Circos plot combining segmentation and SV calls
 }
 \examples{
-circ.wg.plot()
+
+require(circlize)
+
+## validate input data.frames
+seg <- validate.seg(segdat_lung_ccle)
+sv <- validate.sv(svdat_lung_ccle)
+
+## select a random sample id
+id <-  sample(intersect(seg$sample,sv$sample))[1]
+
+circ.wg.plot(seg, sv, sample.id=id)
 }
 \keyword{CNV,}
 \keyword{circular}

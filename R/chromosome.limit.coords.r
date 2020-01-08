@@ -5,7 +5,11 @@
 #' @keywords CNV, segmentation, mapping
 #' @export
 #' @examples
-#' pcent.genome.changed()
+#' 
+#' ## validate input data.frame
+#' seg <- validate.seg(segdat_lung_ccle)
+#' 
+#' chr.lim <- chromosome.limit.coords(seg)
 
   chromosome.limit.coords <- function(seg){
     

@@ -13,7 +13,11 @@ chromosome.limit.coords(seg)
 This function mapps defines mapping limmit regions based on a segmentation file
 }
 \examples{
-pcent.genome.changed()
+
+## validate input data.frame
+seg <- validate.seg(segdat_lung_ccle)
+
+chr.lim <- chromosome.limit.coords(seg)
 }
 \keyword{CNV,}
 \keyword{mapping}

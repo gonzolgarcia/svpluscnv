@@ -2,7 +2,7 @@
 % Please edit documentation in R/createRandomString.r
 \name{createRandomString}
 \alias{createRandomString}
-\title{Obtains inter quantile standard deviation for a defined 'x' vector and both lower and upper quantiles}
+\title{Generates n unique random character strings of a given length}
 \usage{
 createRandomString(n = 1, strlen = 12, seed = 123456789)
 }
@@ -14,10 +14,11 @@ createRandomString(n = 1, strlen = 12, seed = 123456789)
 \item{seed}{set.seed value}
 }
 \description{
-Obtains inter quantile standard deviation for a defined 'x' vector and both lower and upper quantiles
+Generates n unique random character strings of a given length
 }
 \examples{
-createRandomString()
+
+createRandomString(n=10 strlen=12)
 }
 \keyword{random}
 \keyword{string}

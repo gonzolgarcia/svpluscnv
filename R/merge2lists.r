@@ -1,12 +1,15 @@
 #' 
 #'
-#' Given two lists with (or without common names) returns a combined list; if common names their values are returned unique
+#' Given two lists with (or without common names) returns a combined list; if common names their values merged and returned as unique
 #' @param x list 1
 #' @param y list 2
 #' @return a combined list 
 #' @keywords list 
 #' @export
 #' @examples
+#' 
+#' x <- sapply(letters[1:10], function(i) sample(1:10)[1:sample(2:10)[1]], simplify=FALSE )
+#' y <- sapply(letters[5:15], function(i) sample(1:10)[1:sample(2:10)[1]], simplify=FALSE )
 #' merge2lists(x,y)
 
 merge2lists <- function(x,y){
