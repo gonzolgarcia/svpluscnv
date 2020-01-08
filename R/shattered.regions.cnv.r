@@ -2,7 +2,7 @@
 #'
 #' Caller for shattered genomic regions based on breakpoint densities
 #' @param seg (data.frame) segmentation data with 6 columns: sample, chromosome, start, end, probes, segment_mean
-#' @param fc.pct (numeric) copy number change between 2 consecutive segments: i.e (default) cutoff = 0.2 represents a fold change of 0.8 or 1.2
+#' @param fc.pct (numeric) copy number change between 2 consecutive segments: i.e (default) cutoff = 0.2 represents 20 percent fold change
 #' @param min.seg.size (numeric) The minimun segment size (in base pairs) to include in the analysis 
 #' @param min.num.probes (numeric) The minimun number of probes per segment to include in the analysis 
 #' @param low.cov (data.frame) a data.frame (chr, start, end) indicating low coverage regions to exclude from the analysis
@@ -10,20 +10,26 @@
 #' @param slide.size (numeric) size in megabases of the sliding genmome window
 #' @param num.breaks (numeric) size in megabases of the genmome bin to compute break density 
 #' @param num.sd (numeric) size in megabases of the sliding genmome window
+#' @param dist.iqm.cut (numeric) interquantile average of the distance between breakpoints within a shattered region
+#' @param verbose (logical)
 #' @keywords CNV, segmentation
 #' @export
 #' @examples
 #' shattered.regions.cnv()
 
-
-
 shattered.regions.cnv <- function(seg,
-                              fc.pct = 0.2, min.seg.size = 0, min.num.probes=0, 
-                              low.cov = NULL, clean.brk=clean.brk,
-                              window.size = 10,slide.size = 2,
-                              num.breaks = 10, num.sd = 5,
+                              fc.pct = 0.2,
+                              min.seg.size = 0,
+                              min.num.probes=0, 
+                              low.cov = NULL,
+                              clean.brk=clean.brk,
+                              window.size = 10,
+                              slide.size = 2,
+                              num.breaks = 10,
+                              num.sd = 5,
                               dist.iqm.cut = 1e+05,
-                              verbose=FALSE){
+                              verbose=FALSE
+                              ){
   
   require(taRifx,quietly = TRUE,warn.conflicts = FALSE)  # contains remove.factors
   require(GenomicRanges,quietly = TRUE,warn.conflicts = FALSE)

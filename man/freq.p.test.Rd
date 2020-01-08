@@ -13,7 +13,7 @@ freq.p.test(mat, method = "fdr", p.cut = 0.05, iter = 100)
 
 \item{p.cut}{(numeric) the cutoff for multiple hypothesis corrected p.value}
 
-\item{iter}{(numeric) Number of iterations to produce null distribution}
+\item{iter}{(numeric) Number of iterations to produce null distribution (note that null size will be iter*ncol(mat))}
 }
 \description{
 Obtains significance cutoff for the frequency of binary events encoded in a matrix
@@ -22,4 +22,5 @@ Obtains significance cutoff for the frequency of binary events encoded in a matr
 freq.p.test()
 }
 \keyword{empirical}
-\keyword{p.value}
+\keyword{p.adjust}
+\keyword{p.value,}

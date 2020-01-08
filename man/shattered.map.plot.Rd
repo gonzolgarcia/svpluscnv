@@ -5,7 +5,7 @@
 \title{Plot CNV frequency across the human genome from a seg file sontaining multiple samples}
 \usage{
 shattered.map.plot(
-  shatt_regs,
+  shatt.regions,
   conf = "hc",
   hg = "hg19",
   fdr_cut = NULL,
@@ -13,7 +13,7 @@ shattered.map.plot(
 )
 }
 \arguments{
-\item{shatt_regs}{object returned by 'shattered.regions' or 'shattered.regions.cnv'}
+\item{shatt.regions}{object returned by 'shattered.regions' or 'shattered.regions.cnv'}
 
 \item{conf}{(character) either 'hc' for high confidence objects or else all included}
 

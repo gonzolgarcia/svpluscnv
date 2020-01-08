@@ -4,8 +4,8 @@
 #' @param mat (numeric matrix) a binary matrix where columns will be tested for their sum value compared to a permutated matrix
 #' @param method (character) the method to pass to p.adjust function
 #' @param p.cut (numeric) the cutoff for multiple hypothesis corrected p.value  
-#' @param iter (numeric) Number of iterations to produce null distribution 
-#' @keywords empirical p.value
+#' @param iter (numeric) Number of iterations to produce null distribution (note that null size will be iter*ncol(mat))
+#' @keywords empirical p.value, p.adjust  
 #' @export
 #' @examples
 #' freq.p.test()

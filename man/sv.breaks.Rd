@@ -7,9 +7,9 @@
 sv.breaks(sv, low.cov = NULL)
 }
 \arguments{
-\item{low.cov}{(data.frame) a data.frame (chr, start, end) indicating low coverage regions to exclude from the analysis}
+\item{sv}{(data.frame) segmentation data with 6 columns: sample, chromosome, start, end, probes, segment_mean}
 
-\item{seg}{(data.frame) segmentation data with 6 columns: sample, chromosome, start, end, probes, segment_mean}
+\item{low.cov}{(data.frame) a data.frame (chr, start, end) indicating low coverage regions to exclude from the analysis}
 }
 \description{
 Identify SV call breakpoints and filter low cov regions if provided

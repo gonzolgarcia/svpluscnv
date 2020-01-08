@@ -16,7 +16,9 @@ shattered.eval(
 
 \item{interleaved.cut}{(numeric) the percentage of non interleaved structural variant calls}
 
-\item{dispersion.cut}{(numeric) a measure of how disperse are SV and CNV breakpoints in a shattered region;}
+\item{dist.iqm.cut}{(numeric) interquantile average of the distance between breakpoints within a shattered region}
+
+\item{verbose}{(logical)}
 }
 \description{
 Evaluate shattered regions

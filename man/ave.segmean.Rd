@@ -2,7 +2,7 @@
 % Please edit documentation in R/ave.segmean.r
 \name{ave.segmean}
 \alias{ave.segmean}
-\title{Obtain the average weighted segment mean from a segmentaton file}
+\title{Obtain the average weighted segment mean from each sample in a segmentaton file}
 \usage{
 ave.segmean(seg)
 }
@@ -10,7 +10,7 @@ ave.segmean(seg)
 \item{seg}{(data.frame) segmentation data with 6 columns: sample, chromosome, start, end, probes, segment_mean}
 }
 \description{
-Obtain the average weighted segment mean from a segmentaton file
+Obtain the average weighted segment mean from each sample in a segmentaton file
 }
 \examples{
 ave.segmean()

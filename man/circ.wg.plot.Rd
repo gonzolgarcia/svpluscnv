@@ -11,7 +11,7 @@ circ.wg.plot(
   lrr.pct = 0.2,
   lrr.max = 4,
   genome.v = "hg19",
-  chr.list = NULL
+  chrlist = NULL
 )
 }
 \arguments{
@@ -19,19 +19,21 @@ circ.wg.plot(
 
 \item{sv}{(data.frame) structural variant table including  8 columns: sample, chrom1, pos1, strand1, chrom2, pos2, strand2, svclass}
 
+\item{sample.id}{(character) the id of the sample to be plotted}
+
 \item{lrr.pct}{(numeric) copy number change between 2 consecutive segments: i.e (default) cutoff = 0.2 represents a fold change of 0.8 or 1.2}
 
-\item{lrr.max}{(numeric) maximum fold change to be plotted (default = 4)}
+\item{lrr.max}{(numeric) maximum CNV to be plotted}
 
 \item{genome.v}{(hg19 or h38) reference genome version to draw chromosome limits and centromeres}
 
-\item{low.cov}{(data.frame) a data.frame (chr, start, end) indicating low coverage regions to exclude from the analysis}
+\item{chrlist}{(character) vector containing chromosomes to plot; by default all chromosomes plotted}
 }
 \description{
 Circos plot combining segmentation and SV calls
 }
 \examples{
-read.depth.breaks()
+circ.wg.plot()
 }
 \keyword{CNV,}
 \keyword{circular}

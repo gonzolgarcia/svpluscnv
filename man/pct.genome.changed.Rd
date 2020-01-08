@@ -4,14 +4,14 @@
 \alias{pct.genome.changed}
 \title{Calculate the percentage of genome changed by CNV}
 \usage{
-pct.genome.changed(seg, ch.pct = 0.2, discard.sex = TRUE)
+pct.genome.changed(seg, fc.pct = 0.2, discard.sex = TRUE)
 }
 \arguments{
 \item{seg}{(data.frame) segmentation data with 6 columns: sample, chromosome, start, end, probes, segment_mean}
 
-\item{ch.pct}{(numeric) percentage CNV gain/loss for a segment to be considered changed (i.e. 0.2 = 20 percent change 0.8 < segmean && segmean > 1.2)}
-
 \item{discard.sex}{(logical) whether sex chromosomes should be included or not}
+
+\item{ch.pct}{(numeric) percentage CNV gain/loss for a segment to be considered changed (i.e. 0.2 = 20 percent change 0.8 < segmean && segmean > 1.2)}
 }
 \description{
 Calculate the percentage of genome changed by CNV

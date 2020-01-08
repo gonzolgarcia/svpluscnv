@@ -10,6 +10,8 @@ segment.gap(seg, chrlist = NULL, verbose = TRUE)
 \item{seg}{(data.frame) segmentation data with 6 columns: sample, chromosome, start, end, probes, segment_mean}
 
 \item{chrlist}{(character) list of chromosomes to include chr1, chr2, etc...}
+
+\item{verbose}{(logical)}
 }
 \description{
 Filling gaps in a segmentation dat abased on chromosome limits defined withing the complete segmentation dataset

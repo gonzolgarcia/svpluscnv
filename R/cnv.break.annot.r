@@ -1,26 +1,33 @@
 #' 
 #'
 #' Identify recurrently altered genes
-#' @param segdf (data.frame) segmentation data with 6 columns: sample, chromosome, start, end, probes, segment_mean
-#' @param chr.lim (data.frame) 3 column table (chrom, begin, end) returned by chromosome.limit.coords
-#' @param window.size (numeric) size in megabases of the genmome bin to compute break density 
-#' @param slide.size (numeric) size in megabases of the sliding genmome window
+#' @param seg (data.frame) segmentation data with 6 columns: sample, chromosome, start, end, probes, segment_mean
+#' @param fc.pct (numeric) copy number change between 2 consecutive segments: i.e (default) cutoff = 0.2 represents a fold change of 0.8 or 1.2
+#' @param genome.v (hg19 or hg38) reference genome version to draw chromosome limits and centromeres
+#' @param maxgap (numeric) offset region size (base pairs) beyond transcription start and end sites to extend for overlaps
+#' @param upstr (numeric) upstream region size (base pairs) to identify breakpoints in gene upstream regulatory regions 
+#' @param min.seg.size (numeric) The minimun segment size (in base pairs) to include in the analysis 
+#' @param min.num.probes (numeric) The minimun number of probes per segment to include in the analysis 
+#' @param low.cov (data.frame) a data.frame (chr, start, end) indicating low coverage regions to exclude from the analysis
+#' @param clean.brk (numeric) identical CNV segments across multiple samples are removed and replaced by neighbours average   
+#' @param verbose (logical) 
 #' @keywords CNV, segmentation
 #' @export
 #' @examples
 #' cnv.break.annot()
 
-cnv.break.annot <- function(segdf, fc.pct = 0.2, 
-                        genome.v="hg19",
-                        maxgap= 1000,
-                        upstr=50000,
-                        min.seg.size = NULL, 
-                        min.num.probes = NULL, 
-                        low.cov = NULL,
-                        clean.brk = NULL,
-					    verbose=TRUE){
+cnv.break.annot <- function(seg, 
+                            fc.pct = 0.2, 
+                            genome.v="hg19",
+                            maxgap= 1000,
+                            upstr=50000,
+                            min.seg.size = NULL, 
+                            min.num.probes = NULL, 
+                            low.cov = NULL,
+                            clean.brk = NULL,
+					        verbose=TRUE){
 	
-    segdat <- validate.seg(segdf)
+    segdat <- validate.seg(seg)
     chrlist <- unique(segdat$chrom)
     require(org.Hs.eg.db)
     
@@ -51,7 +58,7 @@ cnv.break.annot <- function(segdf, fc.pct = 0.2,
     rownames(upstr_tab) <- upstr_tab$SYMBOL
     
 	cnv_breaks <- seg.breaks(segdat, fc.pct = fc.pct, min.seg.size = min.seg.size, min.num.probes = min.num.probes, 
-						 low.cov = low.cov, clean.brk = clean.brk,verbose=verbose)
+						 low.cov = low.cov, clean.brk = clean.brk, verbose=verbose)
 	breaks<-cnv_breaks$breaks
 	rownames(breaks) <- gsub(" ","",apply(breaks[,1:3],1,paste,collapse="-"))
 	

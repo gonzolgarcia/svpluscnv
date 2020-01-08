@@ -1,8 +1,9 @@
 #' 
 #'
 #' Identify CNV breakpoints provided a segmentation file
-#' @param brk1 (data.frame) brakpoint coordinates 1 (sample, chrom, pos)
-#' @param brk2 (data.frame) brakpoint coordinates 1 (sample, chrom, pos)
+#' @param brk1 (data.frame) brakpoint coordinates 1 (sample, chrom, pos), as returned by `sv.breaks` and `seg.breaks`
+#' @param brk2 (data.frame) brakpoint coordinates 1 (sample, chrom, pos), as returned by `sv.breaks` and `seg.breaks`
+#' @param maxgap (numeric) distance (base pairs) limit for nreakpoints to be consider colocalized 
 #' @param verbose (logical) 
 #' @keywords CNV, SV, genomic breakpoints
 #' @export

@@ -58,7 +58,7 @@ shattered.regions(
 
 \item{num.common.sd}{(numeric) number of standard deviations above the sample average for num.common.breaks}
 
-\item{interleaved.cut}{(numeric) 0-1 value indicating percentage of interleaved SV breaks}
+\item{interleaved.cut}{(numeric) 0-1 value indicating percentage of interleaved (non-contiguous) SV breakpoint pairs}
 
 \item{dist.iqm.cut}{(numeric) interquantile average of the distance between breakpoints within a shattered region}
 }

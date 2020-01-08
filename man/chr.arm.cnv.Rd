@@ -9,7 +9,9 @@ chr.arm.cnv(seg, genome.v = "hg19", verbose = TRUE)
 \arguments{
 \item{seg}{(data.frame) segmentation data with 6 columns: sample, chromosome, start, end, probes, segment_mean}
 
-\item{hg}{(hg19 or hg38) reference genome version to draw chromosome limits and centromeres}
+\item{genome.v}{(`hg19` or `hg38`) reference genome version to draw chromosome limits and centromeres}
+
+\item{verbose}{(logical)}
 }
 \description{
 Obtain a matrix with the weighted average CN per chromosome arm

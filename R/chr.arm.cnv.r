@@ -2,7 +2,8 @@
 #'
 #' Obtain a matrix with the weighted average CN per chromosome arm 
 #' @param seg (data.frame) segmentation data with 6 columns: sample, chromosome, start, end, probes, segment_mean
-#' @param hg (hg19 or hg38) reference genome version to draw chromosome limits and centromeres
+#' @param genome.v (`hg19` or `hg38`) reference genome version to draw chromosome limits and centromeres
+#' @param verbose (logical)
 #' @keywords CNV, segmentation, chromosome arm
 #' @export
 #' @examples
@@ -13,10 +14,10 @@ chr.arm.cnv <- function(seg,
                     genome.v="hg19",
                     verbose=TRUE){
 
-  require(D3GB,quietly = TRUE,warn.conflicts = FALSE)
-  require(taRifx,quietly = TRUE,warn.conflicts = FALSE)
-  require(tidyr,quietly = TRUE,warn.conflicts = FALSE)
-  require(GenomicRanges,quietly = TRUE,warn.conflicts = FALSE)
+  require(D3GB,quietly = TRUE, warn.conflicts = FALSE)
+  require(taRifx,quietly = TRUE, warn.conflicts = FALSE)
+  require(tidyr,quietly = TRUE, warn.conflicts = FALSE)
+  require(GenomicRanges,quietly = TRUE, warn.conflicts = FALSE)
   
   segdat <- validate.seg(seg)
   

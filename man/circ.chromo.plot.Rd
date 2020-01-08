@@ -5,30 +5,32 @@
 \title{Circos plot combining segmentation and SV calls}
 \usage{
 circ.chromo.plot(
-  chromo.regs2,
+  shatt.regions,
   sample.id,
   lrr.pct = 0.2,
   lrr.max = 4,
   genome.v = "hg19",
-  chr.list = NULL
+  chrlist = NULL
 )
 }
 \arguments{
-\item{chromo.regs2}{(data.frame) segmentation data with at least 6 columns: sample, chromosome, start, end, probes, segment_mean}
+\item{shatt.regions}{(list) an object returned by "shattered.regions" function}
 
-\item{sample.id}{(data.frame) structural variant table including  8 columns: sample, chrom1, pos1, strand1, chrom2, pos2, strand2, svclass}
+\item{sample.id}{(character) the id of a sample to be plotted within names(shatt.regions$regions.summ)}
 
-\item{lrr.pct}{(numeric) copy number change between 2 consecutive segments: i.e (default) cutoff = 0.2 represents a fold change of 0.8 or 1.2}
+\item{lrr.pct}{(numeric) copy number change between 2 consecutive segments: i.e (default) cutoff = 0.2 represents 20 percent fold change}
 
-\item{lrr.max}{(numeric) maximum fold change to be plotted (default = 4)}
+\item{lrr.max}{(numeric) CNV plot limit}
 
 \item{genome.v}{(hg19 or h38) reference genome version to draw chromosome limits and centromeres}
+
+\item{chrlist}{(character) vector containing chromosomes to plot; by default only chromosomes with shattered regions are ploted}
 }
 \description{
 Circos plot combining segmentation and SV calls
 }
 \examples{
-read.depth.breaks()
+circ.chromo.plot()
 }
 \keyword{CNV,}
 \keyword{circular}

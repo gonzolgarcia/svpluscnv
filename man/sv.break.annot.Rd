@@ -2,10 +2,10 @@
 % Please edit documentation in R/sv.break.annot.r
 \name{sv.break.annot}
 \alias{sv.break.annot}
-\title{Identify recurrently altered genes}
+\title{Identify recurrently altered genes by strutural variants}
 \usage{
 sv.break.annot(
-  svdf,
+  sv,
   genome.v = "hg19",
   maxgap = 0,
   upstr = 50000,
@@ -14,22 +14,22 @@ sv.break.annot(
 )
 }
 \arguments{
-\item{svdf}{(data.frame) structural variant table including  8 columns: sample, chrom1, pos1, strand1, chrom2, pos2, strand2, svclass}
+\item{sv}{(data.frame) structural variant table including  8 columns: sample, chrom1, pos1, strand1, chrom2, pos2, strand2, svclass}
 
 \item{genome.v}{(hg19 or hg38) reference genome version to draw chromosome limits and centromeres}
 
-\item{maxgap}{(numeric) offset region size (base pairs) beyond transcription start and end sites}
+\item{maxgap}{(numeric) offset region size (base pairs) beyond transcription start and end sites to extend for overlaps}
 
-\item{upstr}{(numeric) upstream region size (base pairs) for searching breakpoints in gene regulatory regions}
+\item{upstr}{(numeric) upstream region size (base pairs) to identify breakpoints in gene upstream regulatory regions}
 
 \item{sv.seg.size}{(numeric) segmental variants (DEL, DUP, INV or INS) size limit; bigger sigments are considered translocations}
 }
 \description{
-Identify recurrently altered genes
+Identify recurrently altered genes by strutural variants
 }
 \examples{
-sv.break.annot()
+sv.break.annot(sv, genome.v="hg19")
 }
 \keyword{Structural}
 \keyword{annotation}
-\keyword{variants}
+\keyword{variants,}

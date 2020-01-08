@@ -1,6 +1,6 @@
 #' 
 #'
-#' Obtain the average weighted segment mean from a segmentaton file
+#' Obtain the average weighted segment mean from each sample in a segmentaton file
 #' @param seg (data.frame) segmentation data with 6 columns: sample, chromosome, start, end, probes, segment_mean
 #' @keywords CNV, segmentation
 #' @export

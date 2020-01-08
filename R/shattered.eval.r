@@ -3,7 +3,8 @@
 #' Evaluate shattered regions
 #' @param chromo.regs (data.frame) segmentation data with 6 columns: sample, chromosome, start, end, probes, segment_mean
 #' @param interleaved.cut (numeric) the percentage of non interleaved structural variant calls 
-#' @param dispersion.cut (numeric) a measure of how disperse are SV and CNV breakpoints in a shattered region; 
+#' @param dist.iqm.cut (numeric) interquantile average of the distance between breakpoints within a shattered region
+#' @param verbose (logical)
 #' @keywords chromothripsis, segmentation, structural variants
 #' @export
 #' @examples

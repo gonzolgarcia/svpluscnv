@@ -5,7 +5,7 @@
 \title{Identify recurrently altered genes}
 \usage{
 cnv.break.annot(
-  segdf,
+  seg,
   fc.pct = 0.2,
   genome.v = "hg19",
   maxgap = 1000,
@@ -18,13 +18,25 @@ cnv.break.annot(
 )
 }
 \arguments{
-\item{segdf}{(data.frame) segmentation data with 6 columns: sample, chromosome, start, end, probes, segment_mean}
+\item{seg}{(data.frame) segmentation data with 6 columns: sample, chromosome, start, end, probes, segment_mean}
 
-\item{chr.lim}{(data.frame) 3 column table (chrom, begin, end) returned by chromosome.limit.coords}
+\item{fc.pct}{(numeric) copy number change between 2 consecutive segments: i.e (default) cutoff = 0.2 represents a fold change of 0.8 or 1.2}
 
-\item{window.size}{(numeric) size in megabases of the genmome bin to compute break density}
+\item{genome.v}{(hg19 or hg38) reference genome version to draw chromosome limits and centromeres}
 
-\item{slide.size}{(numeric) size in megabases of the sliding genmome window}
+\item{maxgap}{(numeric) offset region size (base pairs) beyond transcription start and end sites to extend for overlaps}
+
+\item{upstr}{(numeric) upstream region size (base pairs) to identify breakpoints in gene upstream regulatory regions}
+
+\item{min.seg.size}{(numeric) The minimun segment size (in base pairs) to include in the analysis}
+
+\item{min.num.probes}{(numeric) The minimun number of probes per segment to include in the analysis}
+
+\item{low.cov}{(data.frame) a data.frame (chr, start, end) indicating low coverage regions to exclude from the analysis}
+
+\item{clean.brk}{(numeric) identical CNV segments across multiple samples are removed and replaced by neighbours average}
+
+\item{verbose}{(logical)}
 }
 \description{
 Identify recurrently altered genes

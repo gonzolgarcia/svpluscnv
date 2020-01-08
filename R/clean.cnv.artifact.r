@@ -12,29 +12,29 @@
 
 clean.cnv.artifact<- function(seg,
                               n.reps=4,
-                              pc.cut=0,
                               seg.size=5000000,
                               pc.overlap=0.99,
-                              chrlist=NULL,
                               fill=TRUE,
                               verbose=TRUE){
 
   require(taRifx,quietly = TRUE,warn.conflicts = FALSE)
   require(tidyr,quietly = TRUE,warn.conflicts = FALSE)
   require(GenomicRanges,quietly = TRUE,warn.conflicts = FALSE)
-  
+
+      
 segdat <- validate.seg(seg)
 
 all_artifacts_l <-list()
-segdat_short <- segdat[intersect(which(abs(segdat$segmean) >= pc.cut),which(segdat$end - segdat$start < seg.size)),]
+
+segdat_short <- segdat[which(segdat$end - segdat$start < seg.size),]
 
 for(chr in unique(segdat$chrom)){
+
   if(verbose) cat("\r",chr)
+
   segchr <- segdat_short[which(segdat_short$chrom == chr),]
   segchr.gr <- with(segchr, GRanges(chrom, IRanges(start=start, end=end)))
   hits = GenomicAlignments::findOverlaps(segchr.gr,segchr.gr)
-  # eq <- ifelse(queryHits(hits)==subjectHits(hits),1,0)
-  # hits_b <- hits[which(!eq == 1),]
   overlaps <- pintersect(segchr.gr[queryHits(hits)], segchr.gr[subjectHits(hits)])
   
   percentOverlapA <- width(overlaps) / width(segchr.gr[queryHits(hits)])
@@ -55,7 +55,7 @@ allsegids <- unite(segdat, newcol, c(sample,chrom,start,end), remove=FALSE,sep="
 segdat_clean <- segdat[which(!allsegids %in% toremove),]
 
 if(fill){ 
-    segclean_fill <-  segment.gap(segdat_clean,chrlist = chrlist,verbose=verbose)
+    segclean_fill <-  segment.gap(segdat_clean, verbose=verbose)
     return(segclean_fill)
   }else{
     return(segdat_clean)

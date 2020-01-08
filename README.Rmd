@@ -68,11 +68,11 @@ devtools::install_github("gonzolgarcia/svcnvplus")
 
 ## Input data
 
-Two data types are allowed:\n
+Two data types are allowed:
   
 __CNV segmentation data:__ 6 columns are required in the folowing order: `sample`, `chrom`, `start`, `end`, `probes` & `segmean`. Most algorithms studying CNVs produce segmented data indicating genomic boundaries and the segment mean copy number value (segmean); `svcnvplus` assumes CNV expresed as log-ratios: __e.g.:__ $\log2(tumor/normal)$ Those values do not necesarily represent entire copy number states as many samples may contain admixture or subclonal populations.
   
-__Structural Variant calls:__ 8 columns are required in the folowing order: `sample`, `chrom1`, `pos1`, `strand1`, `chrom2`, `pos2`, `strand2` & `svclass`. SV calls are obtained from WGS by identifying reads and read-pairs that align discordantly to the reference genome. The types accepted in the svclass field are: duplication(DUP), deletion(DEL), inversion(INV), insertion(INS), translocation(TRA) and breakend(BND) for undefined variants.\n
+__Structural Variant calls:__ 8 columns are required in the folowing order: `sample`, `chrom1`, `pos1`, `strand1`, `chrom2`, `pos2`, `strand2` & `svclass`. SV calls are obtained from WGS by identifying reads and read-pairs that align discordantly to the reference genome. The types accepted in the svclass field are: duplication(DUP), deletion(DEL), inversion(INV), insertion(INS), translocation(TRA) and breakend(BND) for undefined variants.
   
 All functions acceps multiple samples. Functions that make use of both VNC and SV calls expect a commn set of ids in the `sample` field.
   
@@ -203,11 +203,14 @@ svdf <- validate.sv(svdat_lung_ccle)
 
 ### Chromosome shattering using CNV segmentation data only
 
-The whole genome is binned into user defined `window.size` (Mb) and slided by `slide.size` (Mb) in order to identify regions with high CNV breakpoint density. Two cutoffs are considered for each genomic bin:\n
-    * num.breaks = the minimum number of breakpoints
-    * num.sd = the number of standard deviations above the average within a sample
-In addition, we evaluate the interquantile average of the distance between breakpoints in a given region:\n
-    * dist.iqm.cut (default = 150000 b)
+The whole genome is binned into user defined `window.size` (Mb) and slided by `slide.size` (Mb) in order to identify regions with high CNV breakpoint density. Two cutoffs are considered for each genomic bin:
+  
+* num.breaks = the minimum number of breakpoints
+* num.sd = the number of standard deviations above the average within a sample
+  
+In addition, we evaluate the interquantile average of the distance between breakpoints in a given region:
+  
+* dist.iqm.cut (default = 150000 b)
 
 ```{r message=FALSE}
 shatt_lung_cnv <- shattered.regions.cnv(segdf, fc.pct = 0.2, clean.brk = 4, window.size = 10,
@@ -220,8 +223,9 @@ shatt_lung_cnv$regions.summary$A549_LUNG
 ### Chromosome shattering using segmentation and SV data
 
 Analogously we can combine CNVs and SVs breakpoins to obtain a more robust evaluation of chromosome shattering (see `?shattered.regions`) 
-In addition SVs provide linkage for each SV breakpoint pair which allow for an additional parametter:\n
-    * interleaved.cut the minimun percentage (0-1) of interleaved SVs
+In addition SVs provide linkage for each SV breakpoint pair which allow for an additional parametter:
+  
+* interleaved.cut the minimun percentage (0-1) of interleaved SVs
     
 ```{r message=FALSE}
 shatt_lung <- shattered.regions(segdf, svdf, fc.pct = 0.05,  min.num.probes = 3, clean.brk = 4,
@@ -251,13 +255,13 @@ fdr.test <- freq.p.test(shatt_lung_cnv$high.density.regions.hc, method="fdr", p.
 
 ### Recurrently shattered regions plot
 
-We can visualize the aggregate map of shattered regions for all samples with `shattered.map.plot`; 
+We can visualize the aggregate map of shattered regions for all samples with `shattered.map.plot`. 
 
 ```{r plot5,  fig.width=9, fig.height=4, fig.align='center', fig.cap = "Recurrently shattered regions map", message=FALSE}
 shattered.map.plot(shatt_lung_cnv, fdr = fdr.test$freq.cut)
 ```
 
-And finally collect groups of samples with shattered chromosomes in recurrent regions as defined by a given fdr cutoff
+And finally collect groups of samples with shattered chromosomes in recurrent regions as defined by a given fdr cutoff.
 
 ```{r message=FALSE}
 # obtain genomic bins within above the FDR cutoff
@@ -306,7 +310,7 @@ Somatic pathogenic variants are characterize by presenting in recurrent patterns
 
 ### Gene level CNV
 
-Generates a matrix with gene level CNVs from a segmentation file and obtain the a ranking of amplifications and deep deletions (cutoff = 2 => * copies; -2 => 0.5 copies)
+Generates a matrix with gene level CNVs from a segmentation file and obtain the a ranking of amplifications and deep deletions (cutoff = 2 => * copies; -2 => 0.5 copies).
 
 ```{r message=FALSE}
 segdf_clean <- clean.cnv.artifact(segdf, verbose=FALSE,n.reps = 4)  # remove likely artifacts from segmentation data
@@ -325,7 +329,7 @@ barplot(sort(unlist(lapply(deepdel,length)),decreasing=TRUE)[20:1],col="blue",
 
 ### Recurrently altered genes overlapping with CNV breakpoints
 
-Instead of focusing on high-level dosage changes, we evaluate whether CNV break ends overlap with known genes or upstream regions (gene level CNVs are studied [above](#gene-level-cnv)). 'We input a `cnv.break.annot` evaluates segmentation data and produces
+Instead of focusing on high-level dosage changes, we evaluate whether CNV breakpoints overlap with known genes or upstream regions (gene level CNVs are studied [above](#gene-level-cnv)). 'We input a `cnv.break.annot` evaluates segmentation data and produces
 
 ```{r plot7,  fig.width=9, fig.height=5, fig.align='center', fig.cap = "Recurrently altered genes with overlapping CNV breakpoints", message=FALSE}
 results_cnv <- cnv.break.annot(segdf_clean, fc.pct = 0.2, genome.v="hg19",clean.brk = 8,upstr = 50000,verbose=FALSE)

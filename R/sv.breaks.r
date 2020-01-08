@@ -1,7 +1,7 @@
 #' 
 #'
 #' Identify SV call breakpoints and filter low cov regions if provided
-#' @param seg (data.frame) segmentation data with 6 columns: sample, chromosome, start, end, probes, segment_mean
+#' @param sv (data.frame) segmentation data with 6 columns: sample, chromosome, start, end, probes, segment_mean
 #' @param low.cov (data.frame) a data.frame (chr, start, end) indicating low coverage regions to exclude from the analysis
 #' @keywords CNV, segmentation
 #' @export

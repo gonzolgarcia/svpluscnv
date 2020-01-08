@@ -3,12 +3,16 @@
 #' Filling gaps in a segmentation dat abased on chromosome limits defined withing the complete segmentation dataset
 #' @param seg (data.frame) segmentation data with 6 columns: sample, chromosome, start, end, probes, segment_mean
 #' @param chrlist (character) list of chromosomes to include chr1, chr2, etc...
+#' @param verbose (logical)
 #' @keywords CNV, segmentation
 #' @export
 #' @examples
 #' segment.gap()
 
-segment.gap <- function(seg,chrlist=NULL,verbose=TRUE){
+segment.gap <- function(seg,
+                        chrlist=NULL,
+                        verbose=TRUE){
+
   segdat <- validate.seg(seg)
   if(is.null(chrlist)) chrlist <- unique(segdat$chrom)
   

@@ -14,13 +14,17 @@ break.density(
 )
 }
 \arguments{
+\item{brk}{(data.frame) 3 column table (sample, chrom, position) i.e returned by read.depth.breaks}
+
 \item{chr.lim}{(data.frame) 3 column table (chrom, begin, end) returned by chromosome.limit.coords}
 
 \item{window.size}{(numeric) size in megabases of the genmome bin to compute break density}
 
 \item{slide.size}{(numeric) size in megabases of the sliding genmome window}
 
-\item{breaks}{(data.frame) 3 column table (sample, chrom, position) i.e returned by read.depth.breaks}
+\item{chrlist}{(character) vector containing chromosomes to consider (e.g. c("chr1", "chr2", "chr3", ...))}
+
+\item{verbose}{(logical)}
 }
 \description{
 Identify CNV breakpoints provided a segmentation file

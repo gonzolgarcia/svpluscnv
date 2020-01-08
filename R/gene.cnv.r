@@ -4,7 +4,9 @@
 #' @param seg (data.frame) segmentation data with 6 columns: sample, chromosome, start, end, probes, segment_mean
 #' @param genome.v (hg19 or hg38) reference genome version to draw chromosome limits and centromeres
 #' @param chrlist (character) list of chromosomes to include chr1, chr2, etc...
-#' @param geneid (character) only "Symbol" accepted; if NULL entrez ID will be used
+#' @param geneid (character) only "Symbol" accepted; if NULL, entrez ID will be used
+#' @param fill.gaps (logical) whether to fill the gaps in the segmentation file using gap neighbour segmean average as log ratio
+#' @param verbose (logical) 
 #' @keywords CNV, segmentation, genes
 #' @export
 #' @examples
@@ -15,7 +17,7 @@ gene.cnv <- function(seg,
                      genome.v="hg19",
                      chrlist=NULL, 
                      geneid="Symbol",
-                     fill.gaps=FALSE,
+                     fill.gaps=TRUE,
                      verbose=TRUE){
 
 if(is.null(chrlist)) chrlist <- paste("chr",c(1:22,"X"), sep="" )

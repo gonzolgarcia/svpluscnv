@@ -6,9 +6,9 @@
 \usage{
 cnv.freq.plot(
   seg = NULL,
-  ch.pct = 0.2,
+  fc.pct = 0.2,
+  genome.v = "hg19",
   g.bin = 1,
-  hg = "hg19",
   s.list = NULL,
   cex.axis = 1,
   cex.lab = 1,
@@ -19,15 +19,17 @@ cnv.freq.plot(
 \arguments{
 \item{seg}{(data.frame) segmentation data with 6 columns: sample, chromosome, start, end, probes, segment_mean}
 
-\item{ch.pct}{(numeric) percentage CNV gain/loss for a segment to be considered changed (i.e. 0.2 = 20 percent change 0.8 < segmean && segmean > 1.2)}
+\item{fc.pct}{(numeric) percentage CNV gain/loss for a segment to be considered changed (i.e. 0.2 = 20 percent change 0.8 < segmean && segmean > 1.2)}
+
+\item{genome.v}{(hg19 or h38) reference genome version to draw chromosome limits and centromeres}
 
 \item{g.bin}{(numeric) size in megabases of the genmome bin to compute break density}
 
-\item{hg}{(hg19 or h38) reference genome version to draw chromosome limits and centromeres}
-
 \item{s.list}{(character) vector containing list of samples to include in plot. if set to NULL, all samples in the input will be used}
 
-\item{cex.axis, cex.lab, axis.line, label.line}{plot parameters}
+\item{cex.axis, cex.lab, label.line}{(numeric) plot parameters}
+
+\item{verbose}{(logical)}
 }
 \description{
 Plot CNV frequency across the human genome from a seg file sontaining multiple samples
@@ -36,4 +38,5 @@ Plot CNV frequency across the human genome from a seg file sontaining multiple s
 cnv.freq.plot()
 }
 \keyword{CNV,}
-\keyword{segmentation}
+\keyword{plot}
+\keyword{segmentation,}

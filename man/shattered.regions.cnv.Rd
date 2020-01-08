@@ -22,7 +22,7 @@ shattered.regions.cnv(
 \arguments{
 \item{seg}{(data.frame) segmentation data with 6 columns: sample, chromosome, start, end, probes, segment_mean}
 
-\item{fc.pct}{(numeric) copy number change between 2 consecutive segments: i.e (default) cutoff = 0.2 represents a fold change of 0.8 or 1.2}
+\item{fc.pct}{(numeric) copy number change between 2 consecutive segments: i.e (default) cutoff = 0.2 represents 20 percent fold change}
 
 \item{min.seg.size}{(numeric) The minimun segment size (in base pairs) to include in the analysis}
 
@@ -37,6 +37,10 @@ shattered.regions.cnv(
 \item{num.breaks}{(numeric) size in megabases of the genmome bin to compute break density}
 
 \item{num.sd}{(numeric) size in megabases of the sliding genmome window}
+
+\item{dist.iqm.cut}{(numeric) interquantile average of the distance between breakpoints within a shattered region}
+
+\item{verbose}{(logical)}
 }
 \description{
 Caller for shattered genomic regions based on breakpoint densities

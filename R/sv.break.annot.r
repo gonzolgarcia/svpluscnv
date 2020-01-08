@@ -1,26 +1,26 @@
 #' 
 #'
-#' Identify recurrently altered genes
-#' @param svdf (data.frame) structural variant table including  8 columns: sample, chrom1, pos1, strand1, chrom2, pos2, strand2, svclass
+#' Identify recurrently altered genes by strutural variants
+#' @param sv (data.frame) structural variant table including  8 columns: sample, chrom1, pos1, strand1, chrom2, pos2, strand2, svclass
 #' @param genome.v (hg19 or hg38) reference genome version to draw chromosome limits and centromeres
-#' @param maxgap (numeric) offset region size (base pairs) beyond transcription start and end sites
-#' @param upstr (numeric) upstream region size (base pairs) for searching breakpoints in gene regulatory regions 
+#' @param maxgap (numeric) offset region size (base pairs) beyond transcription start and end sites to extend for overlaps
+#' @param upstr (numeric) upstream region size (base pairs) to identify breakpoints in gene upstream regulatory regions 
 #' @param sv.seg.size (numeric) segmental variants (DEL, DUP, INV or INS) size limit; bigger sigments are considered translocations
-#' @keywords Structural variants annotation
+#' @keywords Structural variants, annotation
 #' @export
 #' @examples
-#' sv.break.annot()
+#' sv.break.annot(sv, genome.v="hg19")
 
 
 
-sv.break.annot <- function(svdf, 
+sv.break.annot <- function(sv, 
                      genome.v="hg19",
                      maxgap=0,
                      upstr=50000, 
                      sv.seg.size=200000,
                      verbose=TRUE){
     
-    svdat <- validate.sv(svdf)
+    svdat <- validate.sv(sv)
     chrlist <- unique(c(svdat$chrom1,svdat$chrom2))
     
     rownames(svdat) <- createRandomString(nrow(svdat),10)

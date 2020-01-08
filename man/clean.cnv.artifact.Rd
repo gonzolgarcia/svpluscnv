@@ -7,10 +7,8 @@
 clean.cnv.artifact(
   seg,
   n.reps = 4,
-  pc.cut = 0,
   seg.size = 5e+06,
   pc.overlap = 0.99,
-  chrlist = NULL,
   fill = TRUE,
   verbose = TRUE
 )

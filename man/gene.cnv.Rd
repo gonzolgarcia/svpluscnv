@@ -9,7 +9,7 @@ gene.cnv(
   genome.v = "hg19",
   chrlist = NULL,
   geneid = "Symbol",
-  fill.gaps = FALSE,
+  fill.gaps = TRUE,
   verbose = TRUE
 )
 }
@@ -20,7 +20,11 @@ gene.cnv(
 
 \item{chrlist}{(character) list of chromosomes to include chr1, chr2, etc...}
 
-\item{geneid}{(character) only "Symbol" accepted; if NULL entrez ID will be used}
+\item{geneid}{(character) only "Symbol" accepted; if NULL, entrez ID will be used}
+
+\item{fill.gaps}{(logical) whether to fill the gaps in the segmentation file using gap neighbour segmean average as log ratio}
+
+\item{verbose}{(logical)}
 }
 \description{
 Obtain a matrix with the weighted average CN per chromosome arm

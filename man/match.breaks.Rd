@@ -7,9 +7,11 @@
 match.breaks(brk1, brk2, maxgap = 50000, verbose = FALSE)
 }
 \arguments{
-\item{brk1}{(data.frame) brakpoint coordinates 1 (sample, chrom, pos)}
+\item{brk1}{(data.frame) brakpoint coordinates 1 (sample, chrom, pos), as returned by `sv.breaks` and `seg.breaks`}
 
-\item{brk2}{(data.frame) brakpoint coordinates 1 (sample, chrom, pos)}
+\item{brk2}{(data.frame) brakpoint coordinates 1 (sample, chrom, pos), as returned by `sv.breaks` and `seg.breaks`}
+
+\item{maxgap}{(numeric) distance (base pairs) limit for nreakpoints to be consider colocalized}
 
 \item{verbose}{(logical)}
 }

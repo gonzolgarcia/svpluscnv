@@ -16,7 +16,7 @@
 #' @param num.sv.sd (numeric) number of standard deviations above the sample average for num.sv.breaks
 #' @param num.common.breaks (numeric) number of common SV and segmentation breakpoints per segments to be considered high-density break
 #' @param num.common.sd (numeric) number of standard deviations above the sample average for num.common.breaks
-#' @param interleaved.cut (numeric) 0-1 value indicating percentage of interleaved SV breaks
+#' @param interleaved.cut (numeric) 0-1 value indicating percentage of interleaved (non-contiguous) SV breakpoint pairs
 #' @param dist.iqm.cut (numeric) interquantile average of the distance between breakpoints within a shattered region
 #' @keywords chromothripsis, chromoplexy, chromosome shattering
 #' @export

@@ -9,7 +9,9 @@
 #' @examples
 #' break.density()
 
-pct.genome.changed <- function(seg, ch.pct=0.2, discard.sex=TRUE){
+pct.genome.changed <- function(seg, 
+                               fc.pct=0.2, 
+                               discard.sex=TRUE){
 
   require(taRifx)  # contains remove.factors
 
@@ -21,7 +23,7 @@ pct.genome.changed <- function(seg, ch.pct=0.2, discard.sex=TRUE){
   segmean <- segdat$segmean
   sample <- segdat$sample
   df <- remove.factors(data.frame(sample,width,segmean))
-  idx_changed <- c(which(df$segmean < log2(1-ch.pct)),which(df$segmean >= log2(1+ch.pct)))
+  idx_changed <- c(which(df$segmean < log2(1-fc.pct)),which(df$segmean >= log2(1+fc.pct)))
   idx_normal <- setdiff(1:nrow(df),idx_changed)
   df_normal <- df[idx_normal,]
   df_changed <-  df[idx_changed,]

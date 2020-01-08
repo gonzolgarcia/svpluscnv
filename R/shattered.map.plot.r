@@ -1,7 +1,7 @@
 #' 
 #'
 #' Plot CNV frequency across the human genome from a seg file sontaining multiple samples 
-#' @param shatt_regs  object returned by 'shattered.regions' or 'shattered.regions.cnv'
+#' @param shatt.regions  object returned by 'shattered.regions' or 'shattered.regions.cnv'
 #' @param conf (character) either 'hc' for high confidence objects or else all included
 #' @param hg (hg19 or h38) reference genome version to draw chromosome limits and centromeres
 #' @param fdr_cut the value to draw an horizontal line based 
@@ -11,7 +11,7 @@
 #' @examples
 #' shattered.map.plot()
 
-shattered.map.plot <- function(shatt_regs,
+shattered.map.plot <- function(shatt.regions,
                           conf="hc",
                           hg= "hg19",
                           fdr_cut=NULL,
@@ -29,13 +29,13 @@ shattered.map.plot <- function(shatt_regs,
     chrlengths <- vapply(unique(bands$chr), function(i) max(bands$end[which(bands$chr == i)]), 1)
     names(chrlengths) <- paste("chr",names(chrlengths),sep="")
 
-    chrlist <- unique(do.call(rbind,strsplit(colnames(shatt_regs$high.density.regions)," "))[,1])
+    chrlist <- unique(do.call(rbind,strsplit(colnames(shatt.regions$high.density.regions)," "))[,1])
     stopifnot( length(which(!chrlist %in% names(chrlengths))) == 0 )
     
     if(conf == "hc") {
-        highDensitiRegionsFreq <- apply(shatt_regs$high.density.regions.hc,2,sum)
+        highDensitiRegionsFreq <- apply(shatt.regions$high.density.regions.hc,2,sum)
     }else{
-        highDensitiRegionsFreq <- apply(shatt_regs$high.density.regions,2,sum)
+        highDensitiRegionsFreq <- apply(shatt.regions$high.density.regions,2,sum)
     }
 
 p_chrcols  <- rep(c("salmon4","salmon4"),12)
@@ -71,7 +71,7 @@ for(i in 1:length(chrstarts) ) rect( chrstarts[i],0,chrstarts[i]+chrlengths[i],1
 mtext(gsub("chr","",names(axislab)),side=1,at=axislab,las=1,col=altcols2,cex=c(rep(1,17),rep(0.8,5),1) )
 if(fdr_cut) lines(c(0,chrstarts["chrX"]+chrlengths["chrX"]),c(fdr_cut,fdr_cut),lty=3,col="lightgrey")    
 axis(2,las=1,pos= 0, cex=1.2)
-axis(4,las=1,pos= max(data[,1])+10000, cex=1.2, at=axTicks(2), labels=sprintf("%.2f",axTicks(2)/dim(shatt_regs$high.density.regions)[1]) )
+axis(4,las=1,pos= max(data[,1])+10000, cex=1.2, at=axTicks(2), labels=sprintf("%.2f",axTicks(2)/dim(shatt.regions$high.density.regions)[1]) )
 mtext("Frequency",side=4,line=1.5)
 mtext("#samples",side=2,line=1)
 if(!is.null(add.legend)) legend(add.legend,c("short (p) arm","long (q) arm"),border=c("salmon","salmon4"),fill=c("salmon","salmon4"),bty='n',ncol=2)

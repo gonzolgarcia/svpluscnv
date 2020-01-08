@@ -2,20 +2,21 @@
 #'
 #' Plot CNV frequency across the human genome from a seg file sontaining multiple samples 
 #' @param seg (data.frame) segmentation data with 6 columns: sample, chromosome, start, end, probes, segment_mean
-#' @param ch.pct (numeric) percentage CNV gain/loss for a segment to be considered changed (i.e. 0.2 = 20 percent change 0.8 < segmean && segmean > 1.2)
+#' @param fc.pct (numeric) percentage CNV gain/loss for a segment to be considered changed (i.e. 0.2 = 20 percent change 0.8 < segmean && segmean > 1.2)
+#' @param genome.v (hg19 or h38) reference genome version to draw chromosome limits and centromeres
 #' @param g.bin (numeric) size in megabases of the genmome bin to compute break density 
 #' @param s.list (character) vector containing list of samples to include in plot. if set to NULL, all samples in the input will be used
-#' @param hg (hg19 or h38) reference genome version to draw chromosome limits and centromeres
-#' @param cex.axis,cex.lab,axis.line,label.line plot parameters
-#' @keywords CNV, segmentation
+#' @param cex.axis,cex.lab,label.line (numeric) plot parameters
+#' @param verbose (logical) 
+#' @keywords CNV, segmentation, plot
 #' @export
 #' @examples
 #' cnv.freq.plot()
 
 cnv.freq.plot <- function(seg=NULL,
-                          ch.pct= 0.2,
+                          fc.pct= 0.2,
+                          genome.v= "hg19",
                           g.bin= 1,
-                          hg= "hg19",
                           s.list=NULL,
                           cex.axis= 1,
                           cex.lab= 1,
@@ -30,8 +31,8 @@ cnv.freq.plot <- function(seg=NULL,
   segdat <- validate.seg(seg)
   if(!is.null(s.list)) segdat <- segdat[which(segdat$sample %in% s.list),]
       
-  if(hg == "hg19"){ bands <- GRCh37.bands
-  }else if(hg=="h38"){ bands <- GRCh38.bands}
+  if(genome.v == "hg19"){ bands <- GRCh37.bands
+  }else if(genome.v=="h38"){ bands <- GRCh38.bands}
   
   centromeres <- bands[intersect(which(bands$score == "acen"),grep("q",bands$name)),"start"]
   names(centromeres) <- paste("chr",bands[intersect(which(bands$score == "acen"),grep("q",bands$name)),"chr"],sep="")
@@ -90,8 +91,8 @@ cnv.freq.plot <- function(seg=NULL,
   outmat_gain[]<-outmat_loss[]<-0
   nsamples <- ncol(outmat_gain)
   
-  outmat_gain[which(outmat > log2(1+ch.pct), arr.ind=T)] <-  1
-  outmat_loss[which(outmat < log2(1-ch.pct), arr.ind=T)] <-  1
+  outmat_gain[which(outmat > log2(1+fc.pct), arr.ind=T)] <-  1
+  outmat_loss[which(outmat < log2(1-fc.pct), arr.ind=T)] <-  1
   freq.gains <- apply(outmat_gain,1,sum)/nsamples
   freq.loss <- apply(outmat_loss,1,sum)/nsamples
   
