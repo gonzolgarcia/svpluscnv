@@ -496,16 +496,14 @@ head(svdf)
 
 ### CNV frequency plot
 
-Visualization of CNV gain/loss frequencies across the genome; aggregates samples for a given genomic window size, which copy number log-ratio differ from 0. The thresshold `ch.pct` is represented as percentage (e.g. 0.2 -> 20% fold change with the referece).
+Visualization of CNV gain/loss frequencies across the genome; aggregates samples for a given genomic window size, which copy number log-ratio differ from 0. The thresshold `fc.pct` is represented as percentage (e.g. 0.2 -> 20% fold change with the referece).
 
 
 ```r
-cnv_freq <- cnv.freq.plot(segdf, ch.pct = 0.2)  # plot cnv frequencies
+cnv_freq <- cnv.freq.plot(segdf, fc.pct = 0.2)  # plot cnv frequencies
 ```
 
-```
-## Error in cnv.freq.plot(segdf, ch.pct = 0.2): unused argument (ch.pct = 0.2)
-```
+<img src="figure/plot1-1.png" title="Genome wide CNV frequencies" alt="Genome wide CNV frequencies" style="display: block; margin: auto;" />
 
 
 ```r
@@ -513,21 +511,23 @@ head(cnv_freq$freqsum)  # data.frame contains every genomic bin
 ```
 
 ```
-## Error in head(cnv_freq$freqsum): object 'cnv_freq' not found
+##                       chr   start     end freq.gains freq.loss
+## chr1_11000_1011000   chr1   11000 1011000 0.02962963 0.3333333
+## chr1_1011000_2011000 chr1 1011000 2011000 0.02962963 0.3333333
+## chr1_2011000_3011000 chr1 2011000 3011000 0.02222222 0.3333333
+## chr1_3011000_4011000 chr1 3011000 4011000 0.02222222 0.3333333
+## chr1_4011000_5011000 chr1 4011000 5011000 0.02222222 0.3407407
+## chr1_5011000_6011000 chr1 5011000 6011000 0.02222222 0.3407407
 ```
 
 
 ### Percent genome change
 
-Per sample measure of genome instability; calculates what percentage the genome’s copy number log2-ratio differs from 0 iven a `ch.pct` thershold.
+Per sample measure of genome instability; calculates what percentage the genome’s copy number log2-ratio differs from 0 iven a `fc.pct` thershold.
 
 
 ```r
-pct_change <- pct.genome.changed(segdf, ch.pct = 0.2)
-```
-
-```
-## Error in pct.genome.changed(segdf, ch.pct = 0.2): unused argument (ch.pct = 0.2)
+pct_change <- pct.genome.changed(segdf, fc.pct = 0.2)
 ```
 
 ## Breakpoint burden
@@ -550,29 +550,12 @@ dat1 <- log2(1+cbind(sv_breaks$brk.burden[common_samples],
 
 dat2 <- log2(1+cbind(pct_change, 
                      cnv_breaks$brk.burden[names(pct_change)]))
-```
 
-```
-## Error in eval(quote(list(...)), env): object 'pct_change' not found
-```
-
-```r
 par(mfrow=c(1,2))
 plot(dat1, xlab="SV burden", ylab="CNV breakpoint burden")
 legend("topright",paste("cor=",cor(dat1)[1,2], sep=""))
 plot(dat2, xlab="percentage genome changed", ylab="CNV breakpoint burden")
-```
-
-```
-## Error in plot(dat2, xlab = "percentage genome changed", ylab = "CNV breakpoint burden"): object 'dat2' not found
-```
-
-```r
 legend("topright",paste("cor=",cor(dat2)[1,2], sep=""))
-```
-
-```
-## Error in cor(dat2): object 'dat2' not found
 ```
 
 <img src="figure/plot2-1.png" title="SV versus CNV breakpoint burden" alt="SV versus CNV breakpoint burden" style="display: block; margin: auto;" />

@@ -120,10 +120,10 @@ head(svdf)
 
 ### CNV frequency plot
 
-Visualization of CNV gain/loss frequencies across the genome; aggregates samples for a given genomic window size, which copy number log-ratio differ from 0. The thresshold `ch.pct` is represented as percentage (e.g. 0.2 -> 20% fold change with the referece).
+Visualization of CNV gain/loss frequencies across the genome; aggregates samples for a given genomic window size, which copy number log-ratio differ from 0. The thresshold `fc.pct` is represented as percentage (e.g. 0.2 -> 20% fold change with the referece).
 
 ```{r plot1,  fig.width=9, fig.height=4, fig.align='center', fig.cap = "Genome wide CNV frequencies", message=FALSE}
-cnv_freq <- cnv.freq.plot(segdf, ch.pct = 0.2)  # plot cnv frequencies
+cnv_freq <- cnv.freq.plot(segdf, fc.pct = 0.2)  # plot cnv frequencies
 ```
 
 ```{r message=FALSE}
@@ -134,10 +134,10 @@ head(cnv_freq$freqsum)  # data.frame contains every genomic bin
 
 ### Percent genome change
 
-Per sample measure of genome instability; calculates what percentage the genome’s copy number log2-ratio differs from 0 iven a `ch.pct` thershold.
+Per sample measure of genome instability; calculates what percentage the genome’s copy number log2-ratio differs from 0 iven a `fc.pct` thershold.
 
 ```{r message=FALSE}
-pct_change <- pct.genome.changed(segdf, ch.pct = 0.2)
+pct_change <- pct.genome.changed(segdf, fc.pct = 0.2)
 ```
 
 ## Breakpoint burden
