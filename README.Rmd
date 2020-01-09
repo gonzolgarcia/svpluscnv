@@ -140,6 +140,19 @@ Per sample measure of genome instability; calculates what percentage the genomeâ
 pct_change <- pct.genome.changed(segdf, fc.pct = 0.2)
 ```
 
+### Chromosome arm CNV
+
+The function `chr.arm.cnv` obtaines the segment weighted average log-ratio for each chromosome arm returned in a matrix format.
+
+```{r plot1.2, fig.width=9, fig.height=7, fig.align='center', fig.cap = "SV versus CNV breakpoint burden",  message=FALSE}
+charm.mat <- chr.arm.cnv(segdf, genome.v = "hg19", verbose = FALSE)
+require(gplots2,quietly = TRUE,warn.conflicts = FALSE)
+
+heatmap.2(charm.mat[,],Rowv=NA,trace='none',cexCol=.5, lhei=c(0.25,1), dendrogram='col', key.title="Copy number",
+        col=colorRampPalette(c("blue","white","red"))(256))
+```
+
+
 ## Breakpoint burden
 
 In addition to percentage of genome changed, we can measure the total burden of breakpoints derived from CNV segments and SV calls. 
