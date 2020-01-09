@@ -374,6 +374,7 @@ Most currently available cancer genomics datasets incorporate CNV characterizati
 * [CNV analysys and visualization](#cnv-analysys-and-visualization)
     * [CNV frequency plot](#cnv-frequency-plot)
     * [Percent genome change](#percent-genome-change)
+    * [Chromosome arm CNV determination](#chromosome-arm-cnv-determination)
 * [Breakpoint burden](#breakpoint-burden)
 * [Co-localization of breakpoints](#co\-localization-of-breakpoints)
 * [Identification of shattered regions](#identification-of-shattered-regions)
@@ -530,7 +531,7 @@ Per sample measure of genome instability; calculates what percentage the genomeâ
 pct_change <- pct.genome.changed(segdf, fc.pct = 0.2)
 ```
 
-### Chromosome arm CNV
+### Chromosome arm CNV determination
 
 The function `chr.arm.cnv` obtaines the segment weighted average log-ratio for each chromosome arm returned in a matrix format.
 
@@ -545,7 +546,7 @@ require(gplots2,quietly = TRUE,warn.conflicts = FALSE)
 ```
 
 ```r
-heatmap.2(charm.mat[,],Rowv=NA,trace='none',cexCol=.5, lhei=c(0.25,1), dendrogram='col', key.title="Copy number",
+heatmap.2(charm.mat[order(rownames(charm.mat))[1:42],],Rowv=NA,trace='none',cexCol=.5, lhei=c(0.25,1), dendrogram='col', key.title="Copy number",
         col=colorRampPalette(c("blue","white","red"))(256))
 ```
 
