@@ -49,6 +49,8 @@ freq.cut <- min(highDensitiBinsFreq[names(which(p.adjust(pvalues, method=method)
 return(list(
     freq.cut = freq.cut,
     pvalues = pvalues,
+    observed = highDensitiBinsFreq,
+    null = highDensitiBinsFreqRandomFreqNull,
     param=list(method=method, p.cut= p.cut, iter=iter)
     ))
 }

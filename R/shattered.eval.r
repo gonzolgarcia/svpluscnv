@@ -6,7 +6,6 @@
 #' @param dist.iqm.cut (numeric) interquantile average of the distance between breakpoints within a shattered region
 #' @param verbose (logical)
 #' @export
-#' @NoRd
 #' 
 
 

@@ -353,15 +353,15 @@ code > span.paren { color: #000000;}
   
 
 
-## svncvplus: R toolkit for the downstream analyses of structural variantions
+## svncvplus: R toolkit for the analysis of structural variants and complex genomic rearrangements
 
-`svncvplus` is an R package designed for integrative analyses of somatic DNA copy number variations (CNV) and other structural variants (SV).`svcnvplus` toolkit comprises multiple analyticall and visualization that can be applied to large datasets from cancer patients (e.g. [TCGA](https://www.cancer.gov/about-nci/organization/ccg/research/structural-genomics/tcga)) and cencer cell lines (e.g. [CCLE](https://portals.broadinstitute.org/ccle)). 
+`svncvplus` is an R package designed for integrative analyses of somatic DNA copy number variations (CNV) and other structural variants (SV).`svcnvplus` comprises multiple analytical and visualization tools that can be applied to large datasets from cancer patients such as [TCGA](https://www.cancer.gov/about-nci/organization/ccg/research/structural-genomics/tcga) and cencer cell lines [CCLE](https://portals.broadinstitute.org/ccle).
   
-CNV data can be derived from genotyping and CGH arrays, as well as next generation sequencing; different segmentation algorithms are used to obtain dosage variations (duplications and deletions) across the genome. Alternatively SV calls can be inferred from discordantly aligned reads from whole genome sequencing (WGS) using different algorithms (e.g [manta](https://github.com/Illumina/manta)[], [lumpy](https://github.com/arq5x/lumpy-sv), etc).
+CNV data can be derived from genotyping and CGH arrays, as well as next generation sequencing; different segmentation algorithms are used to obtain dosage variations (gains and losses) across the genome. Alternatively SV calls can be inferred from discordantly aligned reads from whole genome sequencing (WGS) using different algorithms (e.g [manta](https://github.com/Illumina/manta)[], [lumpy](https://github.com/arq5x/lumpy-sv), etc).
   
 SV calls provide linkage information from discordantly aligned reads and read pairs, allowing the discovery of chromosomal translocations and variants that do not necesarily involve dosage change, such as inversions and insertions. Segmentation CNVs and alignment based SV calls produce orthogonal as well as complementary results. The integration of both data types can by highly informative to understand the somatic alterations driving many cancers and is essential to characterize complex chromosomal alterations such as chromothripsis and chromoplexy.
   
-Most currently available cancer genomics datasets incorporate CNV characterization whereas SV derived from WGS are more scarce. For this reason, `svcnvplus` tools implements functions that work with both data types separately.
+Most currently available cancer genomics datasets incorporate CNV characterization whereas SVs (derived from WGS) are scarcer. For this reason, `svcnvplus` tools implements functions that work with both data types separately as well as integrated.
 
 
 ## Index:
@@ -374,15 +374,14 @@ Most currently available cancer genomics datasets incorporate CNV characterizati
 * [CNV analysys and visualization](#cnv-analysys-and-visualization)
     * [CNV frequency plot](#cnv-frequency-plot)
     * [Chromosome arm CNV determination](#chromosome-arm-cnv-determination)
-* [Assesment of chromosomal instability](#breakpoint-burden)
+* [Assesment of chromosomal instability](#assesment-of-chromosomal-instability)
     * [Percent genome change](#percent-genome-change)
     * [Breakpoint burden analysis](#breakpoint-burden-analysis)
 * [Co-localization of breakpoints](#co\-localization-of-breakpoints)
 * [Identification of shattered regions](#identification-of-shattered-regions)
     * [Chromosome shattering using segmentation data only](#chromosome-shattering-using-segmentation-data-only)
     * [Chromosome shattering using segmentation and SV data](#chromosome-shattering-using-segmentation-and-sv-data)
-* [Recurrently shattered regions](#recurrently-shattered-regions)
-    * [Recurrently shattered regions plot](#recurrently-shattered-regions-plot)
+    * [Recurrently shattered regions](#recurrently-shattered-regions)
 * [Recurrently altered genes](#recurrently-altered-genes)
     * [Gene level CNV](#gene-level-cnv)
     * [Recurrently altered genes overlapping with CNV breakpoints](#recurrently-altered-genes-overlapping-with-cnv-breakpoints)
@@ -406,16 +405,16 @@ __CNV segmentation data:__ 6 columns are required in the folowing order: `sample
   
 __Structural Variant calls:__ 8 columns are required in the folowing order: `sample`, `chrom1`, `pos1`, `strand1`, `chrom2`, `pos2`, `strand2` & `svclass`. SV calls are obtained from WGS by identifying reads and read-pairs that align discordantly to the reference genome. The types accepted in the svclass field are: duplication(DUP), deletion(DEL), inversion(INV), insertion(INS), translocation(TRA) and breakend(BND) for undefined variants.
   
-All functions acceps multiple samples. Functions that make use of both VNC and SV calls expect a commn set of ids in the `sample` field.
+All functions accept multiple samples. Functions that make use of both CNV and SV calls expect a common set of ids in the `sample` field.
   
-In order to explore the  functionalities of svcnvplus, two data.frames have been included with the package:
+In order to explore the  functionalities of svcnvplus, two datasets have been included with the package:
   
-* CCLE lung cancer derived cell lines; This data.frames contain information about CNV segments and structural variants respectively for lung cancer derived cell lines. This data was obtained from <https://depmap.org/portal/download/>.
+* CCLE lung cancer derived cell lines <https://depmap.org/portal/download/>; Two data.frames contain information about CNV segments and structural variants respectively:
     * `svcnvplus::segdat_lung_ccle`
-    * `svcnvplus::svdat_lung_ccle`.  
-* TARGET neuroblastoma dataset based on cComplete Genomics whole genome sequencing     
+    * `svcnvplus::svdat_lung_ccle`
+* [TARGET neuroblastoma dataset](https://ocg.cancer.gov/programs/target) based on Complete Genomics WGS and structural variant calls:
     * `svcnvplus::nbl_segdat`
-    * `svcnvplus::nbl_svdat`.  
+    * `svcnvplus::nbl_svdat`  
 Both datasets are `lazy` loaded with `svcnvplus`
 
 
@@ -450,12 +449,12 @@ head(nbl_svdat)
 
 ## Validate data types
 
-* `validate.seg()` check format for segmentation data.frame
-* `validate.sv()` chrek format of a Structural variant data.frame
+* `validate.seg()` segmentation data.frame parser
+* `validate.sv()` structural variant data.frame parser
 
 ### Validate segmentation data format
 
-Validate and format segmentation data.frame to be used by svcnvplus package toolkit
+Validate and reformat CNV segmentation `data.frame` to be used by svcnvplus tools
 
 
 ```r
@@ -476,7 +475,7 @@ head(segdf)
 
 ### Validate structural variant data format 
 
-Validate and format structural variant data.frame to be used by svcnvplus package toolkit
+Validate and format structural variant `data.frame` to be used by svcnvplus tools
 
 
 ```r
@@ -498,7 +497,7 @@ head(svdf)
 
 ### CNV frequency plot
 
-Visualization of CNV gain/loss frequencies across the genome; aggregates samples for a given genomic window size, which copy number log-ratio differ from 0. The thresshold `fc.pct` is represented as percentage (e.g. 0.2 -> 20% fold change with the referece).
+Visualization of CNV gain/loss frequencies across the genome; aggregates samples for a given genomic window size, which copy number log-ratio differs from 0. The thresshold `fc.pct` is represented as percentage (e.g. 0.2 -> 20% fold change compared to the referece).
 
 
 ```r
@@ -523,16 +522,16 @@ head(cnv_freq$freqsum)  # data.frame contains every genomic bin
 ```
 
 
-
 ### Chromosome arm CNV determination
 
-The function `chr.arm.cnv` obtaines the segment weighted average log-ratio for each chromosome arm returned in a matrix format.
+The function `chr.arm.cnv` obtains the segment weighted average log-ratios for each chromosome arm ans sample; it return in a matrix formated output.
 
 
 ```r
 charm.mat <- chr.arm.cnv(segdf, genome.v = "hg19", verbose = FALSE)
 require(gplots,quietly = TRUE,warn.conflicts = FALSE)
 
+# heatmap plot of chromosome arm level CNV
 heatmap.2(charm.mat[order(rownames(charm.mat))[1:42],],Rowv=NA,trace='none',cexCol=.5, lhei=c(0.25,1), dendrogram='col', key.title="Copy number",
         col=colorRampPalette(c("blue","white","red"))(256))
 ```
@@ -541,11 +540,11 @@ heatmap.2(charm.mat[order(rownames(charm.mat))[1:42],],Rowv=NA,trace='none',cexC
 
 ## Assesment of chromosomal instability
 
-
+Chromosomal instability (CIN) is common in cancer and has a fundamental pathogenic role. CNV profiles allow quantification of this events by evaluating the percentage of the genome  copy number differing from diploid or the burden of genomic alterations in a given sample.
 
 ### Percent genome change
 
-Per sample measure of genome instability; calculates what percentage the genome’s copy number log2-ratio differs from 0 above a certain threshold.
+Per sample measure of genome instability; calculates what percentage of the genome's copy number log2-ratio differs from 0 (aka. diploid for autosomal chromosomes) above a certain threshold.
 
 
 ```r
@@ -554,17 +553,17 @@ pct_change <- pct.genome.changed(segdf, fc.pct = 0.2)
 
 ### Breakpoint burden analysis
 
-In addition to percentage of genome changed, we can measure the total burden of breakpoints derived from CNV segments and SV calls. Both the percent genome change and breakpoint burdens are expected to show positive correlation.
+In addition to percentage of genome changed, we can measure the total burden of breakpoints derived from CNV segmention and SV calls. Both the percent genome change and breakpoint burden measures are expected to show positive correlation.
 
 
 ```r
 # define breakpoints from SV data
 sv_breaks  <- sv.breaks(svdf)  
 
-# define breakpoints from seg data based on certain CNV change cutoff
+# define breakpoints from seg data based on certain CNV log-ratio change cutoff
 cnv_breaks  <- seg.breaks(segdf,fc.pct = 0.2,verbose=FALSE)  
 
-# scatter plot comparing CNV and SV breakpoint burden for a set of common samples
+# scatter plot comparing CNV and SV breakpoint burden and percent genome changed, for a set of common samples
 common_samples <- intersect(names(sv_breaks$brk.burden),names(cnv_breaks$brk.burden))
 
 dat1 <- log2(1+cbind(sv_breaks$brk.burden[common_samples],
@@ -584,7 +583,7 @@ legend("topright",paste("cor=",cor(dat2)[1,2], sep=""))
 
 ## Co-localization of breakpoints
 
-Both CNV segmentation profiles and SV calls produce orthogonal results for variants that involve dosage changes (duplications and deletions). The function `match.breaks` compare both approaches by identifying colocalizing breakpoints. This function can also be used to compare two sets of CNV brekpoints obtaind from different algorithms or SV callers since the format of both CNV and SV breaks objects have the same format.  
+Both CNV segmentation profiles and SV calls produce orthogonal results for variants that involve dosage changes (duplications and deletions). The function `match.breaks` compares the breakpoints derived from both approaches by identifying their co-localizing. This function can also be used to compare two sets of CNV brekpoints obtaind from different algorithms or SV callers since the format of both CNV and SV breaks objects have the same format within `svcnvplus`.
 
 
 ```r
@@ -625,7 +624,7 @@ The whole genome is binned into user defined `window.size` (Mb) and slided by `s
 * num.breaks = the minimum number of breakpoints
 * num.sd = the number of standard deviations above the average within a sample
   
-In addition, we evaluate the interquantile average of the distance between breakpoints in a given region:
+In addition, we evaluate the interquantile average of the distance between breakpoints in a given region.
   
 * dist.iqm.cut (default = 150000 b)
 
@@ -651,7 +650,7 @@ shatt_lung_cnv$regions.summary$A549_LUNG
 ### Chromosome shattering using segmentation and SV data
 
 Analogously we can combine CNVs and SVs breakpoins to obtain a more robust evaluation of chromosome shattering (see `?shattered.regions`) 
-In addition SVs provide linkage for each SV breakpoint pair which allow for an additional parametter:
+In addition SVs provide linkage for each SV breakpoint pair which allows for an additional parametter:
   
 * interleaved.cut the minimun percentage (0-1) of interleaved SVs
     
@@ -674,7 +673,7 @@ shatt_lung$regions.summary$NCIH522_LUNG
 ## 5 chr21  10994075  47273167   15     -  3.8e+07     294867.9   267349.74        65       67         31        34  0.08333333   HC
 ```
 
-Circos plotting is available via [circlize](https://cran.r-project.org/web/packages/circlize/index.html) package wrapper function `circ.chromo.plot`:
+Circos plotting is available via [circlize](https://cran.r-project.org/web/packages/circlize/index.html) package wrapper function  `circ.chromo.plot`:
 
 
 ```r
@@ -683,42 +682,92 @@ circ.chromo.plot(shatt_lung,sample.id = "SCLC21H_LUNG")
 circ.chromo.plot(shatt_lung,sample.id = "NCIH510_LUNG")
 ```
 
-<img src="figure/plot4-1.png" title="Circos plot representing c LUNG cancer cell lines with chromothripsis" alt="Circos plot representing c LUNG cancer cell lines with chromothripsis" style="display: block; margin: auto;" />
+<img src="figure/plot4.1-1.png" title="Circos plot representing c LUNG cancer cell lines with chromothripsis" alt="Circos plot representing c LUNG cancer cell lines with chromothripsis" style="display: block; margin: auto;" />
 
 
 ### Recurrently shattered regions
 
-We evaluate the null hipothesis that shattered regions occour throughout the genome at random; To this end we first create an empirical null distribution based on the sample set under study. The null is then compared with the observed distribution to obtain empirical p-values corrected for multiple hypothesis testing. The corrected p-calues under statistical significance define regions  under selection presure for chromosome shattering.
+To establish whether certain regions suffer chromosome shatter-ing above expectation, we evaluate the null hypothesis that shat-tered regions occur throughout the genome at random; To this end we first create an empirical null distribution based on the sample set under study. The null is then compared with the ob-served distribution to obtain empirical p-values and corrected for multiple hypothesis testing. The corrected p-values deemed statis-tically significant define regions under selection pressure for chromosome shattering.
 
 
 ```r
-fdr.test <- freq.p.test(shatt_lung_cnv$high.density.regions.hc, method="fdr", p.cut = 0.01)
+null.test <- freq.p.test(shatt_lung_cnv$high.density.regions.hc, method="bonferroni", p.cut = 0.05)
+
+hist(null.test$observed, ylim=c(0,0.25), col='salmon', border="white", 
+     breaks=30,las=1,cex.axis=1.4,ylab="",prob = TRUE,main="",xlab="n samples")
+hist(null.test$null, breaks=15,add=T,col=scales::alpha('black',.5), 
+     border="white",prob = TRUE)
+legend(10,0.24,c("Frequency distr.","Null freq. distr."),
+       fill=c('salmon',scales::alpha('black',.5)),border=NA,bty='n',cex=1.1)
+lines(c(null.test$freq.cut,null.test$freq.cut),c(0,0.15))   # cutoff for statistical significance
+text(null.test$freq.cut-1,0.05,"Bonferroni < 0.05",srt=90)
 ```
 
-### Recurrently shattered regions plot
+<img src="figure/plot4.2-1.png" title="Circos plot representing c LUNG cancer cell lines with chromothripsis" alt="Circos plot representing c LUNG cancer cell lines with chromothripsis" style="display: block; margin: auto;" />
 
-We can visualize the aggregate map of shattered regions for all samples with `shattered.map.plot`. 
+We can visualize the aggregate map of shattered regions for all samples with `shattered.map.plot`. The peaks that rise above `null.test$freq.cut` define recurrently shattered regions
 
 
 ```r
-shattered.map.plot(shatt_lung_cnv, fdr = fdr.test$freq.cut)
+shattered.map.plot(shatt_lung_cnv, fdr = null.test$freq.cut)
 ```
 
 <img src="figure/plot5-1.png" title="Recurrently shattered regions map" alt="Recurrently shattered regions map" style="display: block; margin: auto;" />
 
-And finally collect groups of samples with shattered chromosomes in recurrent regions as defined by a given fdr cutoff.
+And finally collect groups of samples with recurrent shattered regions as defined by the empirical test described above. 
 
 
 ```r
 # obtain genomic bins within above the FDR cutoff
 freq.matrix <- apply(shatt_lung_cnv$high.density.regions.hc,2,sum)
 textRegions <- names(which(freq.matrix >= fdr.test$freq.cut))
-hitRegions <- remove.factors((data.frame(do.call(rbind,strsplit(textRegions," ")))))
-hitRegions[,2] <- as.numeric(hitRegions[,2])
-hitRegions[,3] <- as.numeric(hitRegions[,3])
-colnames(hitRegions) <- c("chr","start","end")
-rownames(hitRegions) <-textRegions
+```
 
+```
+## Error in which(freq.matrix >= fdr.test$freq.cut): object 'fdr.test' not found
+```
+
+```r
+hitRegions <- remove.factors((data.frame(do.call(rbind,strsplit(textRegions," ")))))
+```
+
+```
+## Error in strsplit(textRegions, " "): object 'textRegions' not found
+```
+
+```r
+hitRegions[,2] <- as.numeric(hitRegions[,2])
+```
+
+```
+## Error in eval(expr, envir, enclos): object 'hitRegions' not found
+```
+
+```r
+hitRegions[,3] <- as.numeric(hitRegions[,3])
+```
+
+```
+## Error in eval(expr, envir, enclos): object 'hitRegions' not found
+```
+
+```r
+colnames(hitRegions) <- c("chr","start","end")
+```
+
+```
+## Error in colnames(hitRegions) <- c("chr", "start", "end"): object 'hitRegions' not found
+```
+
+```r
+rownames(hitRegions) <-textRegions
+```
+
+```
+## Error in eval(expr, envir, enclos): object 'textRegions' not found
+```
+
+```r
 # collapes contiguous bins into unique regions
 bins2remove <- c()
 for(i in 2:nrow(hitRegions)){ 
@@ -729,16 +778,55 @@ for(i in 2:nrow(hitRegions)){
     }
   }
 }
-hitRegionsPost<- hitRegions[setdiff(rownames(hitRegions),bins2remove),]
+```
 
+```
+## Error in nrow(hitRegions): object 'hitRegions' not found
+```
+
+```r
+hitRegionsPost<- hitRegions[setdiff(rownames(hitRegions),bins2remove),]
+```
+
+```
+## Error in eval(expr, envir, enclos): object 'hitRegions' not found
+```
+
+```r
 require(GenomicRanges)
 hitRegions_gr <- with(hitRegions, GRanges(chr, IRanges(start=start, end=end)))
-hitRegionsPost_gr <- with(hitRegionsPost, GRanges(chr, IRanges(start=start, end=end)))
-hits <-GenomicAlignments::findOverlaps(hitRegionsPost_gr,hitRegions_gr)
+```
 
+```
+## Error in with(hitRegions, GRanges(chr, IRanges(start = start, end = end))): object 'hitRegions' not found
+```
+
+```r
+hitRegionsPost_gr <- with(hitRegionsPost, GRanges(chr, IRanges(start=start, end=end)))
+```
+
+```
+## Error in with(hitRegionsPost, GRanges(chr, IRanges(start = start, end = end))): object 'hitRegionsPost' not found
+```
+
+```r
+hits <-GenomicAlignments::findOverlaps(hitRegionsPost_gr,hitRegions_gr)
+```
+
+```
+## Error in GenomicAlignments::findOverlaps(hitRegionsPost_gr, hitRegions_gr): object 'hitRegionsPost_gr' not found
+```
+
+```r
 regList <- list()
 for(i in unique(queryHits(hits))) regList[[paste(hitRegionsPost[i,],collapse=" ") ]] <- textRegions[subjectHits(hits)[which(queryHits(hits) == i)]]
+```
 
+```
+## Error in queryHits(hits): object 'hits' not found
+```
+
+```r
 # obtain the genomic bins with maximum number of samples
 regListPeak <- lapply(regList, function(x) 
     names(which(freq.matrix[x] == max(freq.matrix[x]))))
@@ -747,16 +835,16 @@ regListPeakSamples <- lapply(regListPeak, function(x)
     names(which(apply(cbind(shatt_lung_cnv$high.density.regions.hc[,x]),1,sum) > 0)))
 ```
 
-Beyond this point the user can test case/control hipothesys for chromosome shattering of specific genomic regions within the dataset under study.
+Beyond this point the user can perform case/control hipothesys for chromosome shattering of specific genomic regions within the dataset under study.
 
 
 ## Recurrently altered genes
 
-Somatic pathogenic variants are characterize by presenting in recurrent patterns . Evaluating the recurrence of structural variations involve challenges as their interpretation more complicated than other variant types (e.g. SNVs). We evaluate the recurrence of structural variants using two criteria: dosage changes at the gene level and analysis of breakpoints overlapping with known genes.
+Somatic pathogenic variants are characterized by presenting in recurrent patterns. Evaluating the recurrence of structural variations involve challenges as their interpretation more complicated than other variant types (e.g. SNVs). We evaluate the recurrence of structural variants using two criteria: dosage changes at the gene level and analysis of breakpoints overlapping with known genes.
 
 ### Gene level CNV
 
-Generates a matrix with gene level CNVs from a segmentation file and obtain the a ranking of amplifications and deep deletions (cutoff = 2 => * copies; -2 => 0.5 copies).
+Generates a matrix with gene level CNVs from a segmentation file and obtain the ranking of amplifications and deep deletions (cutoff = 2 => * copies; -2 => 0.5 copies).
 
 
 ```r
@@ -779,11 +867,13 @@ barplot(sort(unlist(lapply(deepdel,length)),decreasing=TRUE)[20:1],col="blue",
 
 ### Recurrently altered genes overlapping with CNV breakpoints
 
-Instead of focusing on high-level dosage changes, we evaluate whether CNV breakpoints overlap with known genes or upstream regions (gene level CNVs are studied [above](#gene-level-cnv)). 'We input a `cnv.break.annot` evaluates segmentation data and produces
+Instead of focusing on high-level dosage changes, we evaluate whether CNV breakpoints overlap with known genes or upstream regions (gene level CNVs are studied [above](#gene-level-cnv)). `cnv.break.annot` evaluates segmentation data and returns a list of genes and associated breakpoints that can be retrieved for further analyses. In addition every gene is associated via list to the sample ids harboring the variants.
 
 
 ```r
 results_cnv <- cnv.break.annot(segdf_clean, fc.pct = 0.2, genome.v="hg19",clean.brk = 8,upstr = 50000,verbose=FALSE)
+
+# plot a ranking of recurrently altered genes
 par(mfrow=c(1,2),mar=c(4,7,1,1))
 barplot(sort(unlist(lapply(results_cnv$disruptSamples,length)),decreasing=TRUE)[20:1],
         las=1,main="Gene coding region disrupted",horiz=TRUE,xlab="#samples")
@@ -795,12 +885,13 @@ barplot(sort(unlist(lapply(results_cnv$upstreamSamples,length)),decreasing=TRUE)
 
 ### Recurrently altered genes overlapping with structural variants calls
 
-SV calls do not incorporate dosage information, therefore we study the localization of breakpoints with respect to known genes. The annotation identifies small segmental variants overlaping with genes. For translocations (TRA) and large segmenral variants (default > 200Kb) only the breakpoint overlap with genes are considered.
-The output returns a list of genes and associated variants that can be retrieved for further analyses. In addition every gene is associated via list to the sample ids harboring variants
+SV calls do not incorporate dosage information, therefore we study the localization of breakpoints with respect to known genes. The annotation identifies small segmental variants overlapping with genes. For translocations (TRA) and large segmental variants (default > 200Kb) only the breakpoint overlap with genes are considered. `sv.break.annot` returns a list of genes and associated variants that can be retrieved for further analyses. In addition, every gene is associated via list to the sample ids harboring variants.
 
 
 ```r
 results_sv <- sv.break.annot(svdf, sv.seg.size = 200000, genome.v="hg19",upstr = 50000, verbose=FALSE)
+
+# plot a ranking of recurrently altered genes
 par(mfrow=c(1,2),mar=c(4,7,1,1))
 barplot(sort(unlist(lapply(results_sv$disruptSamples,length)),decreasing=TRUE)[20:1],
         las=1,main="Coding region disrupted",horiz=TRUE,xlab="#samples")
