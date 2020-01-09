@@ -296,7 +296,7 @@ And finally collect groups of samples with recurrent shattered regions as define
 ```{r message=FALSE}
 # obtain genomic bins within above the FDR cutoff
 freq.matrix <- apply(shatt_lung_cnv$high.density.regions.hc,2,sum)
-textRegions <- names(which(freq.matrix >= fdr.test$freq.cut))
+textRegions <- names(which(freq.matrix >= null.test$freq.cut))
 hitRegions <- remove.factors((data.frame(do.call(rbind,strsplit(textRegions," ")))))
 hitRegions[,2] <- as.numeric(hitRegions[,2])
 hitRegions[,3] <- as.numeric(hitRegions[,3])

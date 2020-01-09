@@ -723,54 +723,13 @@ And finally collect groups of samples with recurrent shattered regions as define
 ```r
 # obtain genomic bins within above the FDR cutoff
 freq.matrix <- apply(shatt_lung_cnv$high.density.regions.hc,2,sum)
-textRegions <- names(which(freq.matrix >= fdr.test$freq.cut))
-```
-
-```
-## Error in which(freq.matrix >= fdr.test$freq.cut): object 'fdr.test' not found
-```
-
-```r
+textRegions <- names(which(freq.matrix >= null.test$freq.cut))
 hitRegions <- remove.factors((data.frame(do.call(rbind,strsplit(textRegions," ")))))
-```
-
-```
-## Error in strsplit(textRegions, " "): object 'textRegions' not found
-```
-
-```r
 hitRegions[,2] <- as.numeric(hitRegions[,2])
-```
-
-```
-## Error in eval(expr, envir, enclos): object 'hitRegions' not found
-```
-
-```r
 hitRegions[,3] <- as.numeric(hitRegions[,3])
-```
-
-```
-## Error in eval(expr, envir, enclos): object 'hitRegions' not found
-```
-
-```r
 colnames(hitRegions) <- c("chr","start","end")
-```
-
-```
-## Error in colnames(hitRegions) <- c("chr", "start", "end"): object 'hitRegions' not found
-```
-
-```r
 rownames(hitRegions) <-textRegions
-```
 
-```
-## Error in eval(expr, envir, enclos): object 'textRegions' not found
-```
-
-```r
 # collapes contiguous bins into unique regions
 bins2remove <- c()
 for(i in 2:nrow(hitRegions)){ 
@@ -781,55 +740,16 @@ for(i in 2:nrow(hitRegions)){
     }
   }
 }
-```
-
-```
-## Error in nrow(hitRegions): object 'hitRegions' not found
-```
-
-```r
 hitRegionsPost<- hitRegions[setdiff(rownames(hitRegions),bins2remove),]
-```
 
-```
-## Error in eval(expr, envir, enclos): object 'hitRegions' not found
-```
-
-```r
 require(GenomicRanges)
 hitRegions_gr <- with(hitRegions, GRanges(chr, IRanges(start=start, end=end)))
-```
-
-```
-## Error in with(hitRegions, GRanges(chr, IRanges(start = start, end = end))): object 'hitRegions' not found
-```
-
-```r
 hitRegionsPost_gr <- with(hitRegionsPost, GRanges(chr, IRanges(start=start, end=end)))
-```
-
-```
-## Error in with(hitRegionsPost, GRanges(chr, IRanges(start = start, end = end))): object 'hitRegionsPost' not found
-```
-
-```r
 hits <-GenomicAlignments::findOverlaps(hitRegionsPost_gr,hitRegions_gr)
-```
 
-```
-## Error in GenomicAlignments::findOverlaps(hitRegionsPost_gr, hitRegions_gr): object 'hitRegionsPost_gr' not found
-```
-
-```r
 regList <- list()
 for(i in unique(queryHits(hits))) regList[[paste(hitRegionsPost[i,],collapse=" ") ]] <- textRegions[subjectHits(hits)[which(queryHits(hits) == i)]]
-```
 
-```
-## Error in queryHits(hits): object 'hits' not found
-```
-
-```r
 # obtain the genomic bins with maximum number of samples
 regListPeak <- lapply(regList, function(x) 
     names(which(freq.matrix[x] == max(freq.matrix[x]))))
