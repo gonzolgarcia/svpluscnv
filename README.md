@@ -379,8 +379,8 @@ Most currently available cancer genomics datasets incorporate CNV characterizati
     * [Breakpoint burden analysis](#breakpoint-burden-analysis)
 * [Co-localization of breakpoints](#co\-localization-of-breakpoints)
 * [Identification of shattered regions](#identification-of-shattered-regions)
-    * [Chromosome shattering using segmentation data only](#chromosome-shattering-using-segmentation-data-only)
-    * [Chromosome shattering using segmentation and SV data](#chromosome-shattering-using-segmentation-and-sv-data)
+    * [Chromosome shattering using CNV data only](#chromosome-shattering-using-cnv-data-only)
+    * [Chromosome shattering using CNV and SV data](#chromosome-shattering-using-cnv-and-sv-data)
     * [Recurrently shattered regions](#recurrently-shattered-regions)
 * [Recurrently altered genes](#recurrently-altered-genes)
     * [Gene level CNV](#gene-level-cnv)
@@ -617,7 +617,7 @@ segdf <- validate.seg(segdat_lung_ccle)
 svdf <- validate.sv(svdat_lung_ccle)
 ```
 
-### Chromosome shattering using CNV segmentation data only
+### Chromosome shattering using CNV data only
 
 The whole genome is binned into user defined `window.size` (Mb) and slided by `slide.size` (Mb) in order to identify regions with high CNV breakpoint density. Two cutoffs are considered for each genomic bin:
   
@@ -647,7 +647,7 @@ shatt_lung_cnv$regions.summary$A549_LUNG
 ```
 
 
-### Chromosome shattering using segmentation and SV data
+### Chromosome shattering using CNV and SV data
 
 Analogously we can combine CNVs and SVs breakpoins to obtain a more robust evaluation of chromosome shattering (see `?shattered.regions`) 
 In addition SVs provide linkage for each SV breakpoint pair which allows for an additional parametter:
@@ -693,6 +693,9 @@ To establish whether certain regions suffer chromosome shatter-ing above expecta
 ```r
 null.test <- freq.p.test(shatt_lung_cnv$high.density.regions.hc, method="bonferroni", p.cut = 0.05)
 
+# Compare observed frequencies versus the null distribution of recurrently shattered regions; 
+# the histogram bars represent proportion of genomic bins for each ginven number of samples found shattered
+
 hist(null.test$observed, ylim=c(0,0.25), col='salmon', border="white", 
      breaks=30,las=1,cex.axis=1.4,ylab="",prob = TRUE,main="",xlab="n samples")
 hist(null.test$null, breaks=15,add=T,col=scales::alpha('black',.5), 
@@ -700,7 +703,7 @@ hist(null.test$null, breaks=15,add=T,col=scales::alpha('black',.5),
 legend(10,0.24,c("Frequency distr.","Null freq. distr."),
        fill=c('salmon',scales::alpha('black',.5)),border=NA,bty='n',cex=1.1)
 lines(c(null.test$freq.cut,null.test$freq.cut),c(0,0.15))   # cutoff for statistical significance
-text(null.test$freq.cut-1,0.05,"Bonferroni < 0.05",srt=90)
+text(null.test$freq.cut+0.5,0.07,"Bonferroni < 0.05",srt=90)
 ```
 
 <img src="figure/plot4.2-1.png" title="Circos plot representing c LUNG cancer cell lines with chromothripsis" alt="Circos plot representing c LUNG cancer cell lines with chromothripsis" style="display: block; margin: auto;" />
