@@ -373,9 +373,10 @@ Most currently available cancer genomics datasets incorporate CNV characterizati
     * [Validate structural variant data format](#validate-structural-variant-data-format)
 * [CNV analysys and visualization](#cnv-analysys-and-visualization)
     * [CNV frequency plot](#cnv-frequency-plot)
-    * [Percent genome change](#percent-genome-change)
     * [Chromosome arm CNV determination](#chromosome-arm-cnv-determination)
-* [Breakpoint burden](#breakpoint-burden)
+* [Assesment of chromosomal instability](#breakpoint-burden)
+    * [Percent genome change](#percent-genome-change)
+    * [Breakpoint burden analysis](#breakpoint-burden-analysis)
 * [Co-localization of breakpoints](#co\-localization-of-breakpoints)
 * [Identification of shattered regions](#identification-of-shattered-regions)
     * [Chromosome shattering using segmentation data only](#chromosome-shattering-using-segmentation-data-only)
@@ -522,14 +523,6 @@ head(cnv_freq$freqsum)  # data.frame contains every genomic bin
 ```
 
 
-### Percent genome change
-
-Per sample measure of genome instability; calculates what percentage the genome’s copy number log2-ratio differs from 0 iven a `fc.pct` thershold.
-
-
-```r
-pct_change <- pct.genome.changed(segdf, fc.pct = 0.2)
-```
 
 ### Chromosome arm CNV determination
 
@@ -538,24 +531,30 @@ The function `chr.arm.cnv` obtaines the segment weighted average log-ratio for e
 
 ```r
 charm.mat <- chr.arm.cnv(segdf, genome.v = "hg19", verbose = FALSE)
-require(gplots2,quietly = TRUE,warn.conflicts = FALSE)
-```
+require(gplots,quietly = TRUE,warn.conflicts = FALSE)
 
-```
-## Warning in library(package, lib.loc = lib.loc, character.only = TRUE, logical.return = TRUE, : there is no package called 'gplots2'
-```
-
-```r
 heatmap.2(charm.mat[order(rownames(charm.mat))[1:42],],Rowv=NA,trace='none',cexCol=.5, lhei=c(0.25,1), dendrogram='col', key.title="Copy number",
         col=colorRampPalette(c("blue","white","red"))(256))
 ```
 
 <img src="figure/plot1.2-1.png" title="SV versus CNV breakpoint burden" alt="SV versus CNV breakpoint burden" style="display: block; margin: auto;" />
 
+## Assesment of chromosomal instability
 
-## Breakpoint burden
 
-In addition to percentage of genome changed, we can measure the total burden of breakpoints derived from CNV segments and SV calls. 
+
+### Percent genome change
+
+Per sample measure of genome instability; calculates what percentage the genome’s copy number log2-ratio differs from 0 above a certain threshold.
+
+
+```r
+pct_change <- pct.genome.changed(segdf, fc.pct = 0.2)
+```
+
+### Breakpoint burden analysis
+
+In addition to percentage of genome changed, we can measure the total burden of breakpoints derived from CNV segments and SV calls. Both the percent genome change and breakpoint burdens are expected to show positive correlation.
 
 
 ```r
