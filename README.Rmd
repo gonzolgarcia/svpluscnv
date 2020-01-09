@@ -45,6 +45,7 @@ Most currently available cancer genomics datasets incorporate CNV characterizati
 * [CNV analysys and visualization](#cnv-analysys-and-visualization)
     * [CNV frequency plot](#cnv-frequency-plot)
     * [Percent genome change](#percent-genome-change)
+    * [Chromosome arm CNV determination](#chromosome-arm-cnv-determination)
 * [Breakpoint burden](#breakpoint-burden)
 * [Co-localization of breakpoints](#co\-localization-of-breakpoints)
 * [Identification of shattered regions](#identification-of-shattered-regions)
@@ -122,7 +123,7 @@ head(svdf)
 
 Visualization of CNV gain/loss frequencies across the genome; aggregates samples for a given genomic window size, which copy number log-ratio differ from 0. The thresshold `fc.pct` is represented as percentage (e.g. 0.2 -> 20% fold change with the referece).
 
-```{r plot1,  fig.width=9, fig.height=4, fig.align='center', fig.cap = "Genome wide CNV frequencies", message=FALSE}
+```{r plot1,  fig.width=12, fig.height=4, fig.align='center', fig.cap = "Genome wide CNV frequencies", message=FALSE}
 cnv_freq <- cnv.freq.plot(segdf, fc.pct = 0.2)  # plot cnv frequencies
 ```
 
@@ -140,15 +141,15 @@ Per sample measure of genome instability; calculates what percentage the genomeâ
 pct_change <- pct.genome.changed(segdf, fc.pct = 0.2)
 ```
 
-### Chromosome arm CNV
+### Chromosome arm CNV determination
 
 The function `chr.arm.cnv` obtaines the segment weighted average log-ratio for each chromosome arm returned in a matrix format.
 
-```{r plot1.2, fig.width=9, fig.height=7, fig.align='center', fig.cap = "SV versus CNV breakpoint burden",  message=FALSE}
+```{r plot1.2, fig.width=12, fig.height=7, fig.align='center', fig.cap = "SV versus CNV breakpoint burden",  message=FALSE}
 charm.mat <- chr.arm.cnv(segdf, genome.v = "hg19", verbose = FALSE)
 require(gplots2,quietly = TRUE,warn.conflicts = FALSE)
 
-heatmap.2(charm.mat[,],Rowv=NA,trace='none',cexCol=.5, lhei=c(0.25,1), dendrogram='col', key.title="Copy number",
+heatmap.2(charm.mat[order(rownames(charm.mat))[1:42],],Rowv=NA,trace='none',cexCol=.5, lhei=c(0.25,1), dendrogram='col', key.title="Copy number",
         col=colorRampPalette(c("blue","white","red"))(256))
 ```
 
@@ -185,7 +186,7 @@ legend("topright",paste("cor=",cor(dat2)[1,2], sep=""))
 
 Both CNV segmentation profiles and SV calls produce orthogonal results for variants that involve dosage changes (duplications and deletions). The function `match.breaks` compare both approaches by identifying colocalizing breakpoints. This function can also be used to compare two sets of CNV brekpoints obtaind from different algorithms or SV callers since the format of both CNV and SV breaks objects have the same format.  
 
-```{r plot3,  fig.width=9, fig.height=5, fig.align='center', fig.cap = "Common breakpoints by sample",  message=FALSE}
+```{r plot3,  fig.width=12, fig.height=5, fig.align='center', fig.cap = "Common breakpoints by sample",  message=FALSE}
 
 common.breaks <- match.breaks(cnv_breaks, sv_breaks, 
                               maxgap=50000, verbose=FALSE)
@@ -270,7 +271,7 @@ fdr.test <- freq.p.test(shatt_lung_cnv$high.density.regions.hc, method="fdr", p.
 
 We can visualize the aggregate map of shattered regions for all samples with `shattered.map.plot`. 
 
-```{r plot5,  fig.width=9, fig.height=4, fig.align='center', fig.cap = "Recurrently shattered regions map", message=FALSE}
+```{r plot5,  fig.width=12, fig.height=4, fig.align='center', fig.cap = "Recurrently shattered regions map", message=FALSE}
 shattered.map.plot(shatt_lung_cnv, fdr = fdr.test$freq.cut)
 ```
 
