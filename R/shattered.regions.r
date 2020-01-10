@@ -3,11 +3,11 @@
 #' Caller for shattered genomic regions based on breakpoint densities
 #' @param seg (data.frame) segmentation data with 6 columns: sample, chromosome, start, end, probes, segment_mean
 #' @param sv (data.frame) structural variant table including  8 columns: sample, chrom1, pos1, strand1, chrom2, pos2, strand2, svclass
-#' @param fc.pct (numeric) copy number change between 2 consecutive segments: i.e (default) cutoff = 0.2 represents a fold change of 0.8 or 1.2
-#' @param min.seg.size (numeric) The minimun segment size (in base pairs) to include in the analysis 
-#' @param min.num.probes (numeric) The minimun number of probes per segment to include in the analysis 
-#' @param low.cov (data.frame) a data.frame (chr, start, end) indicating low coverage regions to exclude from the analysis
-#' @param clean.brk (numeric) n of redundant breakpoints to filter out 
+#' @param fc.pct (numeric) inherited from seg.breaks(); copy number change between 2 consecutive segments: i.e (default) cutoff = 0.2 represents a fold change of 0.8 or 1.2
+#' @param min.seg.size (numeric) inherited from seg.breaks(); The minimun segment size (in base pairs) to include in the analysis 
+#' @param min.num.probes (numeric) inherited from seg.breaks(); The minimun number of probes per segment to include in the analysis 
+#' @param low.cov (data.frame) inherited from seg.breaks(), sv.breaks() and match.breaks; a data.frame (chr, start, end) indicating low coverage regions to exclude from the analysis
+#' @param clean.brk (numeric) inherited from seg.breaks(); n of redundant breakpoints to filter out 
 #' @param window.size (numeric) size in megabases of the genmome bin to compute break density 
 #' @param slide.size (numeric) size in megabases of the sliding genmome window
 #' @param num.seg.breaks (numeric) number of segmentation breakpoints per segments to be considered high-density break 
@@ -16,6 +16,8 @@
 #' @param num.sv.sd (numeric) number of standard deviations above the sample average for num.sv.breaks
 #' @param num.common.breaks (numeric) number of common SV and segmentation breakpoints per segments to be considered high-density break
 #' @param num.common.sd (numeric) number of standard deviations above the sample average for num.common.breaks
+#' @param maxgap (numeric) inherited from match.breaks(); sets the maximum gap between co-localizing orthogonal breakpoints
+#' @param chrlist (character) vector containing chromosomes to include in the analysis; if NULL all chromosomes available in the input will be included
 #' @param interleaved.cut (numeric) 0-1 value indicating percentage of interleaved (non-contiguous) SV breakpoint pairs
 #' @param dist.iqm.cut (numeric) interquantile average of the distance between breakpoints within a shattered region
 #' @keywords chromothripsis, chromoplexy, chromosome shattering

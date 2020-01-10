@@ -379,8 +379,9 @@ Most currently available cancer genomics datasets incorporate CNV characterizati
     * [Breakpoint burden analysis](#breakpoint-burden-analysis)
 * [Co-localization of breakpoints](#co\-localization-of-breakpoints)
 * [Identification of shattered regions](#identification-of-shattered-regions)
+    * [Chromosome shattering combining SV and CNV](#chromosome-shattering-using-sv-and-cnv)
     * [Chromosome shattering using CNV data only](#chromosome-shattering-using-cnv-data-only)
-    * [Chromosome shattering using CNV and SV data](#chromosome-shattering-using-cnv-and-sv-data)
+    * [Visualization of shattered regions](#visualization-of-shattered-regions)
     * [Recurrently shattered regions](#recurrently-shattered-regions)
 * [Recurrently altered genes](#recurrently-altered-genes)
     * [Gene level CNV](#gene-level-cnv)
@@ -617,43 +618,20 @@ segdf <- validate.seg(segdat_lung_ccle)
 svdf <- validate.sv(svdat_lung_ccle)
 ```
 
-### Chromosome shattering using CNV data only
+### Chromosome shattering combining SV and CNV 
 
-The whole genome is binned into user defined `window.size` (Mb) and slided by `slide.size` (Mb) in order to identify regions with high CNV breakpoint density. Two cutoffs are considered for each genomic bin:
-  
-* num.breaks = the minimum number of breakpoints
-* num.sd = the number of standard deviations above the average within a sample
-  
-In addition, we evaluate the interquantile average of the distance between breakpoints in a given region.
-  
-* dist.iqm.cut (default = 150000 b)
+1) Identification of genomic bins with high density of breakpoints
+    * The genome is binned into 10Mb windows (`window.size == 10`) and slide into 2Mb (`slide.size == 2`).
+    * Breakpoints are defined using `seg.breaks` (CNV), `sv.breaks` (SV) and `match.breaks` (common) and then mapped into bins; minimum thresholds are set using `num.seg.breaks = 6`, `num.sv.breaks = 6` and `num.common.breaks = 3` respectively.
+    * The number of breaks must be of shattered regions are spected to be out-liers therefor the n times above the average in each sample can be defined using `num.seg.sd = 5`, `num.sv.sd = 5` and `num.common.sd = 0`
 
+2) Identification if shattered regions
+    * Contiguous bins with high density of breakpoints are collapsed into shattered regions
+    * To discard complex focal events such as circular amplifications or double minutes, the interquartile average of the distances between breaks is set to `dist.iqm.cut = 150000`.
+    * Finaly shattered regions such as chromothripsis and chromoplexy produce interleaved SVs. We set the percentage of interleaved SVs with `interleaved.cut = 0.33` to discard regions with less than 33% interleaved variants.
 
-```r
-shatt_lung_cnv <- shattered.regions.cnv(segdf, fc.pct = 0.2, clean.brk = 4, window.size = 10,
-                                        min.num.probes = 3, slide.size = 2,num.breaks = 8, 
-                                        num.sd = 5, dist.iqm.cut = 150000,verbose=FALSE)
-shatt_lung_cnv$regions.summary$A549_LUNG
-```
+(more info `?shattered.regions`)
 
-```
-##   chrom     start       end nseg dist.iqm n.brk conf
-## 1  chr1 110206904 112706144    5 115758.5     9   lc
-## 2  chr3    377402  16241354    6 466057.7    22   HC
-## 3  chr4 168970791 176576580    1 778410.0     8   HC
-## 4  chr6  25347255  32530221    1 166325.0     8   HC
-## 5  chr7 134278307 149847513    3 143582.3    13   lc
-## 6 chr15  20586232  30894417    2 690287.2    10   HC
-```
-
-
-### Chromosome shattering using CNV and SV data
-
-Analogously we can combine CNVs and SVs breakpoins to obtain a more robust evaluation of chromosome shattering (see `?shattered.regions`) 
-In addition SVs provide linkage for each SV breakpoint pair which allows for an additional parametter:
-  
-* interleaved.cut the minimun percentage (0-1) of interleaved SVs
-    
 
 ```r
 shatt_lung <- shattered.regions(segdf, svdf, fc.pct = 0.05,  min.num.probes = 3, clean.brk = 4,
@@ -673,7 +651,31 @@ shatt_lung$regions.summary$NCIH522_LUNG
 ## 5 chr21  10994075  47273167   15     -  3.8e+07     294867.9   267349.74        65       67         31        34  0.08333333   HC
 ```
 
-Circos plotting is available via [circlize](https://cran.r-project.org/web/packages/circlize/index.html) package wrapper function  `circ.chromo.plot`:
+### Chromosome shattering using CNV data only
+
+A simplified version of `shattered regions` uses only CNV segmentation data, which is available in more often and in larger datasets. The `shattered.regions.cnv` follows the same approach but disregards parameters that are only available for SV data.
+
+
+```r
+shatt_lung_cnv <- shattered.regions.cnv(segdf, fc.pct = 0.2, clean.brk = 4, window.size = 10,
+                                        min.num.probes = 3, slide.size = 2,num.breaks = 8, 
+                                        num.sd = 5, dist.iqm.cut = 150000,verbose=FALSE)
+shatt_lung_cnv$regions.summary$A549_LUNG
+```
+
+```
+##   chrom     start       end nseg dist.iqm n.brk conf
+## 1  chr1 110206904 112706144    5 115758.5     9   lc
+## 2  chr3    377402  16241354    6 466057.7    22   HC
+## 3  chr4 168970791 176576580    1 778410.0     8   HC
+## 4  chr6  25347255  32530221    1 166325.0     8   HC
+## 5  chr7 134278307 149847513    3 143582.3    13   lc
+## 6 chr15  20586232  30894417    2 690287.2    10   HC
+```
+ 
+### Visualization of shattered regions
+
+Circos plotting is available via [circlize](https://cran.r-project.org/web/packages/circlize/index.html) package wrapper function  `circ.chromo.plot`, which takes an object generated by `shattered.regions` function. The circular plot represents (inward to outward): Structural variants, CNVs, shattered regions (purple) and the ideogram. 
 
 
 ```r
@@ -687,11 +689,11 @@ circ.chromo.plot(shatt_lung,sample.id = "NCIH510_LUNG")
 
 ### Recurrently shattered regions
 
-To establish whether certain regions suffer chromosome shatter-ing above expectation, we evaluate the null hypothesis that shat-tered regions occur throughout the genome at random; To this end we first create an empirical null distribution based on the sample set under study. The null is then compared with the ob-served distribution to obtain empirical p-values and corrected for multiple hypothesis testing. The corrected p-values deemed statis-tically significant define regions under selection pressure for chromosome shattering.
+To establish whether certain regions suffer chromosome shatter-ing above expectation, we evaluate the null hypothesis that shat-tered regions occur throughout the genome at random; To this end we first create an empirical null distribution based on the sample set under study. The null is then compared with the ob-served distribution (`shatt_lung_cnv$high.density.regions.hc`) to obtain empirical adjusted p-values. The bins with corrected p-values deemed statistically significant define regions under selection pressure for chromosome shattering. Since the genomic bins might span low coverage regions where no CNV or SVs are mapped we removed remove bins with frequancy = 0 detting the `zerofreq=TRUE`.
 
 
 ```r
-null.test <- freq.p.test(shatt_lung_cnv$high.density.regions.hc, method="bonferroni", p.cut = 0.05)
+null.test <- freq.p.test(shatt_lung_cnv$high.density.regions.hc, method="bonferroni", p.cut = 0.05, iter = 100, zerofreq=TRUE)
 
 # Compare observed frequencies versus the null distribution of recurrently shattered regions; 
 # the histogram bars represent proportion of genomic bins for each ginven number of samples found shattered

@@ -32,15 +32,15 @@ shattered.regions(
 
 \item{sv}{(data.frame) structural variant table including  8 columns: sample, chrom1, pos1, strand1, chrom2, pos2, strand2, svclass}
 
-\item{fc.pct}{(numeric) copy number change between 2 consecutive segments: i.e (default) cutoff = 0.2 represents a fold change of 0.8 or 1.2}
+\item{fc.pct}{(numeric) inherited from seg.breaks(); copy number change between 2 consecutive segments: i.e (default) cutoff = 0.2 represents a fold change of 0.8 or 1.2}
 
-\item{min.seg.size}{(numeric) The minimun segment size (in base pairs) to include in the analysis}
+\item{min.seg.size}{(numeric) inherited from seg.breaks(); The minimun segment size (in base pairs) to include in the analysis}
 
-\item{min.num.probes}{(numeric) The minimun number of probes per segment to include in the analysis}
+\item{min.num.probes}{(numeric) inherited from seg.breaks(); The minimun number of probes per segment to include in the analysis}
 
-\item{low.cov}{(data.frame) a data.frame (chr, start, end) indicating low coverage regions to exclude from the analysis}
+\item{low.cov}{(data.frame) inherited from seg.breaks(), sv.breaks() and match.breaks; a data.frame (chr, start, end) indicating low coverage regions to exclude from the analysis}
 
-\item{clean.brk}{(numeric) n of redundant breakpoints to filter out}
+\item{clean.brk}{(numeric) inherited from seg.breaks(); n of redundant breakpoints to filter out}
 
 \item{window.size}{(numeric) size in megabases of the genmome bin to compute break density}
 
@@ -57,6 +57,10 @@ shattered.regions(
 \item{num.common.breaks}{(numeric) number of common SV and segmentation breakpoints per segments to be considered high-density break}
 
 \item{num.common.sd}{(numeric) number of standard deviations above the sample average for num.common.breaks}
+
+\item{maxgap}{(numeric) inherited from match.breaks(); sets the maximum gap between co-localizing orthogonal breakpoints}
+
+\item{chrlist}{(character) vector containing chromosomes to include in the analysis; if NULL all chromosomes available in the input will be included}
 
 \item{interleaved.cut}{(numeric) 0-1 value indicating percentage of interleaved (non-contiguous) SV breakpoint pairs}
 

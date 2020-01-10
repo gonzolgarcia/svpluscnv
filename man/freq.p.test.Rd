@@ -4,7 +4,14 @@
 \alias{freq.p.test}
 \title{Obtains significance cutoff for the frequency of binary events encoded in a matrix}
 \usage{
-freq.p.test(mat, method = "fdr", p.cut = 0.05, iter = 100)
+freq.p.test(
+  mat,
+  method = "fdr",
+  p.cut = 0.05,
+  iter = 100,
+  zerofreq = TRUE,
+  verbose = TRUE
+)
 }
 \arguments{
 \item{mat}{(numeric matrix) a binary matrix where columns will be tested for their sum value compared to a permutated matrix}
@@ -14,6 +21,8 @@ freq.p.test(mat, method = "fdr", p.cut = 0.05, iter = 100)
 \item{p.cut}{(numeric) the cutoff for multiple hypothesis corrected p.value}
 
 \item{iter}{(numeric) Number of iterations to produce null distribution (note that null size will be iter*ncol(mat))}
+
+\item{zerofreq}{(logical) whether to remove bins with observed frequency = 0; It is recommended to set to TRUE when the bins span genomic regions of low coverage}
 }
 \description{
 Obtains significance cutoff for the frequency of binary events encoded in a matrix
