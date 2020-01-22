@@ -152,8 +152,8 @@ shattered.regions.cnv <- function(seg,
     }
     conf[which(dist.iqm < dist.iqm.cut )] <-"lc"
     chrom <- regions$chrom
-    nseg <- regions$nseg
-    restab[[cl]] <- data.frame(chrom,start,end,nseg,dist.iqm,n.brk,conf)
+    nbins <- regions$nseg
+    restab[[cl]] <- data.frame(chrom,start,end,nbins,dist.iqm,n.brk,conf)
   }
   if(verbose) close(pb)
   
@@ -176,9 +176,15 @@ shattered.regions.cnv <- function(seg,
     regions.summary = restab,
     high.density.regions = highDensityRegions,
     high.density.regions.hc = highDensityRegionsHC,
-    seg.brk.dens=seg.brk.dens,
+    seg.brk.dens = seg.brk.dens,
+    sv.brk.dens = NULL,
+    seg.brk.common.dens = NULL,
+    sv.brk.common.dens = NULL,
     segbrk = breaks,
-    segdat = segdat
+    svbrk = NULL,
+    common.brk = NULL,
+    segdat = segdat,
+    svdat = NULL
   ))
 }
 

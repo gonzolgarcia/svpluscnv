@@ -166,7 +166,7 @@ shattered.regions <- function(seg,
       }
       tabmerged <- remove.factors(as.data.frame(do.call(rbind,agglistUniq)))
       for(i in 2:4) tabmerged[,i] <- as.numeric( tabmerged[,i] )
-      colnames(tabmerged) <- c("chrom","start","end","nseg")
+      colnames(tabmerged) <- c("chrom","start","end","nbins")
       restab[[cl]] <- tabmerged
     }
   }
@@ -175,6 +175,7 @@ shattered.regions <- function(seg,
   results <- list(
     regions.summary = restab,
     high.density.regions = highDensityRegions,
+    high.density.regions.hc = NULL,
     seg.brk.dens = segbrk.dens,
     sv.brk.dens = svbrk.dens,
     seg.brk.common.dens = segbrk.common.dens,

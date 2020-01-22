@@ -91,8 +91,8 @@ shattered.eval <- function(chromo.regs,
       interleaved[i] <- ct/length(unique(brkids))
     }    
     chrom <-regions[,"chrom"]
-    nseg<-regions[,"nseg"]
-    regions <- data.frame(chrom,start,end,nseg)
+    nbins<-regions[,"nbins"]
+    regions <- data.frame(chrom,start,end,nbins)
     
     # Find links between shattered regions   
     if(nrow(chromo.regs$regions.summary[[cl]]) > 1 ){

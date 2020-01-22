@@ -57,7 +57,8 @@ Most currently available cancer genomics datasets incorporate CNV characterizati
 * [Recurrently altered genes](#recurrently-altered-genes)
     * [Gene level CNV](#gene-level-cnv)
     * [Recurrently altered genes overlapping with CNV breakpoints](#recurrently-altered-genes-overlapping-with-cnv-breakpoints)
-    * [Recurrently altered genes overlapping with structural variants](#recurrently-altered-genes-overlapping-with-sv-breakpoints)
+    * [Recurrently altered genes overlapping with structural variants calls](#recurrently-altered-genes-overlapping-with-structural-variants-calls)
+    * [Integrated visualization of SVs and CNV of recurrently altered genes](#integrated-visualization-of-svs-and-cnv-of-recurrently-altered-genes)
 
 ------------
 
@@ -230,7 +231,7 @@ svdf <- validate.sv(svdat_lung_ccle)
 2) Identification if shattered regions
     * Contiguous bins with high density of breakpoints are collapsed into shattered regions
     * To discard complex focal events such as circular amplifications or double minutes, the interquartile average of the distances between breaks is set to `dist.iqm.cut = 150000`.
-    * Finaly shattered regions such as chromothripsis and chromoplexy produce interleaved SVs. We set the percentage of interleaved SVs with `interleaved.cut = 0.33` to discard regions with less than 33% interleaved variants.
+    * Finally, shattered regions such as chromothripsis and chromoplexy produce interleaved SVs. We set the percentage of interleaved SVs with `interleaved.cut = 0.33` to discard regions with less than 33% interleaved variants.
 
 (more info `?shattered.regions`)
 
@@ -239,7 +240,7 @@ shatt_lung <- shattered.regions(segdf, svdf, fc.pct = 0.05,  min.num.probes = 3,
                                 window.size = 10, slide.size = 2, num.seg.breaks = 6, 
                                 num.seg.sd = 5, num.sv.breaks = 6, num.sv.sd = 5, 
                                 num.common.breaks = 2, num.common.sd = 0, interleaved.cut = 0.33,
-                                dist.iqm.cut = 100000,verbose=FALSE)
+                                dist.iqm.cut = 100000,verbose=TRUE)
 shatt_lung$regions.summary$NCIH522_LUNG
 ```
 
@@ -297,43 +298,12 @@ And finally collect groups of samples with recurrent shattered regions as define
 
 ```{r message=FALSE}
 # obtain genomic bins within above the FDR cutoff
-freq.matrix <- apply(shatt_lung_cnv$high.density.regions.hc,2,sum)
-textRegions <- names(which(freq.matrix >= null.test$freq.cut))
-hitRegions <- remove.factors((data.frame(do.call(rbind,strsplit(textRegions," ")))))
-hitRegions[,2] <- as.numeric(hitRegions[,2])
-hitRegions[,3] <- as.numeric(hitRegions[,3])
-colnames(hitRegions) <- c("chr","start","end")
-rownames(hitRegions) <-textRegions
 
-# collapes contiguous bins into unique regions
-bins2remove <- c()
-for(i in 2:nrow(hitRegions)){ 
-  if(hitRegions[i,"chr"] == hitRegions[i-1,"chr"] ){
-    if(hitRegions[i,"start"] < (hitRegions[i-1,"end"])){
-      hitRegions[i,"start"] <- hitRegions[i-1,"start"]
-      bins2remove <- c(bins2remove,textRegions[i-1])
-    }
-  }
-}
-hitRegionsPost<- hitRegions[setdiff(rownames(hitRegions),bins2remove),]
-
-require(GenomicRanges)
-hitRegions_gr <- with(hitRegions, GRanges(chr, IRanges(start=start, end=end)))
-hitRegionsPost_gr <- with(hitRegionsPost, GRanges(chr, IRanges(start=start, end=end)))
-hits <-GenomicAlignments::findOverlaps(hitRegionsPost_gr,hitRegions_gr)
-
-regList <- list()
-for(i in unique(queryHits(hits))) regList[[paste(hitRegionsPost[i,],collapse=" ") ]] <- textRegions[subjectHits(hits)[which(queryHits(hits) == i)]]
-
-# obtain the genomic bins with maximum number of samples
-regListPeak <- lapply(regList, function(x) 
-    names(which(freq.matrix[x] == max(freq.matrix[x]))))
-# collect samples with shattered region in the peaks 
-regListPeakSamples <- lapply(regListPeak, function(x) 
-    names(which(apply(cbind(shatt_lung_cnv$high.density.regions.hc[,x]),1,sum) > 0)))
+hotspots <- hot.spot.samples(shatt_lung_cnv, freq.cut=null.test$freq.cut)
+hotspots$peakRegionsSamples[2]
 ```
 
-Beyond this point the user can perform case/control hipothesys for chromosome shattering of specific genomic regions within the dataset under study.
+Beyond this point the user can test case/control hipothesys for chromosome shattering of specific genomic regions within the dataset under study.
 
 
 ## Recurrently altered genes
@@ -389,4 +359,19 @@ barplot(sort(unlist(lapply(results_sv$upstreamSamples,length)),decreasing=TRUE)[
         las=1,main="Upstream region disrupted",horiz=TRUE,xlab="#samples")
 ```
 
+### Integrated visualization of SVs and CNV of recurrently altered genes
 
+Integrating segmentation and SV calls is critical to understand the role of structural variants in recurrently altered genes. `svcnvplus` includes an integrated visualization tool `sv.model.view`. Also we included a genomic rtrack plot function in order to build layouts; The `gene.track.view` can also be used to retrieve specific gene coordinates.
+
+```{r plot9,  fig.width=9, fig.height=12, fig.align='center', fig.cap = "Recurrently altered genes with overlapping SV breakpoints", message=FALSE}
+
+df <- gene.track.view(symbol = "PTPRD", plot=FALSE, genome.v = "hg19")$df
+start <- min(df$txStart) - 150000
+stop <- max(df$txEnd) + 50000
+chr <- df$chrom[1]
+
+layout(matrix(c(1,1,2,2),2,2 ,byrow = TRUE),heights = c(8,2))
+par(mar=c(0,10,1,1))
+sv.model.view(svdf, segdf, chr,start,stop, addlegend = 'both',addtext=c("TRA"),cnvlim = c(-2,2),cex.axis=1,text.size=.8)
+gene.track.view(chr=chr ,start=start,stop=stop,addtext=TRUE)
+```

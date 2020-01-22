@@ -45,7 +45,7 @@ circ.chromo.plot <- function(shatt.regions,
   alllinks1 <- data.frame(svdat$chrom1,svdat$pos1,svdat$pos1 )
   alllinks2 <- data.frame(svdat$chrom2,svdat$pos2,svdat$pos2 )
   colnames(alllinks1) <- colnames(alllinks2) <- c("chr","start","end")
-  map = setNames(c("blue", "red", "orange", "orange","orange","black","green"), c("DEL", "DUP","INV","h2hINV","t2tINV","TRA","INS"))
+  map = setNames(c("blue", "red", "orange","black","green"), c("DEL", "DUP","INV","TRA","INS"))
   alllinkcolors <- map[as.character(svdat$svclass)]
   
   cnv <- segdat[,c("chrom","start","end","segmean")]

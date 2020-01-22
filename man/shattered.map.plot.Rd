@@ -8,7 +8,7 @@ shattered.map.plot(
   shatt.regions,
   conf = "hc",
   genome.v = "hg19",
-  fdr_cut = NULL,
+  freq.cut = NULL,
   add.legend = "top"
 )
 }
@@ -19,7 +19,7 @@ shattered.map.plot(
 
 \item{genome.v}{(hg19 or hg38) reference genome version to draw chromosome limits and centromeres}
 
-\item{fdr_cut}{the value to draw an horizontal line based}
+\item{freq.cut}{the value to draw an horizontal line; use 'freq.p.test' to obtain a threshold for statisticaly significant hot spots}
 
 \item{add.legend}{the position of the legend in the plot; if null, no legend will be draw}
 }

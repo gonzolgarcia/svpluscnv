@@ -3,7 +3,7 @@
 \name{validate.sv}
 \alias{validate.sv}
 \title{This function calculates the percent genome changed by CNV
-sv classes accepted: DEL(deletion), DUP(duplication), h2hINV(head to head inversion), t2tINV(tail to tail inversion), TRA(translocation), INV(inversion)}
+sv classes accepted: DEL(deletion), DUP(duplication), INS(insertion), TRA(translocation), INV(inversion)}
 \usage{
 validate.sv(sv)
 }
@@ -12,7 +12,7 @@ validate.sv(sv)
 }
 \description{
 This function calculates the percent genome changed by CNV
-sv classes accepted: DEL(deletion), DUP(duplication), h2hINV(head to head inversion), t2tINV(tail to tail inversion), TRA(translocation), INV(inversion)
+sv classes accepted: DEL(deletion), DUP(duplication), INS(insertion), TRA(translocation), INV(inversion)
 }
 \examples{
 validate.sv()

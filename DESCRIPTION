@@ -1,12 +1,17 @@
 Package: svcnvplus
 Title: Bunch of CNV amd SV analysis tools
-Version: 0.0.10
+Version: 0.5.00
 Authors@R: 
 	person(given = "Gonzalo",
 		family = "Lopez",
 		role = c("aut", "cre"),
 		email = "gonzolgarcia@gmail.com",
 		comment = c(ORCID = "0000-0002-5092-1284"))
+	person(given = "Federico",
+		family = "Giorgi",
+		role = c("aut", "cre"),
+		email = "federico.giorgi@gmail.com",
+		comment = c(ORCID = "0000-0002-7325-9908"))
 Maintainer: Gonzao Lopez <gonzolgarcia@gmail.com>
 Description: Analysis focused on CNV segmentation data and SV calls; integration of CNV and SV calls; chromothripsis and chromosome shattering analyses.
 License: MIT License
@@ -23,7 +28,9 @@ Imports:
 	data.table,
 	tidyr,
 	circlize,
-	D3GB
+	D3GB,
+	Matrix,
+	shape
 Suggests: 
 	BiocStyle,
 	knitr,

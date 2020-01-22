@@ -1,7 +1,7 @@
 #' 
 #'
 #' This function calculates the percent genome changed by CNV
-#' sv classes accepted: DEL(deletion), DUP(duplication), h2hINV(head to head inversion), t2tINV(tail to tail inversion), TRA(translocation), INV(inversion)
+#' sv classes accepted: DEL(deletion), DUP(duplication), INS(insertion), TRA(translocation), INV(inversion)
 #' @param sv (data.frame) structural variant table including  8 columns: sample, chrom1, pos1, strand1, chrom2, pos2, strand2, svclass
 #' @keywords SV, structural variants
 #' @export
@@ -26,9 +26,12 @@ validate.sv <- function(sv){
   stopifnot(is.character(sv$strand1))
   stopifnot(is.character(sv$strand2))
   
-wrong_class <- setdiff(unique(sv$svclass),c("DEL","DUP","h2hINV","t2tINV","TRA","INV","INS","BND"))
+  sv[grep("INV",sv$svclass),"svclass"] <- "INV"
+  sv[grep("DUP",sv$svclass),"svclass"] <- "DUP"
+  
+wrong_class <- setdiff(unique(sv$svclass),c("DEL","DUP","TRA","INV","INS","BND"))
 try(if(length(wrong_class) > 0) message(paste("SV classes not accepted:", paste(wrong_class,collapse=",")) ))
-sv <- sv[which(sv$svclass %in% c("DEL","DUP","h2hINV","t2tINV","TRA","INV","INS","BND")),]
+sv <- sv[which(sv$svclass %in% c("DEL","DUP","TRA","INV","INS","BND")),]
 
 # ensure that pos1 is upstream pos2
 intrachr <- which(unlist(lapply(apply(sv[,c("chrom1","chrom2")],1,unique),length)) == 1) 

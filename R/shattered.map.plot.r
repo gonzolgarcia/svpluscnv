@@ -4,7 +4,7 @@
 #' @param shatt.regions  object returned by 'shattered.regions' or 'shattered.regions.cnv'
 #' @param conf (character) either 'hc' for high confidence objects or else all included
 #' @param genome.v (hg19 or hg38) reference genome version to draw chromosome limits and centromeres
-#' @param fdr_cut the value to draw an horizontal line based 
+#' @param freq.cut the value to draw an horizontal line; use 'freq.p.test' to obtain a threshold for statisticaly significant hot spots 
 #' @param add.legend the position of the legend in the plot; if null, no legend will be draw
 #' @keywords chromosome shattering, genome map
 #' @export
@@ -25,7 +25,7 @@
 shattered.map.plot <- function(shatt.regions,
                           conf="hc",
                           genome.v = "hg19",
-                          fdr_cut=NULL,
+                          freq.cut=NULL,
                           add.legend="top"){
 
     require(D3GB,quietly = TRUE,warn.conflicts = FALSE)
@@ -80,7 +80,7 @@ plot(data[,1:2],type='h',col=coloresBarplot,xaxt='n',lwd=1.5,ylim=c(0, max(data[
      las=1,bty='n',yaxt='n',family="Arial",ylab="",xlab="")
 for(i in 1:length(chrstarts) ) rect( chrstarts[i],0,chrstarts[i]+chrlengths[i],1000, col=altcols[i],border=NA )
 mtext(gsub("chr","",names(axislab)),side=1,at=axislab,las=1,col=altcols2,cex=c(rep(1,17),rep(0.8,5),1) )
-if(fdr_cut) lines(c(0,chrstarts["chrX"]+chrlengths["chrX"]),c(fdr_cut,fdr_cut),lty=3,col="lightgrey")    
+if(freq.cut) lines(c(0,chrstarts["chrX"]+chrlengths["chrX"]),c(freq.cut,freq.cut),lty=3,col="lightgrey")    
 axis(2,las=1,pos= 0, cex=1.2)
 axis(4,las=1,pos= max(data[,1])+10000, cex=1.2, at=axTicks(2), labels=sprintf("%.2f",axTicks(2)/dim(shatt.regions$high.density.regions)[1]) )
 mtext("Frequency",side=4,line=1.5)
