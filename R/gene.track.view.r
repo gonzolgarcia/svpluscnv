@@ -10,6 +10,7 @@
 #' @param addlegend (logic) 
 #' @param addtext (logic) 
 #' @param plot (logic)
+#' @param show.chr (character) if not null will show the chromosome name at specified location (Default "topleft")
 #' @keywords CNV, segmentation
 #' @export
 #' @examples
@@ -22,6 +23,7 @@ gene.track.view <- function(chr=NULL, start=NULL, stop=NULL,
                        cex.text=0.6,
                        addtext=TRUE,
                        plot = TRUE,
+                       show.chr="topleft",
                        ...){
     
     if(genome.v %in% c("hg19","GRCh37")){
@@ -121,7 +123,7 @@ if(plot == TRUE){
     interval <- round((stop - start)/5000) * 1000
     xlabs <- seq(floor(start/10000)*10000, ceiling(stop/10000)*10000,interval)
     axis(1, at = xlabs, lwd.ticks=1.5,pos=0)
-
+    if(!is.null(show.chr)) legend(show.chr,gsub("chr","Chromosome ",chr),cex=1.5,bty='n')
     #mtext(xlabs, at=xlabs, side=1, cex=1)
     
 }

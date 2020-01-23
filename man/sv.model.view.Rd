@@ -10,11 +10,14 @@ sv.model.view(
   chr,
   start,
   stop,
+  sampleids = NULL,
   cnvlim = c(-2, 2),
   addlegend = "both",
   interval = NULL,
   addtext = NULL,
-  text.size = 0.8,
+  cex.text = 0.8,
+  plot = TRUE,
+  summary = TRUE,
   ...
 )
 }
@@ -27,14 +30,18 @@ sv.model.view(
 
 \item{start}{(numeric) genomic coordinate from specified chromosome to start plotting}
 
-\item{cnvlim}{(numeric) limits for color coding of background CNV log-ratios}
+\item{cnvlim}{(numeric) limits for color coding of background CNV log-ratios. Use to modify the CNV color contrast at different levels.}
 
 \item{addlegend}{(character) one of 'sv' (show SV type legend), 'cnv' (show CNV background color legend) or 'both'.}
 
 \item{addtext}{(character) a vector indicating what SV types should include text labels indicating brakpoint partners genomic locations. 
 The labeels are only added to point tbreakpoint locations outside the plot area. (e.g. c("TRA","INV") )}
 
-\item{text.size}{(numeric) point size of the text}
+\item{cex.text}{(numeric) point size of the text}
+
+\item{plot}{(logic) whether to produce a graphical output}
+
+\item{summary}{(logic) whether the function shoud return CNV segment 'segbrk' and SV 'svbrk' breakpoints tabular output}
 
 \item{...}{additional plot parameters from graphics plot function}
 
@@ -45,6 +52,20 @@ Integrated visualization of SVs and SNV in local genomic regions
 }
 \examples{
 plot()
+
+## validate input data.frames
+seg <- validate.seg(segdat_lung_ccle)
+sv <- validate.sv(svdat_lung_ccle)
+
+# obtain the coordinates of a desired genomic regionbased on a known gene locus 
+df <- gene.track.view(symbol = "PTPRD", plot=FALSE)$df
+start <- min(df$txStart) - 150000;
+stop <- max(df$txEnd) + 50000;
+chr <- df$chrom[1]
+
+par(mar=c(0,10,1,1))
+sv.model.view(sv, seg, chr, start, stop,addlegend = TRUE, addtext=c("TRA"))
+
 }
 \keyword{CNV,}
 \keyword{segmentation}

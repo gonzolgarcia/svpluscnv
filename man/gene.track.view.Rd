@@ -15,6 +15,7 @@ gene.track.view(
   cex.text = 0.6,
   addtext = TRUE,
   plot = TRUE,
+  show.chr = "topleft",
   ...
 )
 }
@@ -34,6 +35,8 @@ gene.track.view(
 \item{addtext}{(logic)}
 
 \item{plot}{(logic)}
+
+\item{show.chr}{(character) if not null will show the chromosome name at specified location (Default "topleft")}
 
 \item{end}{(numeric) genomic coordinate from specified chromosome to stop plotting}
 

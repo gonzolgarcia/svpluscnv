@@ -24,6 +24,9 @@ sv.break.annot(
 
 \item{sv.seg.size}{(numeric) segmental variants (DEL, DUP, INV or INS) size limit; bigger sigments are considered translocations}
 }
+\value{
+an instance of the class 'break.annot' containing breakpoint mapping onto genes
+}
 \description{
 Identify recurrently altered genes by strutural variants
 }

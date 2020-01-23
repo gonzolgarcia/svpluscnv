@@ -72,8 +72,9 @@ map2color <- function(x, pal, limits=NULL){
 
 
 #' Given two lists with (or without common names) returns a combined list; if common names their values merged and returned as unique
-#' @param x list 1
-#' @param y list 2
+#' @param x (list) input list 1
+#' @param y (list) input list 2
+#' @param func (character) Either 'unique' or 'intersect' are accepted
 #' @return a combined list 
 #' @keywords list 
 #' @export
@@ -83,15 +84,28 @@ map2color <- function(x, pal, limits=NULL){
 #' y <- sapply(letters[5:15], function(i) sample(1:10)[1:sample(2:10)[1]], simplify=FALSE )
 #' merge2lists(x,y)
 
-merge2lists <- function(x,y){
+merge2lists <- function(x,y,fun="unique"){
     mergedList <- list()
-    for(i in unique(c(names(x),names(y)))){
-        if(length(y[[i]]) == 0 & length(x[[i]]) > 0){			mergedList[[i]] <- x[[i]]
-        }else if(length(y[[i]]) > 0 & length(x[[i]]) == 0){	mergedList[[i]] <- y[[i]]
-        }else if(length(y[[i]]) > 0 & length(x[[i]]) > 0){	mergedList[[i]] <- c(x[[i]],y[[i]])
+    if(fun == "unique"){
+        for(i in unique(c(names(x),names(y)))){
+            if(length(y[[i]]) == 0 & length(x[[i]]) > 0){
+                mergedList[[i]] <- x[[i]]
+            }else if(length(y[[i]]) > 0 & length(x[[i]]) == 0){	
+                mergedList[[i]] <- y[[i]]
+            }else if(length(y[[i]]) > 0 & length(x[[i]]) > 0){
+                mergedList[[i]] <- unique(c(x[[i]],y[[i]]))
+            }
         }
+    }else if(fun == "intersect"){
+        for(i in intersect(names(x),names(y)) ){
+            commonElements <- intersect(x[[i]],y[[i]])
+            if(length(commonElements) > 0){
+                mergedList[[i]] <- commonElements
+            }
+        }
+    }else{
+        stop(paste("Unknown function:",func) )
     }
-    mergedList<-lapply(mergedList,unique)
     return(mergedList)
 }
 

@@ -4,12 +4,14 @@
 \alias{merge2lists}
 \title{Given two lists with (or without common names) returns a combined list; if common names their values merged and returned as unique}
 \usage{
-merge2lists(x, y)
+merge2lists(x, y, fun = "unique")
 }
 \arguments{
-\item{x}{list 1}
+\item{x}{(list) input list 1}
 
-\item{y}{list 2}
+\item{y}{(list) input list 2}
+
+\item{func}{(character) Either 'unique' or 'intersect' are accepted}
 }
 \value{
 a combined list
