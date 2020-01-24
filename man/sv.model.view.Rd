@@ -30,6 +30,8 @@ sv.model.view(
 
 \item{start}{(numeric) genomic coordinate from specified chromosome to start plotting}
 
+\item{sampleids}{(character)}
+
 \item{cnvlim}{(numeric) limits for color coding of background CNV log-ratios. Use to modify the CNV color contrast at different levels.}
 
 \item{addlegend}{(character) one of 'sv' (show SV type legend), 'cnv' (show CNV background color legend) or 'both'.}

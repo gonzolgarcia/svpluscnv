@@ -4,6 +4,7 @@
 #' @param sv (data.frame) structural variant table including  8 columns: sample, chrom1, pos1, strand1, chrom2, pos2, strand2, svclass
 #' @param chr (character) chromosome (e.g chr9)
 #' @param start (numeric) genomic coordinate from specified chromosome to start plotting
+#' @param sampleids (character)
 #' @param end (numeric) genomic coordinate from specified chromosome to stop plotting
 #' @param cnvlim (numeric) limits for color coding of background CNV log-ratios. Use to modify the CNV color contrast at different levels.
 #' @param addlegend (character) one of 'sv' (show SV type legend), 'cnv' (show CNV background color legend) or 'both'.
@@ -58,8 +59,8 @@ sv.model.view <- function(sv, seg, chr, start, stop,
         }else if(length(missing.samples) > 0){
             warning(paste("The following samples provided are not found in 'sv' and 'seg' input data:", paste(missing.samples,collapse=" "),sep=" "))
         }
-        svdat<-svdat[intersect(sampleids,svdat$sample),]
-        segdat<-segdat[intersect(sampleids,segdat$sample),]
+        svdat<-svdat[which(svdat$sample %in% intersect(sampleids,svdat$sample)),]
+        segdat<-segdat[which(segdat$sample %in% intersect(sampleids,segdat$sample)),]
     }
 
     genegr <- with(data.frame(chr,start,stop), GRanges(chr, IRanges(start=start, end=stop))) 

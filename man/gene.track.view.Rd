@@ -14,8 +14,9 @@ gene.track.view(
   genome.v = "hg19",
   cex.text = 0.6,
   addtext = TRUE,
-  plot = TRUE,
   show.chr = "topleft",
+  plot = TRUE,
+  summary = TRUE,
   ...
 )
 }
@@ -34,9 +35,11 @@ gene.track.view(
 
 \item{addtext}{(logic)}
 
+\item{show.chr}{(character) if not null will show the chromosome name at specified location (Default "topleft")}
+
 \item{plot}{(logic)}
 
-\item{show.chr}{(character) if not null will show the chromosome name at specified location (Default "topleft")}
+\item{summary}{(logic) whether the function shoud return CNV segment 'segbrk' and SV 'svbrk' breakpoints tabular output}
 
 \item{end}{(numeric) genomic coordinate from specified chromosome to stop plotting}
 

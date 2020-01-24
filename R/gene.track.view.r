@@ -11,6 +11,7 @@
 #' @param addtext (logic) 
 #' @param plot (logic)
 #' @param show.chr (character) if not null will show the chromosome name at specified location (Default "topleft")
+#' @param summary (logic) whether the function shoud return CNV segment 'segbrk' and SV 'svbrk' breakpoints tabular output
 #' @keywords CNV, segmentation
 #' @export
 #' @examples
@@ -22,8 +23,9 @@ gene.track.view <- function(chr=NULL, start=NULL, stop=NULL,
                        genome.v="hg19",
                        cex.text=0.6,
                        addtext=TRUE,
-                       plot = TRUE,
                        show.chr="topleft",
+                       plot = TRUE,
+                       summary=TRUE,
                        ...){
     
     if(genome.v %in% c("hg19","GRCh37")){
@@ -127,8 +129,10 @@ if(plot == TRUE){
     #mtext(xlabs, at=xlabs, side=1, cex=1)
     
 }
-    return(list(df=refseq_df,
+    if(summary){
+        return(list(df=refseq_df,
                 exonStarts = refseq$exonStarts[names(isonames)],
                 exonEnds = refseq$exonEnds[names(isonames)]))
+    }
 }
 
