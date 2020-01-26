@@ -8,6 +8,7 @@ cnv.break.annot(
   seg,
   fc.pct = 0.2,
   genome.v = "hg19",
+  genetab = NULL,
   maxgap = 1000,
   upstr = 50000,
   min.seg.size = NULL,

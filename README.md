@@ -400,6 +400,7 @@ devtools::install_github("gonzolgarcia/svcnvplus")
 
 
 
+
 ## Input data
 
 Two data types are allowed:
@@ -504,7 +505,7 @@ Visualization of CNV gain/loss frequencies across the genome; aggregates samples
 
 
 ```r
-cnv_freq <- cnv.freq.plot(segdf, fc.pct = 0.2)  # plot cnv frequencies
+cnv_freq <- cnv.freq(segdf, fc.pct = 0.2,plot=TRUE)  # plot cnv frequencies
 ```
 
 <img src="figure/plot1-1.png" title="Genome wide CNV frequencies" alt="Genome wide CNV frequencies" style="display: block; margin: auto;" />
@@ -532,9 +533,9 @@ The function `chr.arm.cnv` obtains the segment weighted average log-ratios for e
 
 ```r
 charm.mat <- chr.arm.cnv(segdf, genome.v = "hg19", verbose = FALSE)
-require(gplots,quietly = TRUE,warn.conflicts = FALSE)
 
 # heatmap plot of chromosome arm level CNV
+require(gplots,quietly = TRUE,warn.conflicts = FALSE)
 heatmap.2(charm.mat[order(rownames(charm.mat))[1:42],],Rowv=NA,trace='none',cexCol=.5, lhei=c(0.25,1), dendrogram='col', key.title="Copy number",
         col=colorRampPalette(c("blue","white","red"))(256))
 ```
@@ -552,6 +553,12 @@ Per sample measure of genome instability; calculates what percentage of the geno
 
 ```r
 pct_change <- pct.genome.changed(segdf, fc.pct = 0.2)
+head(pct_change)
+```
+
+```
+##       PAISNS       PAIVZR       PAIXFZ       PAKZRH       PALKXJ       PALNVP 
+## 0.2449286786 0.0439952736 0.0003125753 0.0004199808 0.4302685820 0.2972370088
 ```
 
 ### Breakpoint burden analysis
@@ -576,40 +583,16 @@ dat2 <- log2(1+cbind(pct_change,
                      cnv_breaks$brk.burden[names(pct_change)]))
 
 par(mfrow=c(1,2))
-plot(dat1, xlab="SV burden", ylab="CNV breakpoint burden")
-legend("topright",paste("cor=",cor(dat1)[1,2], sep=""))
-plot(dat2, xlab="percentage genome changed", ylab="CNV breakpoint burden")
-legend("topright",paste("cor=",cor(dat2)[1,2], sep=""))
+plot(dat1, xlab="log2(1+SV break count)", ylab="log2(1+CNV break count)")
+legend("bottomright",paste("Pearson's cor=",sprintf("%.f2",cor(dat1)[1,2]), sep=""))
+plot(dat2, xlab="percentage genome changed", ylab="log2(1+CNV break count)")
+legend("bottomright",paste("Pearson's cor=",sprintf("%.f2",cor(dat2)[1,2]), sep=""))
 ```
 
 <img src="figure/plot2-1.png" title="SV versus CNV breakpoint burden" alt="SV versus CNV breakpoint burden" style="display: block; margin: auto;" />
 
 ```r
 par(def.par)
-```
-
-```
-## Warning in par(def.par): graphical parameter "cin" cannot be set
-```
-
-```
-## Warning in par(def.par): graphical parameter "cra" cannot be set
-```
-
-```
-## Warning in par(def.par): graphical parameter "csi" cannot be set
-```
-
-```
-## Warning in par(def.par): graphical parameter "cxy" cannot be set
-```
-
-```
-## Warning in par(def.par): graphical parameter "din" cannot be set
-```
-
-```
-## Warning in par(def.par): graphical parameter "page" cannot be set
 ```
 
 ## Co-localization of breakpoints
@@ -626,6 +609,7 @@ restab <- data.frame(common.breaks$restab)[order(common.breaks$restab$total.brk2
 m2 <- sprintf("%.1f",100*mean(restab$matched.brk2/restab$total.brk2)) 
 
 # Plot the proportion of SV breakpoints that have colocalizing CNV breakpoints
+# This analysis has animportant quality control use case by identifying samples with low number of orthogonaly validated breakpoints
 barplot(rbind(restab$matched.brk2, restab$total.brk2 - restab$matched.brk2),
         border=NA,las=2,xlab="",horiz=FALSE,cex.main=.7,cex.names=.4, names=rownames(restab))
 legend("top",paste("SV breaks matched by CNV breaks\n","Average = ",m2,"%",sep=""),bty='n')
@@ -669,16 +653,15 @@ shatt_lung <- shattered.regions(segdf, svdf, fc.pct = 0.05,  min.num.probes = 3,
                                 num.seg.sd = 5, num.sv.breaks = 6, num.sv.sd = 5, 
                                 num.common.breaks = 2, num.common.sd = 0, interleaved.cut = 0.33,
                                 dist.iqm.cut = 100000,verbose=FALSE)
-shatt_lung$regions.summary$NCIH522_LUNG
+shatt_lung
 ```
 
 ```
-##   chrom     start       end nbins links reg.size dist.iqm.seg dist.iqm.sv n.brk.seg n.brk.sv n.orth.seg n.orth.sv interleaved conf
-## 1  chr2 184162747 192989418     3     -  1.4e+07     393135.8   535717.60        13       10          6         6  0.80000000   lc
-## 2  chr6  10394318  28148876     6   3,4  2.0e+07     389333.0    57651.52        19       46         14        16  0.15151515   HC
-## 3  chr6  39012920  45302501     2   2,4  1.2e+07     204034.0   157078.00         9       13          5         6  0.00000000   HC
-## 4  chr6  53985510  70945739     7   2,3  2.2e+07     173605.7    71656.24        29       52         19        24  0.12195122   HC
-## 5 chr21  10994075  47273167    15     -  3.8e+07     294867.9   267349.74        65       67         31        34  0.08333333   HC
+## An object of class chromo.regs from svcnvplus containing the following stats: 
+## Number of samples tested= 97 
+## Number of samples with shattered regions= 83 
+## Number of samples with high-confidence shattered regions= 72 
+## Number of samples with low-confidence shattered regions= 53
 ```
 
 ### Chromosome shattering using CNV data only
@@ -690,17 +673,15 @@ A simplified version of `shattered regions` uses only CNV segmentation data, whi
 shatt_lung_cnv <- shattered.regions.cnv(segdf, fc.pct = 0.2, clean.brk = 4, window.size = 10,
                                         min.num.probes = 3, slide.size = 2,num.breaks = 8, 
                                         num.sd = 5, dist.iqm.cut = 150000,verbose=FALSE)
-shatt_lung_cnv$regions.summary$A549_LUNG
+shatt_lung_cnv
 ```
 
 ```
-##   chrom     start       end nbins dist.iqm n.brk conf
-## 1  chr1 110206904 112706144     5 115758.5     9   lc
-## 2  chr3    377402  16241354     6 466057.7    22   HC
-## 3  chr4 168970791 176576580     1 778410.0     8   HC
-## 4  chr6  25347255  32530221     1 166325.0     8   HC
-## 5  chr7 134278307 149847513     3 143582.3    13   lc
-## 6 chr15  20586232  30894417     2 690287.2    10   HC
+## An object of class chromo.regs from svcnvplus containing the following stats: 
+## Number of samples tested= 185 
+## Number of samples with shattered regions= 179 
+## Number of samples with high-confidence shattered regions= 177 
+## Number of samples with low-confidence shattered regions= 132
 ```
  
 ### Visualization of shattered regions
@@ -709,12 +690,18 @@ Circos plotting is available via [circlize](https://cran.r-project.org/web/packa
 
 
 ```r
-par(mfrow=c(1,2))
+# plotting functions are available for whole genome and chromosomes with shattered regions (both combined CNV and SV and CNV only) 
+par(mfrow=c(1,3))
+circ.wg.plot(segdf,svdf,sample.id = "SCLC21H_LUNG")
+circ.chromo.plot(shatt_lung_cnv,sample.id = "SCLC21H_LUNG")
 circ.chromo.plot(shatt_lung,sample.id = "SCLC21H_LUNG")
-circ.chromo.plot(shatt_lung,sample.id = "NCIH510_LUNG")
 ```
 
 <img src="figure/plot4.1-1.png" title="Circos plot representing c LUNG cancer cell lines with chromothripsis" alt="Circos plot representing c LUNG cancer cell lines with chromothripsis" style="display: block; margin: auto;" />
+
+```r
+par(def.par)
+```
 
 
 ### Recurrently shattered regions
@@ -723,7 +710,7 @@ To establish whether certain regions suffer chromosome shattering above expectat
 
 
 ```r
-null.test <- freq.p.test(shatt_lung_cnv$high.density.regions.hc, method="bonferroni", p.cut = 0.05, iter = 100, zerofreq=TRUE)
+null.test <- freq.p.test(shatt_lung_cnv@high.density.regions.hc, method="bonferroni", p.cut = 0.05, iter = 100, zerofreq=TRUE)
 
 # Compare observed frequencies versus the null distribution of recurrently shattered regions; 
 # the histogram bars represent proportion of genomic bins for each ginven number of samples found shattered
@@ -761,10 +748,11 @@ hotspots$peakRegionsSamples[2]
 
 ```
 ## $`chr8 31254 22031254`
-##  [1] "ABC1_LUNG"     "EKVX_LUNG"     "HCC1171_LUNG"  "HCC1195_LUNG"  "HCC2814_LUNG"  "HCC2935_LUNG"  "HLFA_LUNG"     "LC1F_LUNG"     "LC1SQSF_LUNG"  "LK2_LUNG"     
-## [11] "LU99_LUNG"     "NCIH1092_LUNG" "NCIH1184_LUNG" "NCIH1395_LUNG" "NCIH1435_LUNG" "NCIH1568_LUNG" "NCIH1573_LUNG" "NCIH1581_LUNG" "NCIH1618_LUNG" "NCIH1650_LUNG"
-## [21] "NCIH196_LUNG"  "NCIH1975_LUNG" "NCIH2009_LUNG" "NCIH2023_LUNG" "NCIH2081_LUNG" "NCIH2087_LUNG" "NCIH2227_LUNG" "NCIH3255_LUNG" "NCIH441_LUNG"  "NCIH446_LUNG" 
-## [31] "RERFLCAI_LUNG" "RERFLCMS_LUNG" "SCLC21H_LUNG"
+##  [1] "ABC1_LUNG"     "EKVX_LUNG"     "HCC1171_LUNG"  "HCC1195_LUNG"  "HCC2814_LUNG"  "HCC2935_LUNG"  "HLFA_LUNG"    
+##  [8] "LC1F_LUNG"     "LC1SQSF_LUNG"  "LK2_LUNG"      "LU99_LUNG"     "NCIH1092_LUNG" "NCIH1184_LUNG" "NCIH1395_LUNG"
+## [15] "NCIH1435_LUNG" "NCIH1568_LUNG" "NCIH1573_LUNG" "NCIH1581_LUNG" "NCIH1618_LUNG" "NCIH1650_LUNG" "NCIH196_LUNG" 
+## [22] "NCIH1975_LUNG" "NCIH2009_LUNG" "NCIH2023_LUNG" "NCIH2081_LUNG" "NCIH2087_LUNG" "NCIH2227_LUNG" "NCIH3255_LUNG"
+## [29] "NCIH441_LUNG"  "NCIH446_LUNG"  "RERFLCAI_LUNG" "RERFLCMS_LUNG" "SCLC21H_LUNG"
 ```
 
 Beyond this point the user can test case/control hipothesys for chromosome shattering of specific genomic regions within the dataset under study.
@@ -776,26 +764,54 @@ Somatic pathogenic variants are characterized by presenting in recurrent pattern
 
 ### Gene level CNV
 
-Generates a matrix with gene level CNVs from a segmentation file and obtain the ranking of amplifications and deep deletions (cutoff = 2 => * copies; -2 => 0.5 copies).
+Generates a matrix with gene level CNVs from a segmentation file and obtain the ranking of amplifications and deep deletions.
 
 
 ```r
-segdf_clean <- clean.cnv.artifact(segdf, verbose=FALSE,n.reps = 4)  # remove likely artifacts from segmentation data
-gene_cnv <- gene.cnv(segdf_clean,genome.v = "hg19",fill.gaps = TRUE,verbose=FALSE)
-amplified <- apply(gene_cnv$cnvmat, 1, function(x) which(x > 2))
-deepdel <- apply(gene_cnv$cnvmat, 1, function(x) which(x < -2))
+# remove likely artifacts from segmentation data and fill gaps in the segmentation data (optional)
+segdf_clean <- clean.cnv.artifact(segdf, verbose=FALSE,n.reps = 4)  
+# obtain gene level CNV data as the average log ratio of each gene's overlapping CNV segments
+genecnv_data <- gene.cnv(segdf_clean,genome.v = "hg19",fill.gaps = TRUE,verbose=FALSE)
 ```
+
+```
+## Error in get.genesgr(genome.v = genome.v, chrlist = chrlist): object 'geneid' not found
+```
+
+```r
+# retrieve amplifications and deep deletion events using a log-ratio cutoff = +- 2
+amp_del_genes <- amp.del(genecnv_data, logr.cut = 2)
+```
+
+```
+## Error in amp.del(genecnv_data, logr.cut = 2): could not find function "amp.del"
+```
+
+The output of the function `amp.del` contains a ranking of genes based on the number of amplification and deletion events as well as lists containing the sample ids that can be used to build oncoprints or other visualizations. We can simply visualize the top of the ranking as below:
 
 
 ```r
 par(mfrow=c(1,2),mar=c(4,7,1,1))
-barplot(sort(unlist(lapply(amplified,length)),decreasing=TRUE)[20:1],col="red",
+barplot(amp_del_genes$amplified.rank[1:20],col="red",
         las=1,main="Amplified genes",horiz=TRUE,xlab="#samples")
-barplot(sort(unlist(lapply(deepdel,length)),decreasing=TRUE)[20:1],col="blue",
+```
+
+```
+## Error in barplot(amp_del_genes$amplified.rank[1:20], col = "red", las = 1, : object 'amp_del_genes' not found
+```
+
+```r
+barplot(amp_del_genes$deepdel.rank[1:20],col="blue",
         las=1,main="Candidate homozigously deleted genes",horiz=TRUE,xlab="#samples")
 ```
 
-<img src="figure/plot6-1.png" title="Recurrently altered genes with overlapping CNV breakpoints" alt="Recurrently altered genes with overlapping CNV breakpoints" style="display: block; margin: auto;" />
+```
+## Error in barplot(amp_del_genes$deepdel.rank[1:20], col = "blue", las = 1, : object 'amp_del_genes' not found
+```
+
+```r
+par(def.par)
+```
 
 
 ### Recurrently altered genes overlapping with SV and CNV breakpoints
@@ -807,6 +823,10 @@ Instead of focusing on high-level dosage changes, we evaluate whether CNV breakp
 results_cnv <- cnv.break.annot(segdf, 
                                fc.pct = 0.2, genome.v="hg19",clean.brk = 8,upstr = 100000,verbose=FALSE)
 ```
+
+```
+## Error in get.genesgr(genome.v = genome.v): object 'geneid' not found
+```
 SV calls do not incorporate dosage information, therefore we study the localization of breakpoints with respect to known genes. The annotation identifies small segmental variants overlapping with genes. For translocations (TRA) and large segmental variants (default > 200Kb) only the breakpoint overlap with genes are considered. `sv.break.annot` returns a list of genes and associated variants that can be retrieved for further analyses. In addition, every gene is associated via list to the sample ids harboring variants.
 
 
@@ -814,27 +834,49 @@ SV calls do not incorporate dosage information, therefore we study the localizat
 results_sv <- sv.break.annot(svdf, sv.seg.size = 200000, genome.v="hg19",upstr = 50000, verbose=FALSE)
 ```
 
+```
+## Error in get.genesgr(genome.v = genome.v): object 'geneid' not found
+```
+
 We can then integrate results obtained from scanning SV and CNV breks using the 'merge2lists' function 
 
 ```r
 # intersect elements from two lists
 disruptSamples <- merge2lists(results_cnv@disruptSamples,results_sv@disruptSamples, fun="intersect")
-upstreamSamples <- merge2lists(results_cnv@upstreamSamples,results_sv@upstreamSamples, fun="intersect")
+```
 
+```
+## Error in as.vector(y): object 'results_sv' not found
+```
+
+```r
+upstreamSamples <- merge2lists(results_cnv@upstreamSamples,results_sv@upstreamSamples, fun="intersect")
+```
+
+```
+## Error in as.vector(y): object 'results_sv' not found
+```
+
+```r
 # plot a ranking of recurrently altered genes
 par(mar=c(5,10,1,1),mfrow=c(1,2))
 barplot(rev(sort(unlist(lapply(disruptSamples,length)),decreasing=T)[1:20]),horiz=T,las=1)
+```
+
+```
+## Error in lapply(disruptSamples, length): object 'disruptSamples' not found
+```
+
+```r
 barplot(rev(sort(unlist(lapply(upstreamSamples,length)),decreasing=T)[1:20]),horiz=T,las=1)
 ```
 
-<img src="figure/plot7-1.png" title="Recurrently altered genes with overlapping CNV breakpoints" alt="Recurrently altered genes with overlapping CNV breakpoints" style="display: block; margin: auto;" />
+```
+## Error in lapply(upstreamSamples, length): object 'upstreamSamples' not found
+```
 
 ```r
-par(1)
-```
-
-```
-## NULL
+par(def.par)
 ```
 
 ### Integrated visualization of SVs and CNV in recurrently altered genes
@@ -848,16 +890,36 @@ start <- min(df$txStart) - 200000
 stop <- max(df$txEnd) + 50000
 chr <- df$chrom[1]
 
-# the argument 'sampleids' allow selecting the list of samples to show; if null, 
-sampleids <- disruptSamples$PTPRD
-    
+# The argument 'sampleids' allow selecting the list of samples to show; if null. 
+# In this case we are using the list of samples with SV breakpoints disrupting PTPRD
+sampleids <- results_cnv@disruptSamples$PTPRD
+```
+
+```
+## Error in eval(expr, envir, enclos): object 'results_cnv' not found
+```
+
+```r
+ sampleids <- NULL  
+ sampleids <- sort(results_sv@disruptSamples$PTPRD)
+```
+
+```
+## Error in sort(results_sv@disruptSamples$PTPRD): object 'results_sv' not found
+```
+
+```r
 layout(matrix(c(1,1,2,2),2,2 ,byrow = TRUE),heights = c(8,2))
 par(mar=c(0,10,1,1))
-sv.model.view(svdf, segdf, chr, start, stop, sampleids=sampleids, 
+sv.model.view(svdf, segdf[which(segdf$sample %in% svdf$sample),], chr, start, stop, sampleids=sampleids, 
               addlegend = 'both', addtext=c("TRA"), cnvlim = c(-2,2), 
-              cex=.8,cex.text =.8, summary = FALSE)
+              cex=.7,cex.text =.8, summary = FALSE)
 gene.track.view(chr=chr ,start=start, stop=stop, addtext=TRUE, cex.text=1, 
                 summary = FALSE)
 ```
 
-<img src="figure/plot9-1.png" title="Recurrently altered genes with overlapping SV breakpoints" alt="Recurrently altered genes with overlapping SV breakpoints" style="display: block; margin: auto;" />
+<img src="figure/plot9-1.png" title="Visualizaion of structural variants in PTPRD" alt="Visualizaion of structural variants in PTPRD" style="display: block; margin: auto;" />
+
+```r
+par(def.par)
+```

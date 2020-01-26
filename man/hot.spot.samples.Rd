@@ -4,12 +4,12 @@
 \alias{hot.spot.samples}
 \title{Define peak regions and samples in shattered regions hot spots}
 \usage{
-hot.spot.samples(chromo.regs, freq.cut)
+hot.spot.samples(chromo.regs.obj, freq.cut)
 }
 \arguments{
-\item{chromo.regs}{(list) an object returned by 'shattered.regions' and 'shattered.regions.cnv'}
+\item{chromo.regs.obj}{(chromo.regs) An object of class chromo.regs}
 
-\item{freq.cut}{(numeric) the hot spot threshold above which peaks are defined and sample ids collected}
+\item{freq.cut}{(numeric) the hot spot threshold above which peaks are defined for sample ID retrieval}
 }
 \description{
 Define peak regions and samples in shattered regions hot spots

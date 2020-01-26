@@ -5,14 +5,14 @@
 \title{Evaluate shattered regions based on interleaved breaks and breakpoint dispersion parameters}
 \usage{
 shattered.eval(
-  chromo.regs,
+  chromo.regs.obj,
   interleaved.cut = 0.5,
   dist.iqm.cut = 1e+05,
   verbose = TRUE
 )
 }
 \arguments{
-\item{chromo.regs}{(data.frame) segmentation data with 6 columns: sample, chromosome, start, end, probes, segment_mean}
+\item{chromo.regs.obj}{(chromo.regs) An object of class chromo.regs}
 
 \item{interleaved.cut}{(numeric) the percentage of non interleaved structural variant calls}
 

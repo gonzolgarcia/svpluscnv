@@ -1,14 +1,14 @@
 #' 
 #'
 #' Define peak regions and samples in shattered regions hot spots
-#' @param chromo.regs (list) an object returned by 'shattered.regions' and 'shattered.regions.cnv'
-#' @param freq.cut (numeric) the hot spot threshold above which peaks are defined and sample ids collected 
+#' @param chromo.regs.obj (chromo.regs) An object of class chromo.regs 
+#' @param freq.cut (numeric) the hot spot threshold above which peaks are defined for sample ID retrieval 
 #' @export
 #' 
 
-hot.spot.samples <- function(chromo.regs,freq.cut){
+hot.spot.samples <- function(chromo.regs.obj, freq.cut){
 
-freq.matrix <- apply(chromo.regs$high.density.regions.hc,2,sum)
+freq.matrix <- apply(chromo.regs.obj@high.density.regions.hc,2,sum)
 textRegions <- names(which(freq.matrix >= freq.cut))
 hitRegions <- remove.factors((data.frame(do.call(rbind,strsplit(textRegions," ")))))
 hitRegions[,2] <- as.numeric(hitRegions[,2])
@@ -42,7 +42,7 @@ peakRegions <- lapply(regList, function(x)
 
 # collect samples with shattered region in the peaks 
 peakRegionsSamples <- lapply(peakRegions, function(x) 
-    names(which(apply(cbind(shatt_lung_cnv$high.density.regions.hc[,x]),1,sum) > 0)))
+    names(which(apply(cbind(chromo.regs.obj@high.density.regions.hc[,x]),1,sum) > 0)))
 
 return(list(peakRegions=peakRegions,peakRegionsSamples=peakRegionsSamples))
 

@@ -1,5 +1,5 @@
 #' Evaluate shattered regions based on interleaved breaks and breakpoint dispersion parameters
-#' @param chromo.regs (data.frame) segmentation data with 6 columns: sample, chromosome, start, end, probes, segment_mean
+#' @param chromo.regs.obj (chromo.regs) An object of class chromo.regs 
 #' @param interleaved.cut (numeric) the percentage of non interleaved structural variant calls 
 #' @param dist.iqm.cut (numeric) interquantile average of the distance between breakpoints within a shattered region
 #' @param verbose (logical)
@@ -7,37 +7,36 @@
 #' 
 
 
-
-shattered.eval <- function(chromo.regs,
+shattered.eval <- function(chromo.regs.obj,
                            interleaved.cut=0.5,
                            dist.iqm.cut=100000,
                            verbose=TRUE){
   
-  svdat <- chromo.regs$svdat
-  segbrk  <- chromo.regs$segbrk
-  svbrk <- chromo.regs$svbrk
+  svdat <- chromo.regs.obj@svdat
+  segbrk  <- chromo.regs.obj@segbrk
+  svbrk <- chromo.regs.obj@svbrk
 
   if(verbose){
-    message(paste("Evaluating shattered regions in ",length(names(chromo.regs$regions.summary))," samples...",sep="") )
+    message(paste("Evaluating shattered regions in ",length(names(chromo.regs.obj@regions.summary))," samples",sep="") )
     pb <- txtProgressBar(style=3)
     cc <-0
-    tot <- length(chromo.regs$regions.summary)
+    tot <- length(chromo.regs.obj@regions.summary)
   }
   
-  for(cl in names(chromo.regs$regions.summary)){
+  for(cl in names(chromo.regs.obj@regions.summary)){
 
     if(verbose) cc <- cc+1
     if(verbose) setTxtProgressBar(pb, cc/tot)
 
-    regions <-   chromo.regs$regions.summary[[cl]]
+    regions <-   chromo.regs.obj@regions.summary[[cl]]
     br1 <- segbrk$breaks[which(segbrk$breaks$sample == cl),2:3]
     br2 <- svbrk$breaks[which(svbrk$breaks$sample == cl),2:3]
     colnames(br1) <- colnames(br2) <- c("chrom","pos")
     br1.gr <- with(br1, GRanges(chrom, IRanges(start=pos, end=pos)))
     br2.gr <- with(br2, GRanges(chrom, IRanges(start=pos, end=pos)))
     
-    c.br1 <- chromo.regs$common.brk$brk1_match[which(chromo.regs$common.brk$brk1_match$sample == cl),2:3]
-    c.br2 <- chromo.regs$common.brk$brk2_match[which(chromo.regs$common.brk$brk2_match$sample == cl),2:3]
+    c.br1 <- chromo.regs.obj@common.brk$brk1_match[which(chromo.regs.obj@common.brk$brk1_match$sample == cl),2:3]
+    c.br2 <- chromo.regs.obj@common.brk$brk2_match[which(chromo.regs.obj@common.brk$brk2_match$sample == cl),2:3]
     colnames(c.br1) <- colnames(c.br2) <- c("chrom","pos")
     c.br1.gr <- with(c.br1, GRanges(chrom, IRanges(start=pos, end=pos)))
     c.br2.gr <- with(c.br2, GRanges(chrom, IRanges(start=pos, end=pos)))
@@ -87,13 +86,13 @@ shattered.eval <- function(chromo.regs,
       ct<-0
       for(x in 2:length(brkids)) if(brkids[x] == brkids[x-1]) ct<-ct+1
       interleaved[i] <- ct/length(unique(brkids))
-    }    
+    }
     chrom <-regions[,"chrom"]
     nbins<-regions[,"nbins"]
     regions <- data.frame(chrom,start,end,nbins)
     
     # Find links between shattered regions   
-    if(nrow(chromo.regs$regions.summary[[cl]]) > 1 ){
+    if(nrow(chromo.regs.obj@regions.summary[[cl]]) > 1 ){
       record_mat<- matrix(nrow=0,ncol=2)
       links <- rep("",nrow(regions))
       for(i in 1:nrow(regions)){
@@ -112,15 +111,30 @@ shattered.eval <- function(chromo.regs,
     }else{
       links <- "-"
     }
-
   if(!is.null(interleaved.cut)) conf[which(interleaved >= interleaved.cut)] <- "lc"
   if(!is.null(dist.iqm.cut)) conf[which(apply(cbind(dist.iqm.seg,dist.iqm.sv),1,mean) < dist.iqm.cut)] <- "lc"
   conf[which(links != "-")] <- "HC"
-  chromo.regs$regions.summary[[cl]] <- remove.factors(data.frame(regions,links,reg.size,dist.iqm.seg,dist.iqm.sv,n.brk.seg,n.brk.sv,n.orth.seg,n.orth.sv,interleaved,conf))
-    
+  chromo.regs.obj@regions.summary[[cl]] <- remove.factors(data.frame(regions,links,reg.size,dist.iqm.seg,dist.iqm.sv,n.brk.seg,n.brk.sv,n.orth.seg,n.orth.sv,interleaved,conf))
   }
   if(verbose) close(pb)
   
-  return(chromo.regs)
+  
+  bins <- remove.factors(data.frame(do.call(rbind,strsplit(colnames(chromo.regs.obj@high.density.regions)," "))))
+  bins[,2] <- as.numeric( bins[,2])
+  bins[,3] <- as.numeric( bins[,3])
+  rownames(bins) <- colnames(chromo.regs.obj@high.density.regions)
+  binsGR <- with(bins, GRanges(X1, IRanges(start=X2, end=X3)))
+  highDensityRegionsHC <- chromo.regs.obj@high.density.regions
+  for(cl in names(chromo.regs.obj@regions.summary)){
+      lc <- chromo.regs.obj@regions.summary[[cl]][which(chromo.regs.obj@regions.summary[[cl]]$conf == "lc"),]
+      if(nrow(lc) > 0){
+          lcGR<- with(lc, GRanges(chrom, IRanges(start=start, end=end)))
+          hits = GenomicAlignments::findOverlaps(binsGR,lcGR)
+          highDensityRegionsHC[cl,rownames(bins[unique(queryHits(hits)),])] <- 0
+      }
+  }
+  chromo.regs.obj@high.density.regions.hc <- highDensityRegionsHC
+
+  return(chromo.regs.obj)
 }
 

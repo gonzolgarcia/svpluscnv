@@ -110,9 +110,6 @@ merge2lists <- function(x,y,fun="unique"){
 }
 
 
-
-#' 
-#'
 #' Generates n unique random character strings of a given length
 #' @param n character vector length to return 
 #' @param strlen random string length
@@ -136,4 +133,56 @@ createRandomString <- function(n=1, strlen=12, seed=123456789){
     
     return(idresult[[1]][1:n])
 }
+
+
+#' retrieves a GRanges object containinng gene annotations for the specified genome version 
+#' @param genome.v (hg19 or GRCh37 and hg38 or GRCh38) reference genome version to retrieve gene annotations 
+#' @keywords CNV, segmentation, genes
+#' @export
+#' @examples
+#' 
+#' get.genesgr(genome.v="hg19")
+#' 
+
+get.genesgr<- function(genome.v="hg19",chrlist=NULL){
+
+if(genome.v %in% c("hg19","GRCh37")){
+    require(TxDb.Hsapiens.UCSC.hg19.knownGene)
+    genesgr = genes(TxDb.Hsapiens.UCSC.hg19.knownGene)
+    
+}else if(genome.v %in% c("hg38","GRCh38")){
+    require(TxDb.Hsapiens.UCSC.hg38.knownGene)
+    genesgr = genes(TxDb.Hsapiens.UCSC.hg38.knownGene)
+}else{stop("Unspecified, or non available genome")}
+
+genesgr = genesgr[which(as.character(genesgr@seqnames) %in% chrlist)]
+if(geneid== "Symbol"){
+    err <- capture.output(
+        genesgr@elementMetadata$gene_id <- mapIds(org.Hs.eg.db, genesgr@elementMetadata$gene_id,  'SYMBOL','ENTREZID'),
+        type="message")
+}
+genesgr <- genesgr[which(!is.na(genesgr$gene_id))]
+genesgr <- genesgr[which(lapply(genesgr@elementMetadata$gene_id,length) > 0)]
+if(is.null(chrlist)) chrlist <- paste("chr",c(1:22,"X","Y"),sep="")
+genesgr <- genesgr[genesgr@seqnames %in% chrlist]
+
+return(genesgr)
+}
+
+#' A function to order a list of chromosomes 
+#' @param chrlist (character): a vector containing chromosome names (chr1, chr2...chrX,chrY  ) 
+#' @export
+#' @examples
+#' 
+#' chr.sort(chrlist)
+#' 
+
+chr.sort <- function(chrlist){ 
+    chrunique <- gsub("chr","",unique(chrlist))
+    chrsort <- chrlist[suppressWarnings(order(as.numeric(chrunique) ))]
+    return(chrsort)
+}
+
+
+
 

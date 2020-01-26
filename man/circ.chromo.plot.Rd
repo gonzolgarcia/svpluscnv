@@ -5,7 +5,7 @@
 \title{Circos plot combining segmentation and SV calls}
 \usage{
 circ.chromo.plot(
-  shatt.regions,
+  chromo.regs.obj,
   sample.id,
   genome.v = "hg19",
   lrr.pct = 0.2,
@@ -14,9 +14,9 @@ circ.chromo.plot(
 )
 }
 \arguments{
-\item{shatt.regions}{(list) an object returned by "shattered.regions" function}
+\item{chromo.regs.obj}{(chromo.regs) An object of class chromo.regs}
 
-\item{sample.id}{(character) the id of a sample to be plotted within names(shatt.regions$regions.summ)}
+\item{sample.id}{(character) the id of a sample to be plotted within names(chromo.regs.obj@regions.summ)}
 
 \item{genome.v}{(hg19 or h38) reference genome version to draw chromosome limits and centromeres}
 
@@ -40,7 +40,7 @@ sv <- validate.sv(svdat_lung_ccle)
 ## obtain shattered regions
 shatt.regions <- shattered.regions(seg,sv)
 
-id <-  names(shatt.regions$regions.summary)[1]
+id <-  names(chromo.regs.obj@regions.summary)[1]
 circ.chromo.plot(shatt.regions, sample.id = id)
 }
 \keyword{CNV,}

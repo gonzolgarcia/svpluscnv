@@ -26,7 +26,7 @@ shattered.regions.cnv <- function(seg,
                               min.seg.size = 0,
                               min.num.probes=0, 
                               low.cov = NULL,
-                              clean.brk=clean.brk,
+                              clean.brk=NULL,
                               window.size = 10,
                               slide.size = 2,
                               num.breaks = 10,
@@ -172,19 +172,31 @@ shattered.regions.cnv <- function(seg,
     }
   }
   
-  return(list(
+  results <- chromo.regs(
     regions.summary = restab,
     high.density.regions = highDensityRegions,
     high.density.regions.hc = highDensityRegionsHC,
     seg.brk.dens = seg.brk.dens,
-    sv.brk.dens = NULL,
-    seg.brk.common.dens = NULL,
-    sv.brk.common.dens = NULL,
+    sv.brk.dens = matrix(),
+    seg.brk.common.dens = matrix(),
+    sv.brk.common.dens = matrix(),
     segbrk = breaks,
-    svbrk = NULL,
-    common.brk = NULL,
+    svbrk = list(),
+    common.brk = list(),
     segdat = segdat,
-    svdat = NULL
-  ))
+    svdat = data.frame(),
+    param=list(
+        fc.pct = fc.pct,
+        min.seg.size = min.seg.size,
+        min.num.probes=min.num.probes, 
+        low.cov = low.cov,
+        clean.brk=clean.brk,
+        window.size = window.size,
+        slide.size = slide.size,
+        num.breaks = num.breaks,
+        num.sd = num.sd,
+        dist.iqm.cut = dist.iqm.cut)
+  )
+return(results)
 }
 

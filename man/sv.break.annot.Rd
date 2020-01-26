@@ -7,6 +7,7 @@
 sv.break.annot(
   sv,
   genome.v = "hg19",
+  genetab = NULL,
   maxgap = 0,
   upstr = 50000,
   sv.seg.size = 2e+05,
@@ -16,7 +17,7 @@ sv.break.annot(
 \arguments{
 \item{sv}{(data.frame) structural variant table including  8 columns: sample, chrom1, pos1, strand1, chrom2, pos2, strand2, svclass}
 
-\item{genome.v}{(hg19 or hg38) reference genome version to draw chromosome limits and centromeres}
+\item{genome.v}{(hg19 or hg38) reference genome version to retrieve gene annotations}
 
 \item{maxgap}{(numeric) offset region size (base pairs) beyond transcription start and end sites to extend for overlaps}
 

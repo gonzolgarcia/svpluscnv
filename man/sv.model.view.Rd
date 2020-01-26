@@ -65,7 +65,6 @@ start <- min(df$txStart) - 150000;
 stop <- max(df$txEnd) + 50000;
 chr <- df$chrom[1]
 
-par(mar=c(0,10,1,1))
 sv.model.view(sv, seg, chr, start, stop,addlegend = TRUE, addtext=c("TRA"))
 
 }

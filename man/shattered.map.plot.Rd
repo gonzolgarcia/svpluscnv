@@ -5,7 +5,7 @@
 \title{Plot CNV frequency across the human genome from a seg file sontaining multiple samples}
 \usage{
 shattered.map.plot(
-  shatt.regions,
+  chromo.regs.obj,
   conf = "hc",
   genome.v = "hg19",
   freq.cut = NULL,
@@ -13,7 +13,7 @@ shattered.map.plot(
 )
 }
 \arguments{
-\item{shatt.regions}{object returned by 'shattered.regions' or 'shattered.regions.cnv'}
+\item{chromo.regs.obj}{(chromo.regs) An object of class chromo.regs}
 
 \item{conf}{(character) either 'hc' for high confidence objects or else all included}
 
@@ -36,9 +36,9 @@ seg <- validate.seg(segdat_lung_ccle)
 sv <- validate.sv(svdat_lung_ccle)
 
 ## obtain shattered regions
-shatt.regions <- shattered.regions(seg,sv)
+chromo.regs.obj <- shattered.regions(seg,sv)
 
-shattered.map.plot(shatt.regions)
+shattered.map.plot(chromo.regs.obj)
 }
 \keyword{chromosome}
 \keyword{genome}
