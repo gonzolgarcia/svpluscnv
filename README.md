@@ -400,7 +400,6 @@ devtools::install_github("gonzolgarcia/svcnvplus")
 
 
 
-
 ## Input data
 
 Two data types are allowed:
@@ -591,9 +590,7 @@ legend("bottomright",paste("Pearson's cor=",sprintf("%.f2",cor(dat2)[1,2]), sep=
 
 <img src="figure/plot2-1.png" title="SV versus CNV breakpoint burden" alt="SV versus CNV breakpoint burden" style="display: block; margin: auto;" />
 
-```r
-par(def.par)
-```
+
 
 ## Co-localization of breakpoints
 
@@ -699,9 +696,7 @@ circ.chromo.plot(shatt_lung,sample.id = "SCLC21H_LUNG")
 
 <img src="figure/plot4.1-1.png" title="Circos plot representing c LUNG cancer cell lines with chromothripsis" alt="Circos plot representing c LUNG cancer cell lines with chromothripsis" style="display: block; margin: auto;" />
 
-```r
-par(def.par)
-```
+
 
 
 ### Recurrently shattered regions
@@ -769,13 +764,13 @@ Generates a matrix with gene level CNVs from a segmentation file and obtain the 
 
 ```r
 # remove likely artifacts from segmentation data and fill gaps in the segmentation data (optional)
-segdf_clean <- clean.cnv.artifact(segdf, verbose=FALSE,n.reps = 4)  
+segdf_clean <- clean.cnv.artifact(segdf, verbose=FALSE,n.reps = 4,fill.gaps = TRUE)  
 # obtain gene level CNV data as the average log ratio of each gene's overlapping CNV segments
-genecnv_data <- gene.cnv(segdf_clean,genome.v = "hg19",fill.gaps = TRUE,verbose=FALSE)
+genecnv_data <- gene.cnv(segdf_clean,genome.v = "hg19",fill.gaps = FALSE,verbose=FALSE)
 ```
 
 ```
-## Error in get.genesgr(genome.v = genome.v, chrlist = chrlist): object 'geneid' not found
+## Error in match(x, table, nomatch = 0L): 'match' requires vector arguments
 ```
 
 ```r
@@ -809,9 +804,6 @@ barplot(amp_del_genes$deepdel.rank[1:20],col="blue",
 ## Error in barplot(amp_del_genes$deepdel.rank[1:20], col = "blue", las = 1, : object 'amp_del_genes' not found
 ```
 
-```r
-par(def.par)
-```
 
 
 ### Recurrently altered genes overlapping with SV and CNV breakpoints
@@ -825,7 +817,7 @@ results_cnv <- cnv.break.annot(segdf,
 ```
 
 ```
-## Error in get.genesgr(genome.v = genome.v): object 'geneid' not found
+## Error in mapIds_base(x, keys, column, keytype, ..., multiVals = multiVals): mapIds must have at least one key to match against.
 ```
 SV calls do not incorporate dosage information, therefore we study the localization of breakpoints with respect to known genes. The annotation identifies small segmental variants overlapping with genes. For translocations (TRA) and large segmental variants (default > 200Kb) only the breakpoint overlap with genes are considered. `sv.break.annot` returns a list of genes and associated variants that can be retrieved for further analyses. In addition, every gene is associated via list to the sample ids harboring variants.
 
@@ -835,7 +827,7 @@ results_sv <- sv.break.annot(svdf, sv.seg.size = 200000, genome.v="hg19",upstr =
 ```
 
 ```
-## Error in get.genesgr(genome.v = genome.v): object 'geneid' not found
+## Error in mapIds_base(x, keys, column, keytype, ..., multiVals = multiVals): mapIds must have at least one key to match against.
 ```
 
 We can then integrate results obtained from scanning SV and CNV breks using the 'merge2lists' function 
@@ -875,9 +867,7 @@ barplot(rev(sort(unlist(lapply(upstreamSamples,length)),decreasing=T)[1:20]),hor
 ## Error in lapply(upstreamSamples, length): object 'upstreamSamples' not found
 ```
 
-```r
-par(def.par)
-```
+
 
 ### Integrated visualization of SVs and CNV in recurrently altered genes
 
@@ -920,6 +910,4 @@ gene.track.view(chr=chr ,start=start, stop=stop, addtext=TRUE, cex.text=1,
 
 <img src="figure/plot9-1.png" title="Visualizaion of structural variants in PTPRD" alt="Visualizaion of structural variants in PTPRD" style="display: block; margin: auto;" />
 
-```r
-par(def.par)
-```
+

@@ -156,18 +156,19 @@ if(genome.v %in% c("hg19","GRCh37")){
 }else{stop("Unspecified, or non available genome")}
 
 genesgr = genesgr[which(as.character(genesgr@seqnames) %in% chrlist)]
-if(geneid== "Symbol"){
-    err <- capture.output(
-        genesgr@elementMetadata$gene_id <- mapIds(org.Hs.eg.db, genesgr@elementMetadata$gene_id,  'SYMBOL','ENTREZID'),
-        type="message")
-}
+
+err <- capture.output(
+    genesgr@elementMetadata$gene_id <- mapIds(org.Hs.eg.db, genesgr@elementMetadata$gene_id,  'SYMBOL','ENTREZID'),
+    type="message")
+
 genesgr <- genesgr[which(!is.na(genesgr$gene_id))]
 genesgr <- genesgr[which(lapply(genesgr@elementMetadata$gene_id,length) > 0)]
 if(is.null(chrlist)) chrlist <- paste("chr",c(1:22,"X","Y"),sep="")
-genesgr <- genesgr[genesgr@seqnames %in% chrlist]
+genesgr <- genesgr[which(genesgr@seqnames %in% chrlist)]
 
 return(genesgr)
 }
+
 
 #' A function to order a list of chromosomes 
 #' @param chrlist (character): a vector containing chromosome names (chr1, chr2...chrX,chrY  ) 

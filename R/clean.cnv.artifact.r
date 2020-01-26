@@ -20,7 +20,7 @@ clean.cnv.artifact<- function(seg,
                               n.reps=4,
                               seg.size=5000000,
                               pc.overlap=0.99,
-                              fill=TRUE,
+                              fill.gaps=TRUE,
                               verbose=TRUE){
 
   require(taRifx,quietly = TRUE,warn.conflicts = FALSE)
@@ -60,7 +60,7 @@ toremove <- unite(all_artifacts, newcol, c(sample,chrom,start,end), remove=FALSE
 allsegids <- unite(segdat, newcol, c(sample,chrom,start,end), remove=FALSE,sep=":")$newcol
 segdat_clean <- segdat[which(!allsegids %in% toremove),]
 
-if(fill){ 
+if(fill.gaps){ 
     segclean_fill <-  segment.gap(segdat_clean, verbose=verbose)
     return(segclean_fill)
   }else{

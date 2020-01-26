@@ -9,7 +9,7 @@ clean.cnv.artifact(
   n.reps = 4,
   seg.size = 5e+06,
   pc.overlap = 0.99,
-  fill = TRUE,
+  fill.gaps = TRUE,
   verbose = TRUE
 )
 }
@@ -22,9 +22,9 @@ clean.cnv.artifact(
 
 \item{pc.overlap}{(numeric) minimun percentage overlap for a pair of segments to be consider identical}
 
-\item{fill}{(logical) whether to fill gaps from the segmentaed file after filtering artifacts}
-
 \item{verbose}{(logical)}
+
+\item{fill}{(logical) whether to fill gaps from the segmentaed file after filtering artifacts}
 }
 \description{
 Obtain a matrix with the weighted average CN per chromosome arm

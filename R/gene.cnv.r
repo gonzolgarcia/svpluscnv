@@ -26,7 +26,7 @@ setMethod("show","genecnv",function(object){
 #' @param genome.v (hg19 or hg38) reference genome version to draw chromosome limits and centromeres
 #' @param chrlist (character) list of chromosomes to include chr1, chr2, etc...
 #' @param geneid (character) only "Symbol" accepted; if NULL, entrez ID will be used
-#' @param fill.gaps (logical) whether to fill the gaps in the segmentation file using gap neighbour segmean average as log ratio
+#' @param fill (logical) whether to fill the gaps in the segmentation file using gap neighbour segmean average as log ratio
 #' @param verbose (logical) 
 #' @keywords CNV, segmentation, genes
 #' @export
@@ -41,7 +41,7 @@ gene.cnv <- function(seg,
                      genome.v="hg19",
                      chrlist=NULL, 
                      geneid="Symbol",
-                     fill.gaps=TRUE,
+                     fill.gaps=FALSE,
                      verbose=TRUE){
 
 segdat <- validate.seg(seg)
@@ -53,7 +53,7 @@ if(fill.gaps) segdat <- segment.gap(seg, chrlist=chrlist, verbose=verbose)
 
 genesgr <- get.genesgr(genome.v=genome.v,chrlist=chrlist)
 
-genes_df <- remove.factors(as.data.frame(genes_df))
+genes_df <- remove.factors(as.data.frame(genesgr))
 genes_df <- genes_df[order(genes_df$start),]
 genes_df <- genes_df[order(genes_df$seqnames),]
 rownames(genes_df) <- genes_df$gene_id
@@ -93,7 +93,7 @@ for(i in unique(segdat$sample)){
   if(verbose) setTxtProgressBar(pb, cc/tot)
   }
 if(verbose) close(pb)
-cnvmat<- na.omit(cnvmat)
+#cnvmat<- na.omit(cnvmat)
 
 out <- genecnv(
     cnvmat=cnvmat,
