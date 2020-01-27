@@ -742,11 +742,9 @@ hotspots$peakRegionsSamples[1]
 ```
 
 ```
-## $`chr8 31254 22031254`
-##  [1] "ABC1_LUNG"     "EKVX_LUNG"     "HCC1171_LUNG"  "HCC1195_LUNG"  "HCC2814_LUNG"  "HCC2935_LUNG"  "HLFA_LUNG"     "LC1F_LUNG"     "LC1SQSF_LUNG"  "LK2_LUNG"     
-## [11] "LU99_LUNG"     "NCIH1092_LUNG" "NCIH1184_LUNG" "NCIH1395_LUNG" "NCIH1435_LUNG" "NCIH1568_LUNG" "NCIH1573_LUNG" "NCIH1581_LUNG" "NCIH1618_LUNG" "NCIH1650_LUNG"
-## [21] "NCIH196_LUNG"  "NCIH1975_LUNG" "NCIH2009_LUNG" "NCIH2023_LUNG" "NCIH2081_LUNG" "NCIH2087_LUNG" "NCIH2227_LUNG" "NCIH3255_LUNG" "NCIH441_LUNG"  "NCIH446_LUNG" 
-## [31] "RERFLCAI_LUNG" "RERFLCMS_LUNG" "SCLC21H_LUNG"
+## $`chr5 20015532 30015532`
+##  [1] "ABC1_LUNG"     "HCC4006_LUNG"  "HCC44_LUNG"    "NCIH1385_LUNG" "NCIH1563_LUNG" "NCIH1581_LUNG" "NCIH1648_LUNG" "NCIH2227_LUNG" "NCIH510_LUNG"  "NCIH520_LUNG" 
+## [11] "RERFLCMS_LUNG" "SKLU1_LUNG"    "T3M10_LUNG"
 ```
 
 Beyond this point the user can test case/control hipothesys for chromosome shattering of specific genomic regions within the dataset under study.
@@ -801,46 +799,20 @@ SV calls do not incorporate dosage information, therefore we study the localizat
 results_sv <- sv.break.annot(svdf, sv.seg.size = 200000, genome.v="hg19",upstr = 50000, verbose=FALSE)
 ```
 
-```
-## Error in data.frame(geneHits, svHits): arguments imply differing number of rows: 0, 9306
-```
-
 We can then integrate results obtained from scanning SV and CNV breks using the 'merge2lists' function 
 
 ```r
 # intersect elements from two lists
 disruptSamples <- merge2lists(results_cnv@disruptSamples,results_sv@disruptSamples, fun="intersect")
-```
-
-```
-## Error in as.vector(y): object 'results_sv' not found
-```
-
-```r
 upstreamSamples <- merge2lists(results_cnv@upstreamSamples,results_sv@upstreamSamples, fun="intersect")
-```
 
-```
-## Error in as.vector(y): object 'results_sv' not found
-```
-
-```r
 # plot a ranking of recurrently altered genes
 par(mar=c(5,10,1,1),mfrow=c(1,2))
 barplot(rev(sort(unlist(lapply(disruptSamples,length)),decreasing=T)[1:20]),horiz=T,las=1)
-```
-
-```
-## Error in lapply(disruptSamples, length): object 'disruptSamples' not found
-```
-
-```r
 barplot(rev(sort(unlist(lapply(upstreamSamples,length)),decreasing=T)[1:20]),horiz=T,las=1)
 ```
 
-```
-## Error in lapply(upstreamSamples, length): object 'upstreamSamples' not found
-```
+<img src="figure/plot7-1.png" title="Recurrently altered genes with overlapping CNV breakpoints" alt="Recurrently altered genes with overlapping CNV breakpoints" style="display: block; margin: auto;" />
 
 
 
@@ -859,25 +831,12 @@ chr <- df$chrom[1]
 # In this case we are using the list of samples with SV breakpoints disrupting PTPRD
 
 sampleids <- sort(results_sv@disruptSamples$PTPRD)
-```
 
-```
-## Error in sort(results_sv@disruptSamples$PTPRD): object 'results_sv' not found
-```
-
-```r
 layout(matrix(c(1,1,2,2),2,2 ,byrow = TRUE),heights = c(8,2))
 par(mar=c(0,10,1,1))
 sv.model.view(svdf, segdf[which(segdf$sample %in% svdf$sample),], chr, start, stop, sampleids=sampleids, 
               addlegend = 'both', addtext=c("TRA"), cnvlim = c(-2,2), 
               cex=.7,cex.text =.8, summary = FALSE)
-```
-
-```
-## Error in sv.model.view(svdf, segdf[which(segdf$sample %in% svdf$sample), : object 'sampleids' not found
-```
-
-```r
 gene.track.view(chr=chr ,start=start, stop=stop, addtext=TRUE, cex.text=1, 
                 summary = FALSE)
 ```

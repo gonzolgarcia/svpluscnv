@@ -21,7 +21,7 @@ break.annot <- setClass("break.annot",
 
 
 setMethod("show","break.annot",function(object){
-    writeLines(paste("An object of class annotsv from svcnvplus containing the following stats:
+    writeLines(paste("An object of class break.annot from svcnvplus containing the following stats:
                 \nNumber of samples=",length(unique(object@input$sample)),
                 "\nAltered genes=",length(object@disruptSamples)))
 })
@@ -86,7 +86,7 @@ sv.break.annot <- function(sv,
     
     if(verbose) message("Finding disrupting overlaps with segmental junctions")
     segOverlaps = GenomicAlignments::findOverlaps(genesgr, segmentEventGR,ignore.strand=TRUE,type="any",maxgap=maxgap)
-    geneHits <- genesgr@elementMetadata$SYMBOL[queryHits(segOverlaps)]
+    geneHits <- genesgr@elementMetadata$gene_id[queryHits(segOverlaps)]
     svHits <- segmentEventGR@elementMetadata$rowid[subjectHits(segOverlaps)]
     segResults <- remove.factors(data.frame(geneHits,svHits))
     aggList <- aggregate(svHits~geneHits,segResults,unique,simplify=FALSE)
@@ -96,14 +96,14 @@ sv.break.annot <- function(sv,
 
     if(verbose) message("Finding disrupting overlaps with left and right junction from translocation and lare SVs")
     leftOverlaps = GenomicAlignments::findOverlaps(genesgr,leftJunctionGR,ignore.strand=TRUE,type="any",maxgap=maxgap)
-    geneHits <- genesgr@elementMetadata$SYMBOL[queryHits(leftOverlaps)]
+    geneHits <- genesgr@elementMetadata$gene_id[queryHits(leftOverlaps)]
     svHits <- leftJunctionGR@elementMetadata$rowid[subjectHits(leftOverlaps)]
     leftResults <- remove.factors(data.frame(geneHits,svHits))
     leftJunctions <- sapply(unique(leftResults$geneHits), function(i) leftResults$svHits[which(leftResults$geneHits == i)],simplify=FALSE)
     leftSamples <- lapply(leftJunctions,function(x) unique(svdat[x,"sample"]))
 
     rightOverlaps = GenomicAlignments::findOverlaps(genesgr,rightJunctionGR,ignore.strand=TRUE,type="any",maxgap=maxgap)
-    geneHits <- genesgr@elementMetadata$SYMBOL[queryHits(rightOverlaps)]
+    geneHits <- genesgr@elementMetadata$gene_id[queryHits(rightOverlaps)]
     svHits <- rightJunctionGR@elementMetadata$rowid[subjectHits(rightOverlaps)]
     rightResults <- remove.factors(data.frame(geneHits,svHits))
     rightJunctions <- sapply(unique(rightResults$geneHits), function(i) rightResults$svHits[which(rightResults$geneHits == i)],simplify=FALSE)
@@ -114,7 +114,7 @@ sv.break.annot <- function(sv,
     
     if(verbose) message("Finding upstream gene overlaps with segmental junctions")
     segOverlapsUp = GenomicAlignments::findOverlaps(upstreamgr, segmentEventGR,ignore.strand=TRUE,type="any")
-    geneHits <- genesgr@elementMetadata$SYMBOL[queryHits(segOverlapsUp)]
+    geneHits <- genesgr@elementMetadata$gene_id[queryHits(segOverlapsUp)]
     svHits <- segmentEventGR@elementMetadata$rowid[subjectHits(segOverlapsUp)]
     segResultsUp <- remove.factors(data.frame(geneHits,svHits))
     segJunctionsUp <- sapply(unique(segResultsUp$geneHits), function(i) segResultsUp$svHits[which(segResultsUp$geneHits == i)],simplify=FALSE)
@@ -123,14 +123,14 @@ sv.break.annot <- function(sv,
 
     if(verbose) message("Finding  upstream gene overlaps with left and right junction from translocation and lare SVs")
     leftOverlapsUp = GenomicAlignments::findOverlaps(upstreamgr,leftJunctionGR,ignore.strand=TRUE,type="any")
-    geneHits <- genesgr@elementMetadata$SYMBOL[queryHits(leftOverlapsUp)]
+    geneHits <- genesgr@elementMetadata$gene_id[queryHits(leftOverlapsUp)]
     svHits <- leftJunctionGR@elementMetadata$rowid[subjectHits(leftOverlapsUp)]
     leftResultsUp <- remove.factors(data.frame(geneHits,svHits))
     leftJunctionsUp <- sapply(unique(leftResultsUp$geneHits), function(i) leftResultsUp$svHits[which(leftResultsUp$geneHits == i)],simplify=FALSE)
     leftSamplesUp <- lapply(leftJunctionsUp,function(x) unique(svdat[x,"sample"]))
 
     rightOverlapsUp = GenomicAlignments::findOverlaps(upstreamgr,rightJunctionGR,ignore.strand=TRUE,type="any")
-    geneHits <- genesgr@elementMetadata$SYMBOL[queryHits(rightOverlapsUp)]
+    geneHits <- genesgr@elementMetadata$gene_id[queryHits(rightOverlapsUp)]
     svHits <- rightJunctionGR@elementMetadata$rowid[subjectHits(rightOverlapsUp)]
     rightResultsUp <- remove.factors(data.frame(geneHits,svHits))
     rightJunctionsUp <- sapply(unique(rightResultsUp$geneHits), function(i) rightResultsUp$svHits[which(rightResultsUp$geneHits == i)],simplify=FALSE)
