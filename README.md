@@ -738,16 +738,15 @@ And finally collect groups of samples with recurrent shattered regions as define
 # obtain genomic bins within above the FDR cutoff
 
 hotspots <- hot.spot.samples(shatt_lung_cnv, freq.cut=null.test$freq.cut)
-hotspots$peakRegionsSamples[2]
+hotspots$peakRegionsSamples[1]
 ```
 
 ```
 ## $`chr8 31254 22031254`
-##  [1] "ABC1_LUNG"     "EKVX_LUNG"     "HCC1171_LUNG"  "HCC1195_LUNG"  "HCC2814_LUNG"  "HCC2935_LUNG"  "HLFA_LUNG"    
-##  [8] "LC1F_LUNG"     "LC1SQSF_LUNG"  "LK2_LUNG"      "LU99_LUNG"     "NCIH1092_LUNG" "NCIH1184_LUNG" "NCIH1395_LUNG"
-## [15] "NCIH1435_LUNG" "NCIH1568_LUNG" "NCIH1573_LUNG" "NCIH1581_LUNG" "NCIH1618_LUNG" "NCIH1650_LUNG" "NCIH196_LUNG" 
-## [22] "NCIH1975_LUNG" "NCIH2009_LUNG" "NCIH2023_LUNG" "NCIH2081_LUNG" "NCIH2087_LUNG" "NCIH2227_LUNG" "NCIH3255_LUNG"
-## [29] "NCIH441_LUNG"  "NCIH446_LUNG"  "RERFLCAI_LUNG" "RERFLCMS_LUNG" "SCLC21H_LUNG"
+##  [1] "ABC1_LUNG"     "EKVX_LUNG"     "HCC1171_LUNG"  "HCC1195_LUNG"  "HCC2814_LUNG"  "HCC2935_LUNG"  "HLFA_LUNG"     "LC1F_LUNG"     "LC1SQSF_LUNG"  "LK2_LUNG"     
+## [11] "LU99_LUNG"     "NCIH1092_LUNG" "NCIH1184_LUNG" "NCIH1395_LUNG" "NCIH1435_LUNG" "NCIH1568_LUNG" "NCIH1573_LUNG" "NCIH1581_LUNG" "NCIH1618_LUNG" "NCIH1650_LUNG"
+## [21] "NCIH196_LUNG"  "NCIH1975_LUNG" "NCIH2009_LUNG" "NCIH2023_LUNG" "NCIH2081_LUNG" "NCIH2087_LUNG" "NCIH2227_LUNG" "NCIH3255_LUNG" "NCIH441_LUNG"  "NCIH446_LUNG" 
+## [31] "RERFLCAI_LUNG" "RERFLCMS_LUNG" "SCLC21H_LUNG"
 ```
 
 Beyond this point the user can test case/control hipothesys for chromosome shattering of specific genomic regions within the dataset under study.
@@ -767,19 +766,8 @@ Generates a matrix with gene level CNVs from a segmentation file and obtain the 
 segdf_clean <- clean.cnv.artifact(segdf, verbose=FALSE,n.reps = 4,fill.gaps = TRUE)  
 # obtain gene level CNV data as the average log ratio of each gene's overlapping CNV segments
 genecnv_data <- gene.cnv(segdf_clean,genome.v = "hg19",fill.gaps = FALSE,verbose=FALSE)
-```
-
-```
-## Error in match(x, table, nomatch = 0L): 'match' requires vector arguments
-```
-
-```r
 # retrieve amplifications and deep deletion events using a log-ratio cutoff = +- 2
 amp_del_genes <- amp.del(genecnv_data, logr.cut = 2)
-```
-
-```
-## Error in apply(genecnv.obj@cnvmat, 1, function(x) names(which(x >= 2))): object 'genecnv_data' not found
 ```
 
 The output of the function `amp.del` contains a ranking of genes based on the number of amplification and deletion events as well as lists containing the sample ids that can be used to build oncoprints or other visualizations. We can simply visualize the top of the ranking as below:
@@ -789,20 +777,11 @@ The output of the function `amp.del` contains a ranking of genes based on the nu
 par(mfrow=c(1,2),mar=c(4,7,1,1))
 barplot(amp_del_genes$amplified.rank[1:20],col="red",
         las=1,main="Amplified genes",horiz=TRUE,xlab="#samples")
-```
-
-```
-## Error in barplot(amp_del_genes$amplified.rank[1:20], col = "red", las = 1, : object 'amp_del_genes' not found
-```
-
-```r
 barplot(amp_del_genes$deepdel.rank[1:20],col="blue",
         las=1,main="Candidate homozigously deleted genes",horiz=TRUE,xlab="#samples")
 ```
 
-```
-## Error in barplot(amp_del_genes$deepdel.rank[1:20], col = "blue", las = 1, : object 'amp_del_genes' not found
-```
+<img src="figure/plot6-1.png" title="Recurrently altered genes with overlapping CNV breakpoints" alt="Recurrently altered genes with overlapping CNV breakpoints" style="display: block; margin: auto;" />
 
 
 
@@ -815,10 +794,6 @@ Instead of focusing on high-level dosage changes, we evaluate whether CNV breakp
 results_cnv <- cnv.break.annot(segdf, 
                                fc.pct = 0.2, genome.v="hg19",clean.brk = 8,upstr = 100000,verbose=FALSE)
 ```
-
-```
-## Error in mapIds_base(x, keys, column, keytype, ..., multiVals = multiVals): mapIds must have at least one key to match against.
-```
 SV calls do not incorporate dosage information, therefore we study the localization of breakpoints with respect to known genes. The annotation identifies small segmental variants overlapping with genes. For translocations (TRA) and large segmental variants (default > 200Kb) only the breakpoint overlap with genes are considered. `sv.break.annot` returns a list of genes and associated variants that can be retrieved for further analyses. In addition, every gene is associated via list to the sample ids harboring variants.
 
 
@@ -827,7 +802,7 @@ results_sv <- sv.break.annot(svdf, sv.seg.size = 200000, genome.v="hg19",upstr =
 ```
 
 ```
-## Error in mapIds_base(x, keys, column, keytype, ..., multiVals = multiVals): mapIds must have at least one key to match against.
+## Error in data.frame(geneHits, svHits): arguments imply differing number of rows: 0, 9306
 ```
 
 We can then integrate results obtained from scanning SV and CNV breks using the 'merge2lists' function 
@@ -882,16 +857,8 @@ chr <- df$chrom[1]
 
 # The argument 'sampleids' allow selecting the list of samples to show; if null. 
 # In this case we are using the list of samples with SV breakpoints disrupting PTPRD
-sampleids <- results_cnv@disruptSamples$PTPRD
-```
 
-```
-## Error in eval(expr, envir, enclos): object 'results_cnv' not found
-```
-
-```r
- sampleids <- NULL  
- sampleids <- sort(results_sv@disruptSamples$PTPRD)
+sampleids <- sort(results_sv@disruptSamples$PTPRD)
 ```
 
 ```
@@ -904,6 +871,13 @@ par(mar=c(0,10,1,1))
 sv.model.view(svdf, segdf[which(segdf$sample %in% svdf$sample),], chr, start, stop, sampleids=sampleids, 
               addlegend = 'both', addtext=c("TRA"), cnvlim = c(-2,2), 
               cex=.7,cex.text =.8, summary = FALSE)
+```
+
+```
+## Error in sv.model.view(svdf, segdf[which(segdf$sample %in% svdf$sample), : object 'sampleids' not found
+```
+
+```r
 gene.track.view(chr=chr ,start=start, stop=stop, addtext=TRUE, cex.text=1, 
                 summary = FALSE)
 ```

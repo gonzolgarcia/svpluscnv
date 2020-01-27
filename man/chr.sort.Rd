@@ -17,3 +17,6 @@ A function to order a list of chromosomes
 chr.sort(chrlist)
 
 }
+\keyword{CNV,}
+\keyword{genes}
+\keyword{segmentation,}

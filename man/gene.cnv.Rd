@@ -8,7 +8,6 @@ gene.cnv(
   seg,
   genome.v = "hg19",
   chrlist = NULL,
-  geneid = "Symbol",
   fill.gaps = FALSE,
   verbose = TRUE
 )
@@ -19,8 +18,6 @@ gene.cnv(
 \item{genome.v}{(hg19 or hg38) reference genome version to draw chromosome limits and centromeres}
 
 \item{chrlist}{(character) list of chromosomes to include chr1, chr2, etc...}
-
-\item{geneid}{(character) only "Symbol" accepted; if NULL, entrez ID will be used}
 
 \item{verbose}{(logical)}
 

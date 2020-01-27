@@ -7,14 +7,11 @@
 merge2lists(x, y, fun = "unique")
 }
 \arguments{
-\item{x}{(list) input list 1}
+\item{x}{(list): input list 1}
 
-\item{y}{(list) input list 2}
+\item{y}{(list): input list 2}
 
-\item{func}{(character) Either 'unique' or 'intersect' are accepted}
-}
-\value{
-a combined list
+\item{fun}{(character): Either 'unique' or 'intersect' are accepted}
 }
 \description{
 Given two lists with (or without common names) returns a combined list; if common names their values merged and returned as unique
@@ -25,4 +22,5 @@ x <- sapply(letters[1:10], function(i) sample(1:10)[1:sample(2:10)[1]], simplify
 y <- sapply(letters[5:15], function(i) sample(1:10)[1:sample(2:10)[1]], simplify=FALSE )
 merge2lists(x,y)
 }
-\keyword{list}
+\keyword{lists}
+\keyword{merge}

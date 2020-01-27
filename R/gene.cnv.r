@@ -6,6 +6,8 @@
 #' @return an instance of the class 'genecnv' containing gene level copy number info
 #' @export
 #' 
+#' 
+
 genecnv <- setClass("genecnv",
                         representation(
                             cnvmat  = "matrix",
@@ -26,7 +28,6 @@ setMethod("show","genecnv",function(object){
 #' @param seg (data.frame) segmentation data with 6 columns: sample, chromosome, start, end, probes, segment_mean
 #' @param genome.v (hg19 or hg38) reference genome version to draw chromosome limits and centromeres
 #' @param chrlist (character) list of chromosomes to include chr1, chr2, etc...
-#' @param geneid (character) only "Symbol" accepted; if NULL, entrez ID will be used
 #' @param fill (logical) whether to fill the gaps in the segmentation file using gap neighbour segmean average as log ratio
 #' @param verbose (logical) 
 #' @keywords CNV, segmentation, genes
@@ -41,7 +42,6 @@ setMethod("show","genecnv",function(object){
 gene.cnv <- function(seg, 
                      genome.v="hg19",
                      chrlist=NULL, 
-                     geneid="Symbol",
                      fill.gaps=FALSE,
                      verbose=TRUE){
 
@@ -102,7 +102,6 @@ out <- genecnv(
     seg=segdat,
     param=list(genome.v=genome.v,
                chrlist=chrlist, 
-               geneid=geneid,
                fill.gaps=fill.gaps,
                verbose=verbose
     )
