@@ -779,7 +779,7 @@ amp_del_genes <- amp.del(genecnv_data, logr.cut = 2)
 ```
 
 ```
-## Error in amp.del(genecnv_data, logr.cut = 2): could not find function "amp.del"
+## Error in apply(genecnv.obj@cnvmat, 1, function(x) names(which(x >= 2))): object 'genecnv_data' not found
 ```
 
 The output of the function `amp.del` contains a ranking of genes based on the number of amplification and deletion events as well as lists containing the sample ids that can be used to build oncoprints or other visualizations. We can simply visualize the top of the ranking as below:

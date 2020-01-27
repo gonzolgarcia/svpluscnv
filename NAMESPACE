@@ -2,6 +2,7 @@
 
 export(IQM)
 export(IQSD)
+export(amp.del)
 export(ave.segmean)
 export(break.density)
 export(chr.arm.cnv)
