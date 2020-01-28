@@ -9,7 +9,7 @@
 #' 
 
 get.genesgr<- function(genome.v="hg19",chrlist=NULL){
-    
+    require(org.Hs.eg.db)
     if(genome.v %in% c("hg19","GRCh37")){
         require(TxDb.Hsapiens.UCSC.hg19.knownGene)
         genesgr = GenomicFeatures::genes(TxDb.Hsapiens.UCSC.hg19.knownGene, columns="gene_id")

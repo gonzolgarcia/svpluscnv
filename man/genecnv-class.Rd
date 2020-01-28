@@ -8,7 +8,7 @@
 \arguments{
 \item{cnvmat}{(data.frame): chromosome for the first breakpoint}
 
-\item{genesdf}{(data.frame): gene info}
+\item{genesgr}{(S4): a GenomicRanges object with genomic feature annotations such as gene coordinates}
 
 \item{seg}{(data.frame): segmentation data with 6 columns: sample, chromosome, start, end, probes, segment_mean}
 

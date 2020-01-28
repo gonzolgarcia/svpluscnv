@@ -7,6 +7,7 @@
 gene.cnv(
   seg,
   genome.v = "hg19",
+  genesgr = NULL,
   chrlist = NULL,
   fill.gaps = FALSE,
   verbose = TRUE
@@ -16,6 +17,8 @@ gene.cnv(
 \item{seg}{(data.frame) segmentation data with 6 columns: sample, chromosome, start, end, probes, segment_mean}
 
 \item{genome.v}{(hg19 or hg38) reference genome version to draw chromosome limits and centromeres}
+
+\item{genesgr}{(S4) a GenomicRanges object containing gene annotations (if not NULL overides genome.v). It must containg 'strand' and a metadata field 'gene_id' with unique values. Seqnames are expected in the format (chr1, chr2, ...)}
 
 \item{chrlist}{(character) list of chromosomes to include chr1, chr2, etc...}
 

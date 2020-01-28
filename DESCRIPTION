@@ -1,32 +1,36 @@
 Package: svcnvplus
-Title: Bunch of CNV amd SV analysis tools
-Version: 0.5.00
+Title: Integrative analyses of CNV segmentation and SV variant calls
+Version: 0.7.12
 Authors@R: 
 	person(given = "Gonzalo",
 		family = "Lopez",
 		role = c("aut", "cre"),
 		email = "gonzolgarcia@gmail.com",
 		comment = c(ORCID = "0000-0002-5092-1284"))
-	person(given = "Federico",
-		family = "Giorgi",
+Author:
+	person("Gonzalo", "Lopez",
 		role = c("aut", "cre"),
+		email = "gonzolgarcia@gmail.com",
+		comment = c(ORCID = "0000-0002-5092-1284"))
+	person("Federico", "Giorgi",
+		role = c("ctb"),
 		email = "federico.giorgi@gmail.com",
 		comment = c(ORCID = "0000-0002-7325-9908"))
-Maintainer: Gonzao Lopez <gonzolgarcia@gmail.com>
+Maintainer: 
+    Gonzao Lopez <gonzolgarcia@gmail.com>
 Description: Analysis focused on CNV segmentation data and SV calls; integration of CNV and SV calls; chromothripsis and chromosome shattering analyses.
 License: MIT License
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.0.2
 biocViews:
+    GenomicRanges
+Depends:
 	GenomicRanges,
-	org.Hs.eg.db,
-	TxDb.Hsapiens.UCSC.hg19.knownGene,
-	TxDb.Hsapiens.UCSC.hg38.knownGene
+	tidyr,
+	data.table
 Imports: 
 	taRifx,
-	data.table,
-	tidyr,
 	circlize,
 	D3GB,
 	Matrix,
@@ -34,6 +38,10 @@ Imports:
 Suggests: 
 	BiocStyle,
 	knitr,
-	rmarkdown
+	rmarkdown,
+	org.Hs.eg.db,
+	TxDb.Hsapiens.UCSC.hg19.knownGene,
+	TxDb.Hsapiens.UCSC.hg38.knownGene
 VignetteBuilder: knitr
+git_url: https://github.com/gonzolgarcia/svcnvplus
 

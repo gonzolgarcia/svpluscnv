@@ -130,7 +130,7 @@ head(svdf)
 Visualization of CNV gain/loss frequencies across the genome; aggregates samples for a given genomic window size, which copy number log-ratio differs from 0. The thresshold `fc.pct` is represented as percentage (e.g. 0.2 -> 20% fold change compared to the referece).
 
 ```{r plot1,  fig.width=12, fig.height=4, fig.align='center', fig.cap = "Genome wide CNV frequencies", message=FALSE}
-cnv_freq <- cnv.freq(segdf, fc.pct = 0.2,plot=TRUE)  # plot cnv frequencies
+cnv_freq <- cnv.freq(segdf, fc.pct = 0.2, plot=TRUE)  # plot cnv frequencies
 ```
 
 ```{r message=FALSE}
@@ -315,7 +315,7 @@ And finally collect groups of samples with recurrent shattered regions as define
 # obtain genomic bins within above the FDR cutoff
 
 hotspots <- hot.spot.samples(shatt_lung_cnv, freq.cut=null.test$freq.cut)
-hotspots$peakRegionsSamples[1]
+hotspots$peakRegionsSamples[2]
 ```
 
 Beyond this point the user can test case/control hipothesys for chromosome shattering of specific genomic regions within the dataset under study.
@@ -387,20 +387,23 @@ par(def.par)
 
 ### Integrated visualization of SVs and CNV in recurrently altered genes
 
-Integrating segmentation and SV calls is critical to understand the role of structural variants in recurrently altered genes. `svcnvplus` includes an integrated visualization tool `sv.model.view`. Also we included a genomic rtrack plot function in order to build layouts; The `gene.track.view` can also be used to retrieve specific gene coordinates.
+Integrating segmentation and SV calls is critical to understand the role of structural variants in recurrently altered genes. `svcnvplus` includes an integrated visualization tool `sv.model.view` that overlays data from CNV segmentation data and SV calls. This function allows to glance all variants affecting a specified genomic region (e.g. gene locus). This functionality is complemented with a genomic track plot function (`gene.track.view`) that can be used to build layouts; The `gene.track.view` function can also be used to retrieve information about isoforms and exonic regions of each gene.
 
 ```{r plot9,  fig.width=9, fig.height=12, fig.align='center', fig.cap = "Visualizaion of structural variants in PTPRD", message=FALSE}
-
+# we use gene.track.view to obtain the start and end positions of our gene of interests PTPRD (one of the top altered genes shown above)
 df <- gene.track.view(symbol = "PTPRD", plot=FALSE, genome.v = "hg19")$df
 start <- min(df$txStart) - 200000
 stop <- max(df$txEnd) + 50000
 chr <- df$chrom[1]
 
-# The argument 'sampleids' allow selecting the list of samples to show; if null. 
-# In this case we are using the list of samples with SV breakpoints disrupting PTPRD
+#  The function `sv.model.view` has builtin breakpoint search capabilities. 
+# The argument 'sampleids' allows selecting the list of samples to be show; if null, 
+# samples with breakpoints will be searched in the defined genomic region
+# In this case we are using the list of samples with SV breakpoints disrupting PTPRD as determined with `sv.break.annot`
 
 sampleids <- sort(results_sv@disruptSamples$PTPRD)
 
+# We build a layout to combine `sv.model.view` and `gene.track.view` using the same set of genomic coordinates
 layout(matrix(c(1,1,2,2),2,2 ,byrow = TRUE),heights = c(8,2))
 par(mar=c(0,10,1,1))
 sv.model.view(svdf, segdf[which(segdf$sample %in% svdf$sample),], chr, start, stop, sampleids=sampleids, 

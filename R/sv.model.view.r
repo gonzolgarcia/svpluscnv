@@ -8,9 +8,9 @@
 #' @param end (numeric) genomic coordinate from specified chromosome to stop plotting
 #' @param cnvlim (numeric) limits for color coding of background CNV log-ratios. Use to modify the CNV color contrast at different levels.
 #' @param addlegend (character) one of 'sv' (show SV type legend), 'cnv' (show CNV background color legend) or 'both'.
+#' @param cex.legend (numeric) the cex values for each legend
 #' @param addtext (character) a vector indicating what SV types should include text labels indicating brakpoint partners genomic locations. 
 #' The labeels are only added to point tbreakpoint locations outside the plot area. (e.g. c("TRA","INV") )
-#' @param cex.text (numeric) point size of the text 
 #' @param plot (logic) whether to produce a graphical output
 #' @param summary (logic) whether the function shoud return CNV segment 'segbrk' and SV 'svbrk' breakpoints tabular output
 #' @param ... additional plot parameters from graphics plot function 
@@ -38,6 +38,7 @@ sv.model.view <- function(sv, seg, chr, start, stop,
                           sampleids=NULL,
                           cnvlim=c(-2,2), 
                           addlegend='both',
+                          cex.legend=1,
                           interval=NULL,
                           addtext=NULL,
                           cex.text=.8,
@@ -202,8 +203,9 @@ sv.model.view <- function(sv, seg, chr, start, stop,
         if(is.null(interval)) interval <- round((stop - start)/5000) * 1000
         xlabs <- seq(floor(start/10000)*10000, ceiling(stop/10000)*10000,interval)
         axis(1, at = xlabs,labels=TRUE, lwd.ticks=1.5, pos=0,...)
-        #mtext(xlabs, at=xlabs, side=1, cex=cex.axis)
-    
+
+        if(is.null(cex.legend)) cex.legend <- 1
+        
         if(addlegend %in% c("sv","both")) {
             fillx <- c("white", "white", "white", "white",NA)
             borderx <- c("blue", "red","orange","grey20",NA)
@@ -213,12 +215,12 @@ sv.model.view <- function(sv, seg, chr, start, stop,
             
             legend(x= start, y =legend_ypos, legend = svclassin, 
                    bty = "n", fill = fillx[svclassin], border=borderx[svclassin], 
-                   pch = pchx[svclassin], horiz = TRUE, x.intersp=0.2)
+                   pch = pchx[svclassin], horiz = TRUE, x.intersp=0.2, cex=cex.legend)
         }
         if(addlegend %in% c("cnv","both")) {
             legend(x=start + (stop-start)/2, y = legend_ypos,legend = c(paste("CNV= ",cnvlim[1],sep=""), "CNV= 0", paste("CNV= ",cnvlim[2],sep=""), "no-data"),
                    bty = "n",fill=c("lightblue","white","salmon","grey80"), border=c(NA,"black",NA,NA), 
-                   horiz = TRUE, x.intersp=0.2)
+                   horiz = TRUE, x.intersp=0.2, cex=cex.legend)
         }
     }
     if(summary){

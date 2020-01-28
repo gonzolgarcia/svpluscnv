@@ -12,6 +12,7 @@
 #' @param plot (logic)
 #' @param show.chr (character) if not null will show the chromosome name at specified location (Default "topleft")
 #' @param summary (logic) whether the function shoud return CNV segment 'segbrk' and SV 'svbrk' breakpoints tabular output
+#' @param ... additional plot parameters from graphics plot function 
 #' @keywords CNV, segmentation
 #' @export
 #' @examples
@@ -78,7 +79,7 @@ if(plot == TRUE){
     
     ylimit <- 1 + 0.5*maxOverlaps
     plot(x=NULL,y=NULL,xlim=range(c(start,stop)),ylim=range(c(-1.5,ylimit)),
-         xaxt='n',yaxt='n',xlab='',ylab='',bty='n')
+         xaxt='n',yaxt='n',xlab='',ylab='',bty='n',...)
     
     
     rect(-1e6,0,1e16,10000,col = "grey90")
@@ -124,8 +125,8 @@ if(plot == TRUE){
     
     interval <- round((stop - start)/5000) * 1000
     xlabs <- seq(floor(start/10000)*10000, ceiling(stop/10000)*10000,interval)
-    axis(1, at = xlabs, lwd.ticks=1.5,pos=0)
-    if(!is.null(show.chr)) legend(show.chr,gsub("chr","Chromosome ",chr),cex=1.5,bty='n')
+    axis(1, at = xlabs, lwd.ticks=1.5,pos=0,...)
+    if(!is.null(show.chr)) legend(show.chr,gsub("chr","Chromosome ",chr),cex=1,bty='n')
     #mtext(xlabs, at=xlabs, side=1, cex=1)
     
 }

@@ -13,6 +13,7 @@ sv.model.view(
   sampleids = NULL,
   cnvlim = c(-2, 2),
   addlegend = "both",
+  cex.legend = 1,
   interval = NULL,
   addtext = NULL,
   cex.text = 0.8,
@@ -36,10 +37,10 @@ sv.model.view(
 
 \item{addlegend}{(character) one of 'sv' (show SV type legend), 'cnv' (show CNV background color legend) or 'both'.}
 
+\item{cex.legend}{(numeric) the cex values for each legend}
+
 \item{addtext}{(character) a vector indicating what SV types should include text labels indicating brakpoint partners genomic locations. 
 The labeels are only added to point tbreakpoint locations outside the plot area. (e.g. c("TRA","INV") )}
-
-\item{cex.text}{(numeric) point size of the text}
 
 \item{plot}{(logic) whether to produce a graphical output}
 

@@ -1,6 +1,6 @@
 #' Class to store breakpoint annotations
 #' @param cnvmat (data.frame): chromosome for the first breakpoint
-#' @param genesdf (data.frame): gene info 
+#' @param genesgr (S4): a GenomicRanges object with genomic feature annotations such as gene coordinates
 #' @param seg (data.frame): segmentation data with 6 columns: sample, chromosome, start, end, probes, segment_mean
 #' @param param (list):
 #' @return an instance of the class 'genecnv' containing gene level copy number info
@@ -11,7 +11,7 @@
 genecnv <- setClass("genecnv",
                         representation(
                             cnvmat  = "matrix",
-                            genesdf = "data.frame",
+                            genesgr = "GRanges",
                             seg = "data.frame",
                             param = "list"
                         ))
@@ -27,6 +27,7 @@ setMethod("show","genecnv",function(object){
 #' Obtain a matrix with the weighted average CN per chromosome arm 
 #' @param seg (data.frame) segmentation data with 6 columns: sample, chromosome, start, end, probes, segment_mean
 #' @param genome.v (hg19 or hg38) reference genome version to draw chromosome limits and centromeres
+#' @param genesgr (S4) a GenomicRanges object containing gene annotations (if not NULL overides genome.v). It must containg 'strand' and a metadata field 'gene_id' with unique values. Seqnames are expected in the format (chr1, chr2, ...) 
 #' @param chrlist (character) list of chromosomes to include chr1, chr2, etc...
 #' @param fill (logical) whether to fill the gaps in the segmentation file using gap neighbour segmean average as log ratio
 #' @param verbose (logical) 
@@ -41,6 +42,7 @@ setMethod("show","genecnv",function(object){
 
 gene.cnv <- function(seg, 
                      genome.v="hg19",
+                     genesgr=NULL,
                      chrlist=NULL, 
                      fill.gaps=FALSE,
                      verbose=TRUE){
@@ -52,53 +54,39 @@ chrlist <- chr.sort(chrlist)
 
 if(fill.gaps) segdat <- segment.gap(seg, chrlist=chrlist, verbose=verbose)
 
-genesgr <- get.genesgr(genome.v=genome.v,chrlist=chrlist)
 
-genes_df <- remove.factors(as.data.frame(genesgr))
-genes_df <- genes_df[order(genes_df$start),]
-genes_df <- genes_df[order(genes_df$seqnames),]
-rownames(genes_df) <- genes_df$gene_id
+if(!is.null(genesgr)){
+    if(anyDuplicated(genesgr@elementMetadata$gene_id > 0)) stop("The genesgr provided object contains duplicated gene_id values")
+}else{
+    genesgr <- get.genesgr(genome.v=genome.v)
+}
 
-
-geneLimits_gr <- with(genes_df, GRanges(seqnames, IRanges(start=start, end=end)))
 segdat_gr <- with(segdat, GRanges(chrom, IRanges(start=start, end=end)))
 
-hits <-GenomicAlignments::findOverlaps(geneLimits_gr,segdat_gr)
+hits <- GenomicAlignments::findOverlaps(genesgr,segdat_gr)
 
-overlaps_all <- pintersect(geneLimits_gr[queryHits(hits),], segdat_gr[subjectHits(hits),])
+overlaps_all <- pintersect(genesgr[queryHits(hits),], segdat_gr[subjectHits(hits),])
 width_overlap <- width(overlaps_all)
 
-
-df<-data.frame(segdat[subjectHits(hits),c("sample","segmean")],genes_df[queryHits(hits),"gene_id"],width_overlap)
+df <- data.table(segdat[subjectHits(hits),c("sample","segmean")],genesgr[queryHits(hits)]@elementMetadata$gene_id,width_overlap)
 colnames(df) <- c("sample","segmean","gene_id","width")
 
-cnvmat <- matrix(ncol=length(unique(segdat$sample)), nrow=nrow(genes_df) )
-colnames(cnvmat) <- unique(segdat$sample)
-rownames(cnvmat) <- genes_df$gene_id
+a<-sapply(unique(segdat$sample), 
+          function(i) df[sample == i, .(CN=mean(segmean)), by = "gene_id"],
+          simplify = FALSE)
 
-if(verbose){
-  message("Calculating gene level CNV")
-  pb <- txtProgressBar(style=3)
-  cc <-0
-  tot <- ncol(cnvmat)
-}
-for(i in unique(segdat$sample)){ 
-  dfi <- df[which(df$sample == i),]
-  num <- aggregate(segmean~gene_id,dfi,mean)
-  
-  gene_cn <- as.numeric(num[,2])
-  names(gene_cn) <- as.character(num[,1])
-  cnvmat[names(gene_cn),i] <- gene_cn
-  
-  if(verbose) cc <- cc+1
-  if(verbose) setTxtProgressBar(pb, cc/tot)
-  }
-if(verbose) close(pb)
-#cnvmat<- na.omit(cnvmat)
+newfunc <- function(dfi) { 
+    cn<- dfi$CN
+    names(cn) <- dfi$gene_id
+    return(cn)
+    }
+
+b<- lapply(a, function(x) newfunc(x)[genesgr@elementMetadata$gene_id] )
+cnvmat <- do.call(cbind,b)
 
 out <- genecnv(
     cnvmat=cnvmat,
-    genesdf=genes_df[rownames(cnvmat),],
+    genesgr=genesgr,
     seg=segdat,
     param=list(genome.v=genome.v,
                chrlist=chrlist, 

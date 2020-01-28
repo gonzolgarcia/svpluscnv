@@ -41,6 +41,8 @@ gene.track.view(
 
 \item{summary}{(logic) whether the function shoud return CNV segment 'segbrk' and SV 'svbrk' breakpoints tabular output}
 
+\item{...}{additional plot parameters from graphics plot function}
+
 \item{end}{(numeric) genomic coordinate from specified chromosome to stop plotting}
 
 \item{addlegend}{(logic)}
