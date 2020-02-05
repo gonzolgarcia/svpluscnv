@@ -5,8 +5,8 @@
 \title{Circos plot combining segmentation and SV calls}
 \usage{
 circ.wg.plot(
-  seg,
-  sv,
+  cnv,
+  svc,
   sample.id = NULL,
   lrr.pct = 0.2,
   lrr.max = 4,
@@ -15,9 +15,9 @@ circ.wg.plot(
 )
 }
 \arguments{
-\item{seg}{(data.frame) segmentation data with at least 6 columns: sample, chromosome, start, end, probes, segment_mean}
+\item{cnv}{(data.frame) segmentation data with at least 6 columns: sample, chromosome, start, end, probes, segment_mean}
 
-\item{sv}{(data.frame) structural variant table including  8 columns: sample, chrom1, pos1, strand1, chrom2, pos2, strand2, svclass}
+\item{svc}{(data.frame) structural variant table including  8 columns: sample, chrom1, pos1, strand1, chrom2, pos2, strand2, svclass}
 
 \item{sample.id}{(character) the id of the sample to be plotted}
 
@@ -37,13 +37,13 @@ Circos plot combining segmentation and SV calls
 require(circlize)
 
 ## validate input data.frames
-seg <- validate.seg(segdat_lung_ccle)
-sv <- validate.sv(svdat_lung_ccle)
+cnv <- validate.cnv(segdat_lung_ccle)
+svc <- validate.svc(svdat_lung_ccle)
 
 ## select a random sample id
-id <-  sample(intersect(seg$sample,sv$sample))[1]
+id <-  sample(intersect(cnv$sample,svc$sample))[1]
 
-circ.wg.plot(seg, sv, sample.id=id)
+circ.wg.plot(cnv, svc, sample.id=id)
 }
 \keyword{CNV,}
 \keyword{circular}

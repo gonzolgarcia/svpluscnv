@@ -2,10 +2,10 @@
 % Please edit documentation in R/cnv.freq.plot.r
 \name{cnv.freq}
 \alias{cnv.freq}
-\title{Plot CNV frequency across the human genome from a seg file sontaining multiple samples}
+\title{Plot CNV frequency across the genome using a CNV segmentation file containing multiple samples}
 \usage{
 cnv.freq(
-  seg,
+  cnv,
   fc.pct = 0.2,
   genome.v = "hg19",
   g.bin = 1,
@@ -19,7 +19,7 @@ cnv.freq(
 )
 }
 \arguments{
-\item{seg}{(data.frame) segmentation data with 6 columns: sample, chromosome, start, end, probes, segment_mean}
+\item{cnv}{(data.frame) segmentation data with 6 columns: sample, chromosome, start, end, probes, segment_mean}
 
 \item{fc.pct}{(numeric) percentage CNV gain/loss for a segment to be considered changed (i.e. 0.2 = 20 percent change 0.8 < segmean && segmean > 1.2)}
 
@@ -38,14 +38,14 @@ cnv.freq(
 \item{verbose}{(logical)}
 }
 \description{
-Plot CNV frequency across the human genome from a seg file sontaining multiple samples
+Plot CNV frequency across the genome using a CNV segmentation file containing multiple samples
 }
 \examples{
 
 ## validate input data.frame
-seg <- validate.seg(nbl_segdat)
+cnv <- validate.cnv(nbl_segdat)
 
-cnv.freq(seg, genome.v = "hg19")
+cnv.freq(cnv, genome.v = "hg19")
 }
 \keyword{CNV,}
 \keyword{plot}

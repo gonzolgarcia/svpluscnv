@@ -2,16 +2,16 @@
 % Please edit documentation in R/break.annot.r
 \name{cnv.break.annot}
 \alias{cnv.break.annot}
-\title{Identify recurrently altered genes}
+\title{Identify recurrently altered genes by CNV. The function will identify overlaps between genomic features (e.g. genes) and CNV  breakpoints.}
 \usage{
 cnv.break.annot(
-  seg,
+  cnv,
   fc.pct = 0.2,
   genome.v = "hg19",
   genesgr = NULL,
   upstr = 50000,
   dnstr = 50000,
-  min.seg.size = NULL,
+  min.cnv.size = NULL,
   min.num.probes = NULL,
   low.cov = NULL,
   clean.brk = NULL,
@@ -19,40 +19,40 @@ cnv.break.annot(
 )
 }
 \arguments{
-\item{seg}{(data.frame) segmentation data with 6 columns: sample, chromosome, start, end, probes, segment_mean}
+\item{cnv}{(data.frame) segmentation data with 6 columns: sample, chromosome, start, end, probes, segment_mean.}
 
-\item{fc.pct}{(numeric) copy number change between 2 consecutive segments: i.e (default) cutoff = 0.2 represents a fold change of 0.8 or 1.2}
+\item{fc.pct}{(numeric) copy number change between 2 consecutive segments: i.e (default) cutoff = 0.2 represents a fold change of 0.8 or 1.2.}
 
-\item{genome.v}{(hg19 or hg38) reference genome version to draw chromosome limits and centromeres}
+\item{genome.v}{(character): either 'hg19' or 'hg38' accepted; reference genome version to retrieve gene annotations including genomic coordinates and strand}
 
-\item{upstr}{(numeric) genomic region size (base pairs) to identify breakpoints overlapping with gene upstream  regions}
+\item{genesgr}{(S4) a GenomicRanges object containing gene annotations (if not NULL overides genome.v). It is crutial that the genome version 'genesgr' and the input 'sv' are the same. The GRanges object must contain 'strand' and a metadata field 'gene_id' with unique values. Seqnames are expected in the format (chr1, chr2, ...).}
 
-\item{dnstr}{(numeric) genomic region size (base pairs) to identify breakpoints overlapping with gene downstream  regions}
+\item{upstr}{(numeric) size in base pairs to define gene upstream region onto which breakpoint overlaps will be identified. The strand value, start and stop positions defined in genesgr will be used to create a GRanges object of upstream regions.}
 
-\item{min.seg.size}{(numeric) The minimun segment size (in base pairs) to include in the analysis}
+\item{dnstr}{(numeric) size in base pairs to define gene downstream region onto which breakpoint overlaps will be identified. The strand value, start and stop positions defined in genesgr will be used to create a GRanges object of downstream regions.}
+
+\item{min.cnv.size}{(numeric) The minimun segment size (in base pairs) to include in the analysis}
 
 \item{min.num.probes}{(numeric) The minimun number of probes per segment to include in the analysis}
 
 \item{low.cov}{(data.frame) a data.frame (chr, start, end) indicating low coverage regions to exclude from the analysis}
 
-\item{clean.brk}{(numeric) identical CNV segments across multiple samples are removed and replaced by neighbours average}
+\item{clean.brk}{(numeric) Identical segments removal when present in above a given number. Identical CNV segments across multiple samples may represent artifact of common germline variants, this is particularly relevant when the segmentation data was generated with a non-paired reference. For paired datasets (e.g. tumor vs. normal) better leave as NULL.}
 
 \item{verbose}{(logical)}
-
-\item{genegr}{(GRanges) a GRanges object containing gene annotations (if not NULL overides genom.v). It must containg 'strand' and a metadata field 'gene_id' with unique values. Seqnames are expected in the format (chr1, chr2, ...)}
 }
 \value{
 an instance of the class 'break.annot' containing breakpoint mapping onto genes
 }
 \description{
-Identify recurrently altered genes
+As opposed to 'gene.cnv' function that returns the overal CNV of each gene, this function allows identifying sub-genic events and may help detecting other rearrangements.
 }
 \examples{
 
 ## validate input data.frame
-seg <- validate.seg(segdat_lung_ccle)
+cnv <- validate.cnv(segdat_lung_ccle)
 
-cnv.break.annot(seg)
+cnv.break.annot(cnv)
 }
 \keyword{CNV,}
 \keyword{segmentation}

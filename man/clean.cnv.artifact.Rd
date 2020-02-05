@@ -5,20 +5,20 @@
 \title{Obtain a matrix with the weighted average CN per chromosome arm}
 \usage{
 clean.cnv.artifact(
-  seg,
+  cnv,
   n.reps = 4,
-  seg.size = 5e+06,
+  cnv.size = 5e+06,
   pc.overlap = 0.99,
   fill.gaps = TRUE,
   verbose = TRUE
 )
 }
 \arguments{
-\item{seg}{(data.frame) segmentation data with 6 columns: sample, chromosome, start, end, probes, segment_mean}
+\item{cnv}{(data.frame) segmentation data with 6 columns: sample, chromosome, start, end, probes, segment_mean}
 
 \item{n.reps}{(numeric) number of samples with identical segment to consider artifact}
 
-\item{seg.size}{(numeric) only smaller segments will be modified in the seg data.frame}
+\item{cnv.size}{(numeric) only smaller segments will be modified in the cnv data.frame}
 
 \item{pc.overlap}{(numeric) minimun percentage overlap for a pair of segments to be consider identical}
 
@@ -32,9 +32,9 @@ Obtain a matrix with the weighted average CN per chromosome arm
 \examples{
 
 ## validate input data.frame
-seg <- validate.seg(segdat_lung_ccle)
+cnv <- validate.cnv(segdat_lung_ccle)
 
-clean.cnv.artifact(seg)
+clean.cnv.artifact(cnv)
 }
 \keyword{CNV,}
 \keyword{filter}

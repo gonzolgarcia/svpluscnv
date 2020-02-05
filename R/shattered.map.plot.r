@@ -14,11 +14,11 @@
 #' require(circlize)
 #' 
 #' ## validate input data.frames
-#' seg <- validate.seg(segdat_lung_ccle)
-#' sv <- validate.sv(svdat_lung_ccle)
+#' cnv <- validate.cnv(segdat_lung_ccle)
+#' svc <- validate.svc(svdat_lung_ccle)
 #' 
 #' ## obtain shattered regions
-#' chromo.regs.obj <- shattered.regions(seg,sv)
+#' chromo.regs.obj <- shattered.regions(cnv,svc)
 #' 
 #' shattered.map.plot(chromo.regs.obj)
 

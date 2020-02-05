@@ -4,10 +4,10 @@
 \alias{chromosome.limit.coords}
 \title{This function mapps defines mapping limmit regions based on a segmentation file}
 \usage{
-chromosome.limit.coords(seg)
+chromosome.limit.coords(cnv)
 }
 \arguments{
-\item{seg}{(data.frame) segmentation data with 6 columns: sample, chromosome, start, end, probes, segment_mean}
+\item{cnv}{(data.frame) segmentation data with 6 columns: sample, chromosome, start, end, probes, segment_mean}
 }
 \description{
 This function mapps defines mapping limmit regions based on a segmentation file
@@ -15,9 +15,9 @@ This function mapps defines mapping limmit regions based on a segmentation file
 \examples{
 
 ## validate input data.frame
-seg <- validate.seg(segdat_lung_ccle)
+cnv <- validate.cnv(segdat_lung_ccle)
 
-chr.lim <- chromosome.limit.coords(seg)
+chr.lim <- chromosome.limit.coords(cnv)
 }
 \keyword{CNV,}
 \keyword{mapping}

@@ -28,20 +28,20 @@ biocViews:
 Depends:
 	GenomicRanges,
 	tidyr,
-	data.table
-Imports: 
+	data.table,
 	taRifx,
 	circlize,
+	Matrix
+Imports: 
 	D3GB,
-	Matrix,
-	shape
-Suggests: 
-	BiocStyle,
-	knitr,
-	rmarkdown,
+	shape,
 	org.Hs.eg.db,
 	TxDb.Hsapiens.UCSC.hg19.knownGene,
 	TxDb.Hsapiens.UCSC.hg38.knownGene
+Suggests: 
+	BiocStyle,
+	knitr,
+	rmarkdown
 VignetteBuilder: knitr
 git_url: https://github.com/gonzolgarcia/svcnvplus
 

@@ -1,5 +1,3 @@
-#' 
-#'
 #' Circos plot combining segmentation and SV calls
 #' @param chromo.regs.obj (chromo.regs) An object of class chromo.regs 
 #' @param sample.id (character) the id of a sample to be plotted within names(chromo.regs.obj@regions.summ)
@@ -14,11 +12,11 @@
 #' require(circlize)
 #' 
 #' ## validate input data.frames
-#' seg <- validate.seg(segdat_lung_ccle)
-#' sv <- validate.sv(svdat_lung_ccle)
+#' cnv <- validate.cnv(segdat_lung_ccle)
+#' svc <- validate.svc(svdat_lung_ccle)
 #' 
 #' ## obtain shattered regions
-#' shatt.regions <- shattered.regions(seg,sv)
+#' shatt.regions <- shattered.regions(cnv,svc)
 #' 
 #' id <-  names(chromo.regs.obj@regions.summary)[1]
 #' circ.chromo.plot(shatt.regions, sample.id = id)
@@ -33,28 +31,28 @@ circ.chromo.plot <- function(chromo.regs.obj,
 
 require(circlize)
 
-segdat <- chromo.regs.obj@segdat[which(chromo.regs.obj@segdat$sample == sample.id),]
-svdat <- chromo.regs.obj@svdat[which(chromo.regs.obj@svdat$sample == sample.id),]
-regions <- remove.factors(chromo.regs.obj@regions.summary[[sample.id]])
+cnvdat <- chromo.regs.obj@cnvdat[which(chromo.regs.obj@cnvdat$sample == sample.id),]
+svcdat <- chromo.regs.obj@svcdat[which(chromo.regs.obj@svcdat$sample == sample.id),]
+regions <- chromo.regs.obj@regions.summary[[sample.id]]
 
-stopifnot(nrow(segdat) > 0 | nrow(svdat) >  0)
+stopifnot(nrow(cnvdat) > 0 | nrow(svcdat) >  0)
 
 if(is.null(chrlist)) chrlist <- unique(regions$chrom)
   
-if(nrow(svdat) >  0){
-    alllinks1 <- data.frame(svdat$chrom1,svdat$pos1,svdat$pos1 )
-    alllinks2 <- data.frame(svdat$chrom2,svdat$pos2,svdat$pos2 )
+if(nrow(svcdat) >  0){
+    alllinks1 <- data.frame(svcdat$chrom1,svcdat$pos1,svcdat$pos1 )
+    alllinks2 <- data.frame(svcdat$chrom2,svcdat$pos2,svcdat$pos2 )
     colnames(alllinks1) <- colnames(alllinks2) <- c("chr","start","end")
     map = setNames(c("blue", "red", "orange","black","green"), c("DEL", "DUP","INV","TRA","INS"))
-    alllinkcolors <- map[as.character(svdat$svclass)]
+    alllinkcolors <- map[as.character(svcdat$svclass)]
     zoomchr <- intersect(which(alllinks1$chr %in% chrlist),which(alllinks2$chr %in% chrlist))
     links1<-alllinks1[zoomchr,]
     links2<-alllinks2[zoomchr,]
     linkcolors<-alllinkcolors[zoomchr]
 }
 
-if(nrow(segdat) >  0){
-    cnv <- segdat[,c("chrom","start","end","segmean")]
+if(nrow(cnvdat) >  0){
+    cnv <- cnvdat[,c("chrom","start","end","segmean")]
     colores <- rep("black",nrow(cnv))
     colores[which(cnv$segmean < log2(1 - lrr.pct)) ] <- "blue"
     colores[which(cnv$segmean > log2(1 + lrr.pct)) ] <- "red"
@@ -75,7 +73,7 @@ regions.plot <- remove.factors(data.frame(regions,reg.col,value))
   
 p.regions <- list()
 for(chr in chrlist){
-    p.regions[[chr]] <- remove.factors(regions.plot[which(regions$chrom == chr),c("chrom","start","end","value","reg.col")])
+    p.regions[[chr]] <- regions.plot[which(regions$chrom == chr),c("chrom","start","end","value","reg.col")]
     colnames(p.regions[[chr]]) <- c("chrom","start","end","value","color")
 }
   
@@ -91,7 +89,7 @@ circos.genomicTrackPlotRegion(cnvlist, bg.lwd =0.2, bg.col=rainbow(length(cnvlis
                               panel.fun = function(region, value, ...) {
                                 circos.genomicLines(region, value, col=as.character(cnvlist[[CELL_META$sector.index]][,"colores"]), numeric.column = c(1), type="segment")
                               })
-if(nrow(svdat) >  0) circos.genomicLink(links1, links2, col = linkcolors, border = NA)
+if(nrow(svcdat) >  0) circos.genomicLink(links1, links2, col = linkcolors, border = NA)
 text(0, 0,  gsub("_","\n",sample.id), cex = 1.3)
 
 }

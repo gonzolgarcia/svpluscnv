@@ -10,6 +10,7 @@ freq.p.test(
   p.cut = 0.05,
   iter = 100,
   zerofreq = TRUE,
+  plot = TRUE,
   verbose = TRUE
 )
 }
@@ -23,6 +24,8 @@ freq.p.test(
 \item{iter}{(numeric) Number of iterations to produce null distribution (note that null size will be iter*ncol(mat))}
 
 \item{zerofreq}{(logical) whether to remove bins with observed frequency = 0; It is recommended to set to TRUE when the bins span genomic regions of low coverage}
+
+\item{plot}{(logical) whether to generate a histogram comparing observed and null frequency distributions}
 }
 \description{
 Obtains significance cutoff for the frequency of binary events encoded in a matrix
@@ -30,11 +33,11 @@ Obtains significance cutoff for the frequency of binary events encoded in a matr
 \examples{
 
 ## validate input data.frames
-seg <- validate.seg(segdat_lung_ccle)
+cnv <- validate.cnv(segdat_lung_ccle)
 
 ## obtain a matrix of genomic bins vs samples indicating high density of breaks
-shatt.regions <- shattered.regions.cnv(seg)
-mat <- shatt.regions$high.density.regions.hc
+shatt.regions <- shattered.regions.cnv(cnv)
+mat <- shatt.regions@high.density.regions.hc
 
 freq.p.test(mat)
 }

@@ -5,19 +5,19 @@
 \title{Caller for shattered genomic regions based on breakpoint densities}
 \usage{
 shattered.regions(
-  seg,
-  sv,
+  cnv,
+  svc,
   fc.pct = 0.2,
-  min.seg.size = 0,
+  min.cnv.size = 0,
   min.num.probes = 0,
   low.cov = NULL,
   clean.brk = NULL,
   window.size = 10,
   slide.size = 2,
-  num.seg.breaks = 6,
-  num.seg.sd = 5,
-  num.sv.breaks = 6,
-  num.sv.sd = 5,
+  num.cnv.breaks = 6,
+  num.cnv.sd = 5,
+  num.svc.breaks = 6,
+  num.svc.sd = 5,
   num.common.breaks = 3,
   num.common.sd = 3,
   maxgap = 10000,
@@ -28,31 +28,31 @@ shattered.regions(
 )
 }
 \arguments{
-\item{seg}{(data.frame) segmentation data with 6 columns: sample, chromosome, start, end, probes, segment_mean}
+\item{cnv}{(data.frame) segmentation data with 6 columns: sample, chromosome, start, end, probes, segment_mean}
 
-\item{sv}{(data.frame) structural variant table including  8 columns: sample, chrom1, pos1, strand1, chrom2, pos2, strand2, svclass}
+\item{svc}{(data.frame) structural variant table including  8 columns: sample, chrom1, pos1, strand1, chrom2, pos2, strand2, svclass}
 
-\item{fc.pct}{(numeric) inherited from seg.breaks(); copy number change between 2 consecutive segments: i.e (default) cutoff = 0.2 represents a fold change of 0.8 or 1.2}
+\item{fc.pct}{(numeric) inherited from cnv.breaks(); copy number change between 2 consecutive segments: i.e (default) cutoff = 0.2 represents a fold change of 0.8 or 1.2}
 
-\item{min.seg.size}{(numeric) inherited from seg.breaks(); The minimun segment size (in base pairs) to include in the analysis}
+\item{min.cnv.size}{(numeric) inherited from cnv.breaks(); The minimun segment size (in base pairs) to include in the analysis}
 
-\item{min.num.probes}{(numeric) inherited from seg.breaks(); The minimun number of probes per segment to include in the analysis}
+\item{min.num.probes}{(numeric) inherited from cnv.breaks(); The minimun number of probes per segment to include in the analysis}
 
-\item{low.cov}{(data.frame) inherited from seg.breaks(), sv.breaks() and match.breaks; a data.frame (chr, start, end) indicating low coverage regions to exclude from the analysis}
+\item{low.cov}{(data.frame) inherited from cnv.breaks(), svc.breaks() and match.breaks; a data.frame (chr, start, end) indicating low coverage regions to exclude from the analysis}
 
-\item{clean.brk}{(numeric) inherited from seg.breaks(); n of redundant breakpoints to filter out}
+\item{clean.brk}{(numeric) inherited from cnv.breaks(); n of redundant breakpoints to filter out}
 
 \item{window.size}{(numeric) size in megabases of the genmome bin to compute break density}
 
 \item{slide.size}{(numeric) size in megabases of the sliding genmome window}
 
-\item{num.seg.breaks}{(numeric) number of segmentation breakpoints per segments to be considered high-density break}
+\item{num.cnv.breaks}{(numeric) number of segmentation breakpoints per segments to be considered high-density break}
 
-\item{num.seg.sd}{(numeric) number of standard deviations above the sample average for num.seg.breaks}
+\item{num.cnv.sd}{(numeric) number of standard deviations above the sample average for num.cnv.breaks}
 
-\item{num.sv.breaks}{(numeric) number of SV breakpoints per segments to be considered high-density break}
+\item{num.svc.breaks}{(numeric) number of svc breakpoints per segments to be considered high-density break}
 
-\item{num.sv.sd}{(numeric) number of standard deviations above the sample average for num.sv.breaks}
+\item{num.svc.sd}{(numeric) number of standard deviations above the sample average for num.svc.breaks}
 
 \item{num.common.breaks}{(numeric) number of common SV and segmentation breakpoints per segments to be considered high-density break}
 
@@ -72,10 +72,10 @@ Caller for shattered genomic regions based on breakpoint densities
 \examples{
 
 ## validate input data.frames
-seg <- validate.seg(segdat_lung_ccle)
-sv <- validate.sv(svdat_lung_ccle)
+cnv <- validate.cnv(segdat_lung_ccle)
+svc <- validate.svc(svdat_lung_ccle)
 
-shattered.regions(seg,sv)
+shattered.regions(cnv,svc)
 }
 \keyword{chromoplexy,}
 \keyword{chromosome}

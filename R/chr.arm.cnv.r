@@ -1,18 +1,18 @@
 #' 
 #'
 #' Obtain a matrix with the weighted average CN per chromosome arm 
-#' @param seg (data.frame) segmentation data with 6 columns: sample, chromosome, start, end, probes, segment_mean
+#' @param cnv (data.frame) segmentation data with 6 columns: sample, chromosome, start, end, probes, segment_mean
 #' @param genome.v (`hg19` or `hg38`) reference genome version to draw chromosome limits and centromeres
 #' @param verbose (logical)
 #' @keywords CNV, segmentation, chromosome arm
 #' @export
 #' @examples
 #' 
-#' seg <- validate.seg(segdat_lung_ccle)
-#' chr.arm.cnv(seg, genome.v="hg19")
+#' cnv <- validate.cnv(segdat_lung_ccle)
+#' chr.arm.cnv(cnv, genome.v="hg19")
 
 
-chr.arm.cnv <- function(seg,
+chr.arm.cnv <- function(cnv,
                     genome.v="hg19",
                     verbose=TRUE){
   
@@ -20,7 +20,7 @@ chr.arm.cnv <- function(seg,
   require(D3GB, quietly = TRUE, warn.conflicts = FALSE)
   require(GenomicRanges, quietly = TRUE, warn.conflicts = FALSE)
   
-  segdat <- validate.seg(seg)
+    cnvdat <- validate.cnv(cnv)
   
   if(genome.v %in% c("GRCh37","hg19")){ 
     bands <- GRCh37.bands
@@ -32,7 +32,7 @@ chr.arm.cnv <- function(seg,
   centromeres_end <- bands[intersect(which(bands$score == "acen"),grep("q",bands$name)),"end"]
   names(centromeres_start) <-  names(centromeres_end) <- paste("chr",bands[intersect(which(bands$score == "acen"),grep("q",bands$name)),"chr"],sep="")
   
-  chrends <- chromosome.limit.coords(segdat)
+  chrends <- chromosome.limit.coords(cnvdat)
   chrarms <- rbind(cbind(chrends$begin,centromeres_start[rownames(chrends)]),cbind(centromeres_end[rownames(chrends)],chrends$end))
   chrarms <- data.frame(rownames(chrarms),chrarms,c(paste(rownames(chrends),"p",sep=""), paste(rownames(chrends),"q",sep="")))
   colnames(chrarms) <- c("chr","start","end","arm")
@@ -42,11 +42,11 @@ chr.arm.cnv <- function(seg,
   
   chrarmsGR <- with(chrarms,GRanges(chr, IRanges(start=start, end=end)))
 
-  segdat_gr <- with(segdat, GRanges(chrom, IRanges(start=start, end=end)))
-  hits <-GenomicAlignments::findOverlaps(chrarmsGR,segdat_gr)
+  cnvdat_gr <- with(cnvdat, GRanges(chrom, IRanges(start=start, end=end)))
+  hits <-GenomicAlignments::findOverlaps(chrarmsGR,cnvdat_gr)
   
-  armcnvmat <- matrix(ncol=length(unique(segdat$sample)), nrow=nrow(chrarms) )
-  colnames(armcnvmat) <- unique(segdat$sample)
+  armcnvmat <- matrix(ncol=length(unique(cnvdat$sample)), nrow=nrow(chrarms) )
+  colnames(armcnvmat) <- unique(cnvdat$sample)
   rownames(armcnvmat) <- chrarms$arm
   
   for(i in unique(queryHits(hits))){ 
@@ -54,7 +54,7 @@ chr.arm.cnv <- function(seg,
     
     if(verbose) message(arm)
     
-    armdf <- segdat[subjectHits(hits)[which(queryHits(hits) == i)],]
+    armdf <- cnvdat[subjectHits(hits)[which(queryHits(hits) == i)],]
     armdf[which(armdf[,"start"] < chrarms[i,"start"]),"start"] <- chrarms[i,"start"]
     armdf[which(armdf[,"end"] > chrarms[i,"end"]),"end"] <- chrarms[i,"end"]
 

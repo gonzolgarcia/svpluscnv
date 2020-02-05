@@ -12,9 +12,9 @@ shattered.eval <- function(chromo.regs.obj,
                            dist.iqm.cut=100000,
                            verbose=TRUE){
   
-  svdat <- chromo.regs.obj@svdat
-  segbrk  <- chromo.regs.obj@segbrk
-  svbrk <- chromo.regs.obj@svbrk
+  svcdat <- chromo.regs.obj@svcdat
+  cnvbrk  <- chromo.regs.obj@cnvbrk
+  svcbrk <- chromo.regs.obj@svcbrk
 
   if(verbose){
     message(paste("Evaluating shattered regions in ",length(names(chromo.regs.obj@regions.summary))," samples",sep="") )
@@ -29,8 +29,8 @@ shattered.eval <- function(chromo.regs.obj,
     if(verbose) setTxtProgressBar(pb, cc/tot)
 
     regions <-   chromo.regs.obj@regions.summary[[cl]]
-    br1 <- segbrk$breaks[which(segbrk$breaks$sample == cl),2:3]
-    br2 <- svbrk$breaks[which(svbrk$breaks$sample == cl),2:3]
+    br1 <- cnvbrk@breaks[which(cnvbrk@breaks$sample == cl),2:3]
+    br2 <- svcbrk@breaks[which(svcbrk@breaks$sample == cl),2:3]
     colnames(br1) <- colnames(br2) <- c("chrom","pos")
     br1.gr <- with(br1, GRanges(chrom, IRanges(start=pos, end=pos)))
     br2.gr <- with(br2, GRanges(chrom, IRanges(start=pos, end=pos)))
@@ -48,26 +48,26 @@ shattered.eval <- function(chromo.regs.obj,
     c.hits_1 = GenomicAlignments::findOverlaps(regions_gr,c.br1.gr)
     c.hits_2 = GenomicAlignments::findOverlaps(regions_gr,c.br2.gr)
     
-    svdat_i <- svdat[which(svdat$sample == cl),]
+    svdat_i <- svcdat[which(svcdat$sample == cl),]
     sv_ranges_ori <-   with(svdat_i, GRanges(chrom1, IRanges(start=pos1, end=pos1)))
     sv_ranges_dest <-   with(svdat_i, GRanges(chrom2, IRanges(start=pos2, end=pos2)))
     hits_ori = GenomicAlignments::findOverlaps(regions_gr,sv_ranges_ori)
     hits_dest = GenomicAlignments::findOverlaps(regions_gr,sv_ranges_dest)
     
     # calculate interleaved score, n.breaks, dispersion, and median distance between consecutive breaks
-    start <- end <- reg.size <- dist.iqm.seg <- dist.iqm.sv <- n.brk.seg <- n.brk.sv <- n.orth.seg <- n.orth.sv <- interleaved <- rep(0,nrow(regions))
+    start <- end <- reg.size <- dist.iqm.cnv <- dist.iqm.sv <- n.brk.cnv <- n.brk.sv <- n.orth.cnv <- n.orth.sv <- interleaved <- rep(0,nrow(regions))
     conf <- rep("HC",nrow(regions))
     for(i in 1:nrow(regions)){
       sites1 <- sort(unique(br1[subjectHits(hits_1)[which(queryHits(hits_1) == i)],"pos"]))
-      dist.iqm.seg[i]  <- IQM(sites1[2:length(sites1)] - sites1[1:(length(sites1)-1) ],lowQ = 0.2,upQ = 0.8)
-      n.brk.seg[i] <- length(sites1)  
+      dist.iqm.cnv[i]  <- IQM(sites1[2:length(sites1)] - sites1[1:(length(sites1)-1) ],lowQ = 0.2,upQ = 0.8)
+      n.brk.cnv[i] <- length(sites1)  
       
       sites2 <- sort(unique(br2[subjectHits(hits_2)[which(queryHits(hits_2) == i)],"pos"]))
       dist.iqm.sv[i]  <- IQM(sites2[2:length(sites2)] - sites2[1:(length(sites2)-1) ],lowQ = 0.2,upQ = 0.8)
       n.brk.sv[i] <- length(sites2)  
       
       c.sites1 <- sort(unique(c.br1[subjectHits(c.hits_1)[which(queryHits(c.hits_1) == i)],"pos"]))
-      n.orth.seg[i] <- length(c.sites1)  
+      n.orth.cnv[i] <- length(c.sites1)  
 
       c.sites2 <- sort(unique(c.br2[subjectHits(c.hits_2)[which(queryHits(c.hits_2) == i)],"pos"]))
       n.orth.sv[i] <- length(c.sites2)  
@@ -112,9 +112,9 @@ shattered.eval <- function(chromo.regs.obj,
       links <- "-"
     }
   if(!is.null(interleaved.cut)) conf[which(interleaved >= interleaved.cut)] <- "lc"
-  if(!is.null(dist.iqm.cut)) conf[which(apply(cbind(dist.iqm.seg,dist.iqm.sv),1,mean) < dist.iqm.cut)] <- "lc"
+  if(!is.null(dist.iqm.cut)) conf[which(apply(cbind(dist.iqm.cnv,dist.iqm.sv),1,mean) < dist.iqm.cut)] <- "lc"
   conf[which(links != "-")] <- "HC"
-  chromo.regs.obj@regions.summary[[cl]] <- remove.factors(data.frame(regions,links,reg.size,dist.iqm.seg,dist.iqm.sv,n.brk.seg,n.brk.sv,n.orth.seg,n.orth.sv,interleaved,conf))
+  chromo.regs.obj@regions.summary[[cl]] <- remove.factors(data.frame(regions,links,reg.size,dist.iqm.cnv,dist.iqm.sv,n.brk.cnv,n.brk.sv,n.orth.cnv,n.orth.sv,interleaved,conf))
   }
   if(verbose) close(pb)
   

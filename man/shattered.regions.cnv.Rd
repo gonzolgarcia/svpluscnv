@@ -2,12 +2,12 @@
 % Please edit documentation in R/shattered.regions.cnv.r
 \name{shattered.regions.cnv}
 \alias{shattered.regions.cnv}
-\title{Caller for shattered genomic regions based on breakpoint densities}
+\title{Caller for the identification of shattered genomic regions based on breakpoint densities}
 \usage{
 shattered.regions.cnv(
-  seg,
+  cnv,
   fc.pct = 0.2,
-  min.seg.size = 0,
+  min.cnv.size = 0,
   min.num.probes = 0,
   low.cov = NULL,
   clean.brk = NULL,
@@ -20,11 +20,11 @@ shattered.regions.cnv(
 )
 }
 \arguments{
-\item{seg}{(data.frame) segmentation data with 6 columns: sample, chromosome, start, end, probes, segment_mean}
+\item{cnv}{(data.frame) segmentation data with 6 columns: sample, chromosome, start, end, probes, segment_mean}
 
 \item{fc.pct}{(numeric) copy number change between 2 consecutive segments: i.e (default) cutoff = 0.2 represents 20 percent fold change}
 
-\item{min.seg.size}{(numeric) The minimun segment size (in base pairs) to include in the analysis}
+\item{min.cnv.size}{(numeric) The minimun segment size (in base pairs) to include in the analysis}
 
 \item{min.num.probes}{(numeric) The minimun number of probes per segment to include in the analysis}
 
@@ -43,14 +43,14 @@ shattered.regions.cnv(
 \item{verbose}{(logical)}
 }
 \description{
-Caller for shattered genomic regions based on breakpoint densities
+Caller for the identification of shattered genomic regions based on breakpoint densities
 }
 \examples{
 
 ## validate input data.frames
-seg <- validate.seg(segdat_lung_ccle)
+cnv <- validate.cnv(segdat_lung_ccle)
 
-shattered.regions.cnv(seg)
+shattered.regions.cnv(cnv)
 }
 \keyword{CNV,}
 \keyword{segmentation}

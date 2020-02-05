@@ -4,10 +4,10 @@
 \alias{pct.genome.changed}
 \title{Calculate the percentage of genome changed by CNV}
 \usage{
-pct.genome.changed(seg, fc.pct = 0.2, discard.sex = TRUE)
+pct.genome.changed(cnv, fc.pct = 0.2, discard.sex = TRUE)
 }
 \arguments{
-\item{seg}{(data.frame) segmentation data with 6 columns: sample, chromosome, start, end, probes, segment_mean}
+\item{cnv}{(data.frame) segmentation data with 6 columns: sample, chromosome, start, end, probes, segment_mean}
 
 \item{fc.pct}{(numeric) percentage CNV gain/loss for a segment to be considered changed (i.e. 0.2 = 20 percent change 0.8 < segmean && segmean > 1.2)}
 
@@ -19,9 +19,9 @@ Calculate the percentage of genome changed by CNV
 \examples{
 
 ## validate input data.frames
-seg <- validate.seg(segdat_lung_ccle)
+cnv <- validate.cnv(segdat_lung_ccle)
 
-pct.genome.changed(seg)
+pct.genome.changed(cnv)
 }
 \keyword{CNV,}
 \keyword{segmentation}

@@ -4,10 +4,10 @@
 \alias{chr.arm.cnv}
 \title{Obtain a matrix with the weighted average CN per chromosome arm}
 \usage{
-chr.arm.cnv(seg, genome.v = "hg19", verbose = TRUE)
+chr.arm.cnv(cnv, genome.v = "hg19", verbose = TRUE)
 }
 \arguments{
-\item{seg}{(data.frame) segmentation data with 6 columns: sample, chromosome, start, end, probes, segment_mean}
+\item{cnv}{(data.frame) segmentation data with 6 columns: sample, chromosome, start, end, probes, segment_mean}
 
 \item{genome.v}{(`hg19` or `hg38`) reference genome version to draw chromosome limits and centromeres}
 
@@ -18,8 +18,8 @@ Obtain a matrix with the weighted average CN per chromosome arm
 }
 \examples{
 
-seg <- validate.seg(segdat_lung_ccle)
-chr.arm.cnv(seg, genome.v="hg19")
+cnv <- validate.cnv(segdat_lung_ccle)
+chr.arm.cnv(cnv, genome.v="hg19")
 }
 \keyword{CNV,}
 \keyword{arm}

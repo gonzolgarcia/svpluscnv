@@ -1,7 +1,7 @@
 #' 
 #'
-#' Plot CNV frequency across the human genome from a seg file sontaining multiple samples 
-#' @param seg (data.frame) segmentation data with 6 columns: sample, chromosome, start, end, probes, segment_mean
+#' Plot CNV frequency across the genome using a CNV segmentation file containing multiple samples 
+#' @param cnv (data.frame) segmentation data with 6 columns: sample, chromosome, start, end, probes, segment_mean
 #' @param fc.pct (numeric) percentage CNV gain/loss for a segment to be considered changed (i.e. 0.2 = 20 percent change 0.8 < segmean && segmean > 1.2)
 #' @param genome.v (hg19 or h38) reference genome version to draw chromosome limits and centromeres
 #' @param g.bin (numeric) size in megabases of the genmome bin to compute break density 
@@ -15,11 +15,11 @@
 #' @examples
 #' 
 #' ## validate input data.frame
-#' seg <- validate.seg(nbl_segdat)
+#' cnv <- validate.cnv(nbl_segdat)
 #' 
-#' cnv.freq(seg, genome.v = "hg19")
+#' cnv.freq(cnv, genome.v = "hg19")
 
-cnv.freq <- function(seg,
+cnv.freq <- function(cnv,
                      fc.pct= 0.2,
                      genome.v= "hg19",
                      g.bin= 1,
@@ -36,8 +36,8 @@ require(taRifx,quietly = TRUE,warn.conflicts = FALSE)
 require(tidyr,quietly = TRUE,warn.conflicts = FALSE)
 require(GenomicRanges,quietly = TRUE,warn.conflicts = FALSE)
 
-segdat <- validate.seg(seg)
-if(!is.null(sampleids)) segdat <- segdat[which(segdat$sample %in% sampleids),]
+    cnvdat <- validate.cnv(cnv)
+if(!is.null(sampleids)) cnvdat <- cnvdat[which(cnvdat$sample %in% sampleids),]
   
 if(genome.v == "hg19"){ bands <- GRCh37.bands
 }else if(genome.v=="h38"){ bands <- GRCh38.bands}
@@ -46,7 +46,7 @@ centromeres <- bands[intersect(which(bands$score == "acen"),grep("q",bands$name)
 names(centromeres) <- paste("chr",bands[intersect(which(bands$score == "acen"),grep("q",bands$name)),"chr"],sep="")
 
 # define chromosome mapped limits and the global genome coordinates for each chromosome start
-chrlimits <-   chromosome.limit.coords(segdat)
+chrlimits <-   chromosome.limit.coords(cnvdat)
 offset <- c(0,sapply(1:(nrow(chrlimits)-1), function(i) sum(chrlimits[1:i,"end"]) + length(1:i)*g.bin ))
 chrlabelpos <- offset + chrlimits$end/2
 chrlimits <- data.frame(offset,chrlimits,chrlabelpos)
@@ -77,15 +77,15 @@ for(chr in rownames(chrlimits)){
   if(verbose) message("Calculating mean segmean per genomic bin")
   # find overlaps between bins and cnv segments
   binsGR <- with(chrbins.df, GRanges(chr, IRanges(start=start, end=end)))
-  segGR <- with(segdat, GRanges(chrom, IRanges(start=start, end=end)))
+  segGR <- with(cnvdat, GRanges(chrom, IRanges(start=start, end=end)))
   hits <-GenomicAlignments::findOverlaps(binsGR,segGR)
   
-  outmat <- matrix(ncol=length(unique(segdat$sample)),nrow=nrow(chrbins.df))
-  colnames(outmat) <- unique(segdat$sample)
+  outmat <- matrix(ncol=length(unique(cnvdat$sample)),nrow=nrow(chrbins.df))
+  colnames(outmat) <- unique(cnvdat$sample)
   rownames(outmat) <- rownames(chrbins.df)
 
   for(i in 1:nrow(chrbins.df)){
-    segtmp<- segdat[subjectHits(hits)[which(queryHits(hits) == i)],]
+    segtmp<- cnvdat[subjectHits(hits)[which(queryHits(hits) == i)],]
     if(nrow(segtmp)>0){
       a <- aggregate(segmean~sample,segtmp, sum)  
       outmat[i,a$sample]<- a$segmean

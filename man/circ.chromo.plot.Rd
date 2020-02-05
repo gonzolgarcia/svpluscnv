@@ -34,11 +34,11 @@ Circos plot combining segmentation and SV calls
 require(circlize)
 
 ## validate input data.frames
-seg <- validate.seg(segdat_lung_ccle)
-sv <- validate.sv(svdat_lung_ccle)
+cnv <- validate.cnv(segdat_lung_ccle)
+svc <- validate.svc(svdat_lung_ccle)
 
 ## obtain shattered regions
-shatt.regions <- shattered.regions(seg,sv)
+shatt.regions <- shattered.regions(cnv,svc)
 
 id <-  names(chromo.regs.obj@regions.summary)[1]
 circ.chromo.plot(shatt.regions, sample.id = id)

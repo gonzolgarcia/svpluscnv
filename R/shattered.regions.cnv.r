@@ -1,9 +1,7 @@
-#' 
-#'
-#' Caller for shattered genomic regions based on breakpoint densities
-#' @param seg (data.frame) segmentation data with 6 columns: sample, chromosome, start, end, probes, segment_mean
+#' Caller for the identification of shattered genomic regions based on breakpoint densities
+#' @param cnv (data.frame) segmentation data with 6 columns: sample, chromosome, start, end, probes, segment_mean
 #' @param fc.pct (numeric) copy number change between 2 consecutive segments: i.e (default) cutoff = 0.2 represents 20 percent fold change
-#' @param min.seg.size (numeric) The minimun segment size (in base pairs) to include in the analysis 
+#' @param min.cnv.size (numeric) The minimun segment size (in base pairs) to include in the analysis 
 #' @param min.num.probes (numeric) The minimun number of probes per segment to include in the analysis 
 #' @param low.cov (data.frame) a data.frame (chr, start, end) indicating low coverage regions to exclude from the analysis
 #' @param window.size (numeric) size in megabases of the genmome bin to compute break density 
@@ -17,13 +15,13 @@
 #' @examples
 #' 
 #' ## validate input data.frames
-#' seg <- validate.seg(segdat_lung_ccle)
+#' cnv <- validate.cnv(segdat_lung_ccle)
 #' 
-#' shattered.regions.cnv(seg)
+#' shattered.regions.cnv(cnv)
 
-shattered.regions.cnv <- function(seg,
+shattered.regions.cnv <- function(cnv,
                               fc.pct = 0.2,
-                              min.seg.size = 0,
+                              min.cnv.size = 0,
                               min.num.probes=0, 
                               low.cov = NULL,
                               clean.brk=NULL,
@@ -35,22 +33,19 @@ shattered.regions.cnv <- function(seg,
                               verbose=FALSE
                               ){
   
-  require(taRifx,quietly = TRUE,warn.conflicts = FALSE)  # contains remove.factors
-  require(GenomicRanges,quietly = TRUE,warn.conflicts = FALSE)
+  cnvdat <- validate.cnv(cnv)
   
-  segdat <- validate.seg(seg)
+  chr.lim <- chromosome.limit.coords(cnvdat)
   
-  chr.lim <- chromosome.limit.coords(segdat)
-  
-  breaks <- seg.breaks(seg = segdat, 
+  cnvbrk <- cnv.breaks(cnv = cnvdat, 
                        fc.pct = fc.pct, 
-                       min.seg.size = min.seg.size, 
+                       min.cnv.size = min.cnv.size, 
                        low.cov = low.cov, 
                        clean.brk=clean.brk,
                        verbose = verbose)
   
   if(verbose) message("Mapping CNV breakpoints across the genome:")
-  seg.brk.dens <- break.density(breaks, 
+  cnv.brk.dens <- break.density(cnvbrk, 
                                 chr.lim = chr.lim, 
                                 window.size = window.size, 
                                 slide.size = slide.size,
@@ -59,20 +54,20 @@ shattered.regions.cnv <- function(seg,
 
   
   # calculate inter quantile mean and standard deviation per sample
-  iqmdata1<- sddata<- breaks$brk.burden
+  iqmdata1<- sddata<- cnvbrk@burden
   iqmdata1[] <- sddata[] <- 0
   
-  iqmdata <- apply(seg.brk.dens,1,IQM,lowQ=0.2,upQ=0.8)
-  sddata <- apply(seg.brk.dens,1,IQSD,lowQ=0.2,upQ=0.8)
+  iqmdata <- apply(cnv.brk.dens,1,IQM,lowQ=0.2,upQ=0.8)
+  sddata <- apply(cnv.brk.dens,1,IQSD,lowQ=0.2,upQ=0.8)
 
-  a <- sapply(rownames(seg.brk.dens),function(i) names(which(seg.brk.dens[i,] > iqmdata[i]+num.sd*sddata[i] )))
-  b <- sapply(rownames(seg.brk.dens),function(i) names(which(seg.brk.dens[i,] >= num.breaks)))
+  a <- sapply(rownames(cnv.brk.dens),function(i) names(which(cnv.brk.dens[i,] > iqmdata[i]+num.sd*sddata[i] )))
+  b <- sapply(rownames(cnv.brk.dens),function(i) names(which(cnv.brk.dens[i,] >= num.breaks)))
   
-  # condition for chromothripsis: at least n=breaks > 6 (sv SND seg)  AND n-breaks > u+2*sd (sv AND seg) 
-  res <- sapply(rownames(seg.brk.dens),function(i) Reduce(intersect, list(b[[i]],a[[i]])) )
-  highDensityRegions <- seg.brk.dens
+  # condition for chromothripsis: at least n=breaks > 6 (svc SND cnv)  AND n-breaks > u+2*sd (svc AND cnv) 
+  res <- sapply(rownames(cnv.brk.dens),function(i) Reduce(intersect, list(b[[i]],a[[i]])) )
+  highDensityRegions <- cnv.brk.dens
   highDensityRegions[] <- 0
-  for(cl in rownames(seg.brk.dens)) highDensityRegions[cl,res[[cl]]] <- 1
+  for(cl in rownames(cnv.brk.dens)) highDensityRegions[cl,res[[cl]]] <- 1
   
   res <- res[which(unlist(lapply(res,length)) >0)]
 
@@ -136,7 +131,7 @@ shattered.regions.cnv <- function(seg,
     if(verbose) cc <- cc+1
     if(verbose) setTxtProgressBar(pb, cc/tot)
     regions <-   restab[[cl]]
-    br1 <- breaks$breaks[which(breaks$breaks$sample == cl),2:3]
+    br1 <- cnvbrk@breaks[which(cnvbrk@breaks$sample == cl),2:3]
     colnames(br1) <- c("chrom","pos")
     br1.gr <- with(br1, GRanges(chrom, IRanges(start=pos, end=pos)))
     regions_gr <- with(regions, GRanges(chrom, IRanges(start=start, end=end)))
@@ -153,7 +148,7 @@ shattered.regions.cnv <- function(seg,
     conf[which(dist.iqm < dist.iqm.cut )] <-"lc"
     chrom <- regions$chrom
     nbins <- regions$nseg
-    restab[[cl]] <- data.frame(chrom,start,end,nbins,dist.iqm,n.brk,conf)
+    restab[[cl]] <- remove.factors(data.frame(chrom,start,end,nbins,dist.iqm,n.brk,conf))
   }
   if(verbose) close(pb)
   
@@ -176,18 +171,18 @@ shattered.regions.cnv <- function(seg,
     regions.summary = restab,
     high.density.regions = highDensityRegions,
     high.density.regions.hc = highDensityRegionsHC,
-    seg.brk.dens = seg.brk.dens,
-    sv.brk.dens = matrix(),
-    seg.brk.common.dens = matrix(),
-    sv.brk.common.dens = matrix(),
-    segbrk = breaks,
-    svbrk = list(),
+    cnv.brk.dens = cnv.brk.dens,
+    svc.brk.dens = matrix(),
+    cnv.brk.common.dens = matrix(),
+    svc.brk.common.dens = matrix(),
+    cnvbrk = cnvbrk,
+    svcbrk = breaks(),
     common.brk = list(),
-    segdat = segdat,
-    svdat = data.frame(),
+    cnvdat = cnvdat,
+    svcdat = data.frame(),
     param=list(
         fc.pct = fc.pct,
-        min.seg.size = min.seg.size,
+        min.cnv.size = min.cnv.size,
         min.num.probes=min.num.probes, 
         low.cov = low.cov,
         clean.brk=clean.brk,

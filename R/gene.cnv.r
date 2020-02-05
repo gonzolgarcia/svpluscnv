@@ -1,7 +1,7 @@
 #' Class to store breakpoint annotations
 #' @param cnvmat (data.frame): chromosome for the first breakpoint
 #' @param genesgr (S4): a GenomicRanges object with genomic feature annotations such as gene coordinates
-#' @param seg (data.frame): segmentation data with 6 columns: sample, chromosome, start, end, probes, segment_mean
+#' @param cnv (data.frame): segmentation data with 6 columns: sample, chromosome, start, end, probes, segment_mean
 #' @param param (list):
 #' @return an instance of the class 'genecnv' containing gene level copy number info
 #' @export
@@ -12,7 +12,7 @@ genecnv <- setClass("genecnv",
                         representation(
                             cnvmat  = "matrix",
                             genesgr = "GRanges",
-                            seg = "data.frame",
+                            cnv = "data.frame",
                             param = "list"
                         ))
 
@@ -25,7 +25,7 @@ setMethod("show","genecnv",function(object){
 
 
 #' Obtain a matrix with the weighted average CN per chromosome arm 
-#' @param seg (data.frame) segmentation data with 6 columns: sample, chromosome, start, end, probes, segment_mean
+#' @param cnv (data.frame) segmentation data with 6 columns: sample, chromosome, start, end, probes, segment_mean
 #' @param genome.v (hg19 or hg38) reference genome version to draw chromosome limits and centromeres
 #' @param genesgr (S4) a GenomicRanges object containing gene annotations (if not NULL overides genome.v). It must containg 'strand' and a metadata field 'gene_id' with unique values. Seqnames are expected in the format (chr1, chr2, ...) 
 #' @param chrlist (character) list of chromosomes to include chr1, chr2, etc...
@@ -36,23 +36,23 @@ setMethod("show","genecnv",function(object){
 #' @examples
 #' 
 #' ## validate input data.frames
-#' seg <- validate.seg(segdat_lung_ccle)
+#' cnv <- validate.cnv(segdat_lung_ccle)
 #' 
-#' gene.cnv(seg)
+#' gene.cnv(cnv)
 
-gene.cnv <- function(seg, 
+gene.cnv <- function(cnv, 
                      genome.v="hg19",
                      genesgr=NULL,
                      chrlist=NULL, 
                      fill.gaps=FALSE,
                      verbose=TRUE){
 
-segdat <- validate.seg(seg)
+    cnvdat <- validate.cnv(cnv)
 
-if(is.null(chrlist)) chrlist <- unique(segdat$chrom)
+if(is.null(chrlist)) chrlist <- unique(cnvdat$chrom)
 chrlist <- chr.sort(chrlist)
 
-if(fill.gaps) segdat <- segment.gap(seg, chrlist=chrlist, verbose=verbose)
+if(fill.gaps) cnvdat <- segment.gap(cnv, chrlist=chrlist, verbose=verbose)
 
 
 if(!is.null(genesgr)){
@@ -61,17 +61,17 @@ if(!is.null(genesgr)){
     genesgr <- get.genesgr(genome.v=genome.v)
 }
 
-segdat_gr <- with(segdat, GRanges(chrom, IRanges(start=start, end=end)))
+cnvdat_gr <- with(cnvdat, GRanges(chrom, IRanges(start=start, end=end)))
 
-hits <- GenomicAlignments::findOverlaps(genesgr,segdat_gr)
+hits <- GenomicAlignments::findOverlaps(genesgr,cnvdat_gr)
 
-overlaps_all <- pintersect(genesgr[queryHits(hits),], segdat_gr[subjectHits(hits),])
+overlaps_all <- pintersect(genesgr[queryHits(hits),], cnvdat_gr[subjectHits(hits),])
 width_overlap <- width(overlaps_all)
 
-df <- data.table(segdat[subjectHits(hits),c("sample","segmean")],genesgr[queryHits(hits)]@elementMetadata$gene_id,width_overlap)
+df <- data.table(cnvdat[subjectHits(hits),c("sample","segmean")],genesgr[queryHits(hits)]@elementMetadata$gene_id,width_overlap)
 colnames(df) <- c("sample","segmean","gene_id","width")
 
-a<-sapply(unique(segdat$sample), 
+a<-sapply(unique(cnvdat$sample), 
           function(i) df[sample == i, .(CN=mean(segmean)), by = "gene_id"],
           simplify = FALSE)
 
@@ -87,7 +87,7 @@ cnvmat <- do.call(cbind,b)
 out <- genecnv(
     cnvmat=cnvmat,
     genesgr=genesgr,
-    seg=segdat,
+    cnv=cnvdat,
     param=list(genome.v=genome.v,
                chrlist=chrlist, 
                fill.gaps=fill.gaps,
@@ -109,9 +109,9 @@ return(out)
 #' @examples
 #' 
 #' ## validate input data.frames
-#' seg <- validate.seg(segdat_lung_ccle)
+#' cnv <- validate.cnv(segdat_lung_ccle)
 #' 
-#' genecnv.obj <- gene.cnv(seg)
+#' genecnv.obj <- gene.cnv(cnv)
 #' 
 #' geneampdel <- amp.del(genecnv.obj, logr.cut = 2)
 #' 

@@ -4,25 +4,25 @@
 \name{break.annot-class}
 \alias{break.annot-class}
 \alias{break.annot}
-\title{Class to store breakpoint annotations}
+\title{Class to store breakpoint annotations in association with genomic features (e.g. gene loci)}
 \arguments{
-\item{input}{(data.frame): chromosome for the first breakpoint}
+\item{input}{(data.frame): the breakpoint info containing data.frame, this will be occupied by the CNV segmentation data in the case of cnv.break.annot or SV for sv.break.annot. Unique random string rownames are added to the provided data.frame.}
 
-\item{genesgr}{(GRanges): a GRanges object with genomic segments (e.g. genes)}
+\item{genesgr}{(GRanges): a GRanges object with genomic features (e.g. genes) to which breakpoints are mapped}
 
-\item{disruptSamples}{(list): chromosome for the second breakpoint}
+\item{disruptSamples}{(list): a list which names correspond to genomic features and values correspond to sample ids harboring breakpoints overlapping with said features}
 
-\item{disruptBreaks}{(list): position for the second breakpoint}
+\item{disruptBreaks}{(list): a list which names correspond to genomic features and values correspond to the ids of breakpount mapped onto them. Break ids are linked to the 'input' data.frame rownames}
 
-\item{upstreamSamples}{(list):}
+\item{upstreamSamples}{(list): a list which names correspond to genomic features and values correspond to sample ids harboring breakpoints overlapping with upstream region of said features}
 
-\item{upstreamBreaks}{(list):}
+\item{upstreamBreaks}{(list): a list which names correspond to genomic features and values correspond to the ids of breakpount mapped onto upstream regions Break ids are linked to the 'input' data.frame rownames}
 
-\item{param}{(list):}
+\item{param}{(list): a list of parametres provided for the annotation function}
 }
 \value{
 an instance of the class 'break.annot' containing breakpoint mapping onto genes
 }
 \description{
-Class to store breakpoint annotations
+Class to store breakpoint annotations in association with genomic features (e.g. gene loci)
 }

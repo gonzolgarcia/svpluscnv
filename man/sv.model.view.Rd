@@ -5,8 +5,8 @@
 \title{Integrated visualization of SVs and SNV in local genomic regions}
 \usage{
 sv.model.view(
-  sv,
-  seg,
+  svc,
+  cnv,
   chr,
   start,
   stop,
@@ -23,9 +23,9 @@ sv.model.view(
 )
 }
 \arguments{
-\item{sv}{(data.frame) structural variant table including  8 columns: sample, chrom1, pos1, strand1, chrom2, pos2, strand2, svclass}
+\item{svc}{(data.frame) structural variant table including  8 columns: sample, chrom1, pos1, strand1, chrom2, pos2, strand2, svclass}
 
-\item{seg}{(data.frame) segmentation data with 6 columns: sample, chromosome, start, end, probes, segment_mean}
+\item{cnv}{(data.frame) segmentation data with 6 columns: sample, chromosome, start, end, probes, segment_mean}
 
 \item{chr}{(character) chromosome (e.g chr9)}
 
@@ -57,8 +57,8 @@ Integrated visualization of SVs and SNV in local genomic regions
 plot()
 
 ## validate input data.frames
-seg <- validate.seg(segdat_lung_ccle)
-sv <- validate.sv(svdat_lung_ccle)
+cnv <- validate.cnv(segdat_lung_ccle)
+svc <- validate.svc(svdat_lung_ccle)
 
 # obtain the coordinates of a desired genomic regionbased on a known gene locus 
 df <- gene.track.view(symbol = "PTPRD", plot=FALSE)$df
@@ -66,7 +66,7 @@ start <- min(df$txStart) - 150000;
 stop <- max(df$txEnd) + 50000;
 chr <- df$chrom[1]
 
-sv.model.view(sv, seg, chr, start, stop,addlegend = TRUE, addtext=c("TRA"))
+sv.model.view(svc, cnv, chr, start, stop,addlegend = TRUE, addtext=c("TRA"))
 
 }
 \keyword{CNV,}

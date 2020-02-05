@@ -10,7 +10,7 @@
 
 \item{genesgr}{(S4): a GenomicRanges object with genomic feature annotations such as gene coordinates}
 
-\item{seg}{(data.frame): segmentation data with 6 columns: sample, chromosome, start, end, probes, segment_mean}
+\item{cnv}{(data.frame): segmentation data with 6 columns: sample, chromosome, start, end, probes, segment_mean}
 
 \item{param}{(list):}
 }

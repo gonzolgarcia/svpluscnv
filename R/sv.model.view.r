@@ -1,7 +1,7 @@
 #' 
 #' Integrated visualization of SVs and SNV in local genomic regions
-#' @param seg (data.frame) segmentation data with 6 columns: sample, chromosome, start, end, probes, segment_mean
-#' @param sv (data.frame) structural variant table including  8 columns: sample, chrom1, pos1, strand1, chrom2, pos2, strand2, svclass
+#' @param cnv (data.frame) segmentation data with 6 columns: sample, chromosome, start, end, probes, segment_mean
+#' @param svc (data.frame) structural variant table including  8 columns: sample, chrom1, pos1, strand1, chrom2, pos2, strand2, svclass
 #' @param chr (character) chromosome (e.g chr9)
 #' @param start (numeric) genomic coordinate from specified chromosome to start plotting
 #' @param sampleids (character)
@@ -20,8 +20,8 @@
 #' plot()
 #' 
 #' ## validate input data.frames
-#' seg <- validate.seg(segdat_lung_ccle)
-#' sv <- validate.sv(svdat_lung_ccle)
+#' cnv <- validate.cnv(segdat_lung_ccle)
+#' svc <- validate.svc(svdat_lung_ccle)
 #'
 #' # obtain the coordinates of a desired genomic regionbased on a known gene locus 
 #' df <- gene.track.view(symbol = "PTPRD", plot=FALSE)$df
@@ -29,12 +29,12 @@
 #' stop <- max(df$txEnd) + 50000;
 #' chr <- df$chrom[1]
 #' 
-#' sv.model.view(sv, seg, chr, start, stop,addlegend = TRUE, addtext=c("TRA"))
+#' sv.model.view(svc, cnv, chr, start, stop,addlegend = TRUE, addtext=c("TRA"))
 #' 
 
 
 
-sv.model.view <- function(sv, seg, chr, start, stop, 
+sv.model.view <- function(svc, cnv, chr, start, stop, 
                           sampleids=NULL,
                           cnvlim=c(-2,2), 
                           addlegend='both',
@@ -49,29 +49,29 @@ sv.model.view <- function(sv, seg, chr, start, stop,
 
     stopifnot(!is.null(chr) && !is.null(start) && !is.null(stop))
     
-    svdat <- validate.sv(sv)
-    segdat <- validate.seg(seg)
+    svcdat <- validate.svc(svc)
+    cnvdat <- validate.cnv(cnv)
     
     if(!is.null(sampleids)){
-        missing.samples <- setdiff(sampleids,c(svdat$sample,segdat$sample))
+        missing.samples <- setdiff(sampleids,c(svcdat$sample,cnvdat$sample))
         if(length(missing.samples) == length(unique(sampleids))){
-            stop("None of the samples provided were found in 'sv' and 'seg' input data!")
+            stop("None of the samples provided were found in 'sv' and 'cnv' input data!")
         }else if(length(missing.samples) > 0){
-            warning(paste("The following samples provided are not found in 'sv' and 'seg' input data:", paste(missing.samples,collapse=" "),sep=" "))
+            warning(paste("The following samples provided are not found in 'sv' and 'cnv' input data:", paste(missing.samples,collapse=" "),sep=" "))
         }
-        svdat<-svdat[which(svdat$sample %in% intersect(sampleids,svdat$sample)),]
-        segdat<-segdat[which(segdat$sample %in% intersect(sampleids,segdat$sample)),]
+        svcdat<-svcdat[which(svcdat$sample %in% intersect(sampleids,svcdat$sample)),]
+        cnvdat<-cnvdat[which(cnvdat$sample %in% intersect(sampleids,cnvdat$sample)),]
     }
 
     genegr <- with(data.frame(chr,start,stop), GRanges(chr, IRanges(start=start, end=stop))) 
     
     # Find samples with SV breaks within defined genomic region
-    sv1gr = with(svdat, GRanges(chrom1, IRanges(start=pos1, end=pos1))) 
-    sv2gr = with(svdat, GRanges(chrom2, IRanges(start=pos2, end=pos2))) 
+    sv1gr = with(svcdat, GRanges(chrom1, IRanges(start=pos1, end=pos1))) 
+    sv2gr = with(svcdat, GRanges(chrom2, IRanges(start=pos2, end=pos2))) 
     
     sv_hits1 = GenomicAlignments::findOverlaps(sv1gr,genegr)
     sv_hits2 = GenomicAlignments::findOverlaps(sv2gr,genegr)
-    svtab <- svdat[sort(unique(c(queryHits(sv_hits1),queryHits(sv_hits2)))),]
+    svtab <- svcdat[sort(unique(c(queryHits(sv_hits1),queryHits(sv_hits2)))),]
     svBreakSamples <- unique(svtab[,"sample"])
     if(length(svBreakSamples) == 0) warning("Thre is no SV breakpoints in the defined genomic region")
         
@@ -84,20 +84,20 @@ sv.model.view <- function(sv, seg, chr, start, stop,
     svtab_plot_tra <- svtab_plot[which(svtab_plot$svclass == "TRA"),]
     
     # Find samples with CNV segment breaks within defined genomic region
-    seg1br  = with(segdat, GRanges(chrom, IRanges(start=start, end=start))) 
-    seg2br  = with(segdat, GRanges(chrom, IRanges(start=end, end=end))) 
+    seg1br  = with(cnvdat, GRanges(chrom, IRanges(start=start, end=start))) 
+    seg2br  = with(cnvdat, GRanges(chrom, IRanges(start=end, end=end))) 
     seg_hits1 = GenomicAlignments::findOverlaps(seg1br,genegr)
     seg_hits2 = GenomicAlignments::findOverlaps(seg2br,genegr)
-    segBreakSamples <- unique(segdat[sort(unique(c(queryHits(seg_hits1),queryHits(seg_hits2)))),"sample"])
+    segBreakSamples <- unique(cnvdat[sort(unique(c(queryHits(seg_hits1),queryHits(seg_hits2)))),"sample"])
     if(length(segBreakSamples) == 0) warning("Thre is no CNV segment breakpoints in the defined genomic region")    
-    segbrk <- segdat[sort(unique(c(queryHits(seg_hits1),queryHits(seg_hits2)))),]
+    segbrk <- cnvdat[sort(unique(c(queryHits(seg_hits1),queryHits(seg_hits2)))),]
     
     if(plot==TRUE){
         # Find overlap between all CNV segments and the defined genomic region for plotting
 
-        seggr <- with(segdat, GRanges(chrom, IRanges(start=start, end=end))) 
+        seggr <- with(cnvdat, GRanges(chrom, IRanges(start=start, end=end))) 
         hits_seg = GenomicAlignments::findOverlaps(seggr,genegr)
-        seg_plot <- segdat[queryHits(hits_seg),]
+        seg_plot <- cnvdat[queryHits(hits_seg),]
         segcolor <- map2color(seg_plot$segmean,
                   pal=colorRampPalette(c("lightblue","white","salmon"))(256),
                   limit=cnvlim)
@@ -211,7 +211,7 @@ sv.model.view <- function(sv, seg, chr, start, stop,
             borderx <- c("blue", "red","orange","grey20",NA)
             pchx <- c(NA, NA,NA, NA,10)
             names(fillx) <-names(borderx) <-names(pchx) <- c("DEL", "DUP", "INV","BND", "TRA")
-            svclassin <- unique(svdat$svclass)
+            svclassin <- unique(svcdat$svclass)
             
             legend(x= start, y =legend_ypos, legend = svclassin, 
                    bty = "n", fill = fillx[svclassin], border=borderx[svclassin], 
@@ -224,7 +224,7 @@ sv.model.view <- function(sv, seg, chr, start, stop,
         }
     }
     if(summary){
-        return(list(svbrk=svdat,segbrk=segbrk))
+        return(list(svbrk=svcdat,segbrk=segbrk))
     }
 }
 

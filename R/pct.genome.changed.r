@@ -1,7 +1,5 @@
-#' 
-#'
 #' Calculate the percentage of genome changed by CNV
-#' @param seg (data.frame) segmentation data with 6 columns: sample, chromosome, start, end, probes, segment_mean
+#' @param cnv (data.frame) segmentation data with 6 columns: sample, chromosome, start, end, probes, segment_mean
 #' @param fc.pct (numeric) percentage CNV gain/loss for a segment to be considered changed (i.e. 0.2 = 20 percent change 0.8 < segmean && segmean > 1.2)
 #' @param discard.sex (logical) whether sex chromosomes should be included or not
 #' @keywords CNV, segmentation
@@ -9,23 +7,23 @@
 #' @examples
 #' 
 #' ## validate input data.frames
-#' seg <- validate.seg(segdat_lung_ccle)
+#' cnv <- validate.cnv(segdat_lung_ccle)
 #' 
-#' pct.genome.changed(seg)
+#' pct.genome.changed(cnv)
 
-pct.genome.changed <- function(seg, 
+pct.genome.changed <- function(cnv, 
                                fc.pct=0.2, 
                                discard.sex=TRUE){
 
   require(taRifx)  # contains remove.factors
 
-  segdat <- validate.seg(seg)
+    cnvdat <- validate.cnv(cnv)
   
-  if(discard.sex == TRUE) segdat <- segdat[which(!segdat$chrom %in% c("chrX","chrY")),]
+  if(discard.sex == TRUE) cnvdat <- cnvdat[which(!cnvdat$chrom %in% c("chrX","chrY")),]
 
-  width <- segdat$end - segdat$start
-  segmean <- segdat$segmean
-  sample <- segdat$sample
+  width <- cnvdat$end - cnvdat$start
+  segmean <- cnvdat$segmean
+  sample <- cnvdat$sample
   df <- remove.factors(data.frame(sample,width,segmean))
   idx_changed <- c(which(df$segmean < log2(1-fc.pct)),which(df$segmean >= log2(1+fc.pct)))
   idx_normal <- setdiff(1:nrow(df),idx_changed)

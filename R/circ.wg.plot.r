@@ -1,8 +1,6 @@
-#' 
-#'
 #' Circos plot combining segmentation and SV calls
-#' @param seg (data.frame) segmentation data with at least 6 columns: sample, chromosome, start, end, probes, segment_mean
-#' @param sv (data.frame) structural variant table including  8 columns: sample, chrom1, pos1, strand1, chrom2, pos2, strand2, svclass
+#' @param cnv (data.frame) segmentation data with at least 6 columns: sample, chromosome, start, end, probes, segment_mean
+#' @param svc (data.frame) structural variant table including  8 columns: sample, chrom1, pos1, strand1, chrom2, pos2, strand2, svclass
 #' @param sample.id (character) the id of the sample to be plotted
 #' @param lrr.pct (numeric) copy number change between 2 consecutive segments: i.e (default) cutoff = 0.2 represents a fold change of 0.8 or 1.2
 #' @param lrr.max (numeric) maximum CNV to be plotted
@@ -15,17 +13,17 @@
 #' require(circlize)
 #' 
 #' ## validate input data.frames
-#' seg <- validate.seg(segdat_lung_ccle)
-#' sv <- validate.sv(svdat_lung_ccle)
+#' cnv <- validate.cnv(segdat_lung_ccle)
+#' svc <- validate.svc(svdat_lung_ccle)
 #' 
 #' ## select a random sample id
-#' id <-  sample(intersect(seg$sample,sv$sample))[1]
+#' id <-  sample(intersect(cnv$sample,svc$sample))[1]
 #' 
-#' circ.wg.plot(seg, sv, sample.id=id)
+#' circ.wg.plot(cnv, svc, sample.id=id)
 
 
-circ.wg.plot <- function(seg, 
-                         sv, 
+circ.wg.plot <- function(cnv, 
+                         svc, 
                          sample.id=NULL,
                          lrr.pct = 0.2,
                          lrr.max = 4,
@@ -34,29 +32,29 @@ circ.wg.plot <- function(seg,
   
   require(circlize, quietly = F, warn.conflicts = FALSE)
 
-  segdat <- validate.seg(seg)
-  svdat <- validate.sv(sv)
+  cnvdat <- validate.cnv(cnv)
+  svcdat <- validate.svc(svc)
   
   if(!is.null(sample.id)){ 
-    segdat <- segdat[which(segdat$sample == sample.id),]
-    svdat <- svdat[which(svdat$sample == sample.id),]
+    cnvdat <- cnvdat[which(cnvdat$sample == sample.id),]
+    svcdat <- svcdat[which(svcdat$sample == sample.id),]
     }
   
-  stopifnot(length(unique(segdat$sample)) == 1)
-  stopifnot(length(unique(svdat$sample)) == 1)
-  stopifnot(unique(segdat$sample) == unique(svdat$sample) )
+  stopifnot(length(unique(cnvdat$sample)) == 1)
+  stopifnot(length(unique(svcdat$sample)) == 1)
+  stopifnot(unique(cnvdat$sample) == unique(svcdat$sample) )
   
-  sample_id <- unique(segdat$sample)
+  sample_id <- unique(cnvdat$sample)
 
   if(is.null(chrlist)) chrlist <- paste("chr",c(1:22,"X","Y"),sep="")
 
-  alllinks1 <- data.frame(svdat$chrom1,svdat$pos1,svdat$pos1 )
-  alllinks2 <- data.frame(svdat$chrom2,svdat$pos2,svdat$pos2 )
+  alllinks1 <- data.frame(svcdat$chrom1,svcdat$pos1,svcdat$pos1 )
+  alllinks2 <- data.frame(svcdat$chrom2,svcdat$pos2,svcdat$pos2 )
   colnames(alllinks1) <- colnames(alllinks2) <- c("chr","start","end")
   map = setNames(c("blue", "red", "orange","black","green"), c("DEL", "DUP","INV","TRA","INS"))
-  alllinkcolors <- map[as.character(svdat$svclass)]
+  alllinkcolors <- map[as.character(svcdat$svclass)]
   
-  cnv <- segdat[,c("chrom","start","end","segmean")]
+  cnv <- cnvdat[,c("chrom","start","end","segmean")]
   colores <- rep("black",nrow(cnv))
   colores[which(cnv$segmean < log2(1 - lrr.pct)) ] <- "blue"
   colores[which(cnv$segmean > log2(1 + lrr.pct)) ] <- "red"
