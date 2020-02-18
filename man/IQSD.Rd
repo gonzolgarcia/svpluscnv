@@ -7,11 +7,14 @@
 IQSD(x, lowQ = 0.1, upQ = 0.9)
 }
 \arguments{
-\item{x}{numeric vector}
+\item{x}{numeric vector to compute interquantile standard deviation}
 
 \item{lowQ}{lower quantile}
 
 \item{upQ}{upper quantile}
+}
+\value{
+(numeric) the IQSD value
 }
 \description{
 Obtains inter quantile standard deviation for a defined 'x' vector and both lower and upper quantiles

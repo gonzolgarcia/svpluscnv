@@ -11,6 +11,9 @@ dngr(ggr, dnstr = 50000)
 
 \item{dnstr}{(numeric) size in base pairs to define gene downstream region onto which breakpoint overlaps will be identified. The strand value, start and stop positions defined in genesgr will be used to create a GRanges object of downstream regions.}
 }
+\value{
+(S4) aa GRanges object of downstream regions
+}
 \description{
 generate GRanges of downstream regions
 }

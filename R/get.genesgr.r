@@ -1,6 +1,7 @@
 #' retrieves a GRanges object containinng gene annotations for the specified genome version 
 #' @param genome.v (hg19 or GRCh37 and hg38 or GRCh38) reference genome version to retrieve gene annotations 
 #' @param chrlist (character)  
+#' @return a GRanges class object from the specified human genome version 
 #' @keywords CNV, segmentation, genes
 #' @export
 #' @examples
@@ -9,12 +10,10 @@
 #' 
 
 get.genesgr<- function(genome.v="hg19",chrlist=NULL){
-    require(org.Hs.eg.db)
+
     if(genome.v %in% c("hg19","GRCh37")){
-        require(TxDb.Hsapiens.UCSC.hg19.knownGene)
         genesgr = GenomicFeatures::genes(TxDb.Hsapiens.UCSC.hg19.knownGene, columns="gene_id")
     }else if(genome.v %in% c("hg38","GRCh38")){
-        require(TxDb.Hsapiens.UCSC.hg38.knownGene)
         genesgr = GenomicFeatures::genes(TxDb.Hsapiens.UCSC.hg38.knownGene, columns="gene_id")
     }else{stop("Unspecified, or non available genome")}
     

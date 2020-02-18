@@ -23,6 +23,9 @@ shattered.map.plot(
 
 \item{add.legend}{the position of the legend in the plot; if null, no legend will be draw}
 }
+\value{
+a plot into open device
+}
 \description{
 Plot CNV frequency across the human genome from a seg file sontaining multiple samples
 }

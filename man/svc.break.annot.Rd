@@ -15,7 +15,7 @@ svc.break.annot(
 )
 }
 \arguments{
-\item{svc}{(data.frame) structural variant table including  8 columns: sample, chrom1, pos1, strand1, chrom2, pos2, strand2, svclass}
+\item{svc}{(S4) an object of class svcnvio containing data type 'svc' validated by validate.svc}
 
 \item{genome.v}{(character): either 'hg19' or 'hg38' accepted; reference genome version to retrieve gene annotations including genomic coordinates and strand}
 

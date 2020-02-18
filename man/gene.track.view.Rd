@@ -14,7 +14,6 @@ gene.track.view(
   genome.v = "hg19",
   cex.text = 0.6,
   addtext = TRUE,
-  show.chr = "topleft",
   plot = TRUE,
   summary = TRUE,
   ...
@@ -35,8 +34,6 @@ gene.track.view(
 
 \item{addtext}{(logic)}
 
-\item{show.chr}{(character) if not null will show the chromosome name at specified location (Default "topleft")}
-
 \item{plot}{(logic)}
 
 \item{summary}{(logic) whether the function shoud return CNV segment 'segbrk' and SV 'svbrk' breakpoints tabular output}
@@ -47,11 +44,15 @@ gene.track.view(
 
 \item{addlegend}{(logic)}
 }
+\value{
+a data.frame with gene isoform annotations and/or plot into open device
+}
 \description{
 Integrated visualization of SVs and SNV in local genomic regions
 }
 \examples{
-plot()
+
+gene.track.view(symbol="PTPRD", genome.v="hg19")
 }
 \keyword{CNV,}
 \keyword{segmentation}

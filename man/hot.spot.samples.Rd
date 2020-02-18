@@ -11,6 +11,9 @@ hot.spot.samples(chromo.regs.obj, freq.cut)
 
 \item{freq.cut}{(numeric) the hot spot threshold above which peaks are defined for sample ID retrieval}
 }
+\value{
+a list comprising two lists: peakRegions, peakRegionsSamples
+}
 \description{
 Define peak regions and samples in shattered regions hot spots
 }

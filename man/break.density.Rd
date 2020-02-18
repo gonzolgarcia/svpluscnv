@@ -2,32 +2,35 @@
 % Please edit documentation in R/breakpoint.density.r
 \name{break.density}
 \alias{break.density}
-\title{Generating a genomic map based on a defined bin size and sliding window and counts the number of breakpoints mapped onto each bin. This function is used internally by svcnvplus::shattered.regions and svcnvplus::shattered.regions.cnv}
+\title{Generating a genomic map based on a defined bin size and sliding window and counts the number of breakpoints mapped onto each bin. This function is used internally by svpluscnv::shattered.regions and svpluscnv::shattered.regions.cnv}
 \usage{
 break.density(
   brk,
-  chr.lim,
+  chr.lim = NULL,
+  genome.v = "hg19",
   window.size = 10,
   slide.size = 2,
-  chrlist = NULL,
   verbose = TRUE
 )
 }
 \arguments{
-\item{brk}{(list) This object of the class 'breaks' obtained from CNV segmentation data (svcnvplus::cnv.breaks) and Structural Variant calls (svcnvplus::svc.breaks).}
+\item{brk}{(breaks) An instance of the class 'breaks' obtained from CNV segmentation data (svpluscnv::cnv.breaks) or Structural Variant calls (svpluscnv::svc.breaks).}
 
-\item{chr.lim}{(data.frame) 3 column table (chrom, begin, end) indicating the chromosome most distal coordinates with coverage. Also returned by the function svcnvplus::chromosome.limit.coords.}
+\item{chr.lim}{(data.frame) 3 column table (chrom, begin, end) indicating the chromosome most distal coordinates with coverage. Also returned by the function svpluscnv::chromosome.limit.coords.}
+
+\item{genome.v}{(hg19 or hg38) reference genome version to draw chromosome limits and centromeres}
 
 \item{window.size}{(numeric) size in megabases of the genmome bin onto which breakpoints will be mapped}
 
 \item{slide.size}{(numeric) size in megabases of the sliding genomic window; if slide.size < window.size the genomic bins will overlap}
 
-\item{chrlist}{(character) vector containing chromosomes to consider (e.g. "chr1", "chr2", "chr3", ...)}
-
 \item{verbose}{(logical)}
 }
+\value{
+a matrix of samples (rows) and genomic bins (cols) qith the number of breakpoints mapped in heach cell
+}
 \description{
-Generating a genomic map based on a defined bin size and sliding window and counts the number of breakpoints mapped onto each bin. This function is used internally by svcnvplus::shattered.regions and svcnvplus::shattered.regions.cnv
+Generating a genomic map based on a defined bin size and sliding window and counts the number of breakpoints mapped onto each bin. This function is used internally by svpluscnv::shattered.regions and svpluscnv::shattered.regions.cnv
 }
 \examples{
 

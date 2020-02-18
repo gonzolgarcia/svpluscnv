@@ -7,11 +7,14 @@
 chr.arm.cnv(cnv, genome.v = "hg19", verbose = TRUE)
 }
 \arguments{
-\item{cnv}{(data.frame) segmentation data with 6 columns: sample, chromosome, start, end, probes, segment_mean}
+\item{cnv}{(S4) an object of class svcnvio containing data type 'cnv' validated by validate.cnv}
 
 \item{genome.v}{(`hg19` or `hg38`) reference genome version to draw chromosome limits and centromeres}
 
 \item{verbose}{(logical)}
+}
+\value{
+a matrix of chromosome arms (rows) versus samples (cols) with average segment logRs per cell
 }
 \description{
 Obtain a matrix with the weighted average CN per chromosome arm

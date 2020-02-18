@@ -6,11 +6,11 @@
 \alias{genecnv}
 \title{Class to store breakpoint annotations}
 \arguments{
-\item{cnvmat}{(data.frame): chromosome for the first breakpoint}
+\item{cnvmat}{(data.frame): matrix containing average CNV per gene (rows) for each sample (columns)}
 
 \item{genesgr}{(S4): a GenomicRanges object with genomic feature annotations such as gene coordinates}
 
-\item{cnv}{(data.frame): segmentation data with 6 columns: sample, chromosome, start, end, probes, segment_mean}
+\item{cnv}{(S4) an object of class svcnvio containing data type 'cnv' validated by validate.cnv}
 
 \item{param}{(list):}
 }

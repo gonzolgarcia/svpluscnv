@@ -4,10 +4,13 @@
 \alias{validate.cnv}
 \title{This function calculates the percent genome changed by CNV}
 \usage{
-validate.cnv(cnv)
+validate.cnv(cnv.df)
 }
 \arguments{
-\item{cnv}{(data.frame) segmentation data with at least 6 columns: sample, chromosome, start, end, probes, segment_mean}
+\item{cnv.df}{(data.frame) segmentation data with at least 6 columns: sample, chromosome, start, end, probes, segment_mean}
+}
+\value{
+(data.frame) CNV segmentation table with validated format for other svpluscnv operations;  A unique id (uid) column is also added
 }
 \description{
 This function calculates the percent genome changed by CNV

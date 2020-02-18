@@ -4,21 +4,23 @@
 \alias{createRandomString}
 \title{Generates n unique random character strings of a given length}
 \usage{
-createRandomString(n = 1, strlen = 12, seed = 123456789)
+createRandomString(n = 1, strlen = 10)
 }
 \arguments{
-\item{n}{character vector length to return}
+\item{n}{the number of unique random strings to return}
 
 \item{strlen}{random string length}
-
-\item{seed}{set.seed value}
+}
+\value{
+a vector of unique random character strings
 }
 \description{
 Generates n unique random character strings of a given length
 }
 \examples{
-
-createRandomString(n=10 strlen=12)
+# for reproducibility make sure to set the seed
+set.seed(123456789)
+createRandomString(1, 10)
 }
 \keyword{random}
 \keyword{string}

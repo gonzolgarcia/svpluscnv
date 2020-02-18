@@ -5,14 +5,17 @@
 \title{Fills the gaps in a segmentation data.frame. Chromosome limits are defined for the complete segmentation dataset then segments fill the missing terminal regions. 
 The CN log-ratio of the added segments is set to the average of the closest neighbours in each sample.}
 \usage{
-segment.gap(cnv, chrlist = NULL, verbose = TRUE)
+segment.gap(cnv, chrlist = NULL, verbose = FALSE)
 }
 \arguments{
-\item{cnv}{(data.frame) segmentation data with 6 columns: sample, chromosome, start, end, probes, segment_mean}
+\item{cnv}{(S4) an object of class svcnvio containing data type 'cnv' validated by validate.cnv}
 
 \item{chrlist}{(character) list of chromosomes to include chr1, chr2, etc...}
 
 \item{verbose}{(logical)}
+}
+\value{
+a data.frame containing CNV data
 }
 \description{
 Fills the gaps in a segmentation data.frame. Chromosome limits are defined for the complete segmentation dataset then segments fill the missing terminal regions. 

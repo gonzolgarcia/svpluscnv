@@ -1,7 +1,6 @@
-#' 
 #' Integrated visualization of SVs and SNV in local genomic regions
-#' @param cnv (data.frame) segmentation data with 6 columns: sample, chromosome, start, end, probes, segment_mean
-#' @param svc (data.frame) structural variant table including  8 columns: sample, chrom1, pos1, strand1, chrom2, pos2, strand2, svclass
+#' @param cnv (S4) an object of class svcnvio containing data type 'cnv' validated by validate.cnv
+#' @param svc (S4) an object of class svcnvio containing data type 'svc' validated by validate.svc
 #' @param chr (character) chromosome (e.g chr9)
 #' @param start (numeric) genomic coordinate from specified chromosome to start plotting
 #' @param sampleids (character)
@@ -10,10 +9,11 @@
 #' @param addlegend (character) one of 'sv' (show SV type legend), 'cnv' (show CNV background color legend) or 'both'.
 #' @param cex.legend (numeric) the cex values for each legend
 #' @param addtext (character) a vector indicating what SV types should include text labels indicating brakpoint partners genomic locations. 
-#' The labeels are only added to point tbreakpoint locations outside the plot area. (e.g. c("TRA","INV") )
+#' The added labels are point breakpoint locations outside the plot area. (e.g. c("TRA","INV") )
 #' @param plot (logic) whether to produce a graphical output
 #' @param summary (logic) whether the function shoud return CNV segment 'segbrk' and SV 'svbrk' breakpoints tabular output
 #' @param ... additional plot parameters from graphics plot function 
+#' @return a data.frame with CNV and SVN breakpoint annotations and/or plot into open device
 #' @keywords CNV, segmentation
 #' @export
 #' @examples
@@ -47,10 +47,13 @@ sv.model.view <- function(svc, cnv, chr, start, stop,
                           ...){
     
 
-    stopifnot(!is.null(chr) && !is.null(start) && !is.null(stop))
+ stopifnot(!is.null(chr) && !is.null(start) && !is.null(stop))
+
+    stopifnot(cnv@type == "cnv")
+    cnvdat <- cnv@data
     
-    svcdat <- validate.svc(svc)
-    cnvdat <- validate.cnv(cnv)
+    stopifnot(svc@type == "svc")
+    svcdat <- svc@data
     
     if(!is.null(sampleids)){
         missing.samples <- setdiff(sampleids,c(svcdat$sample,cnvdat$sample))
@@ -72,36 +75,36 @@ sv.model.view <- function(svc, cnv, chr, start, stop,
     sv_hits1 = GenomicAlignments::findOverlaps(sv1gr,genegr)
     sv_hits2 = GenomicAlignments::findOverlaps(sv2gr,genegr)
     svtab <- svcdat[sort(unique(c(queryHits(sv_hits1),queryHits(sv_hits2)))),]
-    svBreakSamples <- unique(svtab[,"sample"])
+    svBreakSamples <- unique(svtab$sample)
     if(length(svBreakSamples) == 0) warning("Thre is no SV breakpoints in the defined genomic region")
         
     # obtain SVs for plotting with different colors for each svclass
     svcolormap = setNames(c("blue", "red", "orange", "black", "green","grey20"), 
                    c("DEL", "DUP", "INV", "TRA", "INS","BND"))
     svcolor <- svcolormap[svtab$svclass]
-    svtab_plot <- remove.factors(data.frame(svtab,svcolor))
-    svtab_plot_seg <- svtab_plot[which(svtab_plot$svclass != "TRA"),]
-    svtab_plot_tra <- svtab_plot[which(svtab_plot$svclass == "TRA"),]
+    svtab_plot <- data.table(svtab,svcolor)
+    svtab_plot_seg <- svtab_plot[which(svtab_plot$svclass != "TRA")]
+    svtab_plot_tra <- svtab_plot[which(svtab_plot$svclass == "TRA")]
     
     # Find samples with CNV segment breaks within defined genomic region
     seg1br  = with(cnvdat, GRanges(chrom, IRanges(start=start, end=start))) 
     seg2br  = with(cnvdat, GRanges(chrom, IRanges(start=end, end=end))) 
     seg_hits1 = GenomicAlignments::findOverlaps(seg1br,genegr)
     seg_hits2 = GenomicAlignments::findOverlaps(seg2br,genegr)
-    segBreakSamples <- unique(cnvdat[sort(unique(c(queryHits(seg_hits1),queryHits(seg_hits2)))),"sample"])
+    segBreakSamples <- unique(cnvdat[sort(unique(c(queryHits(seg_hits1),queryHits(seg_hits2))))]$sample)
     if(length(segBreakSamples) == 0) warning("Thre is no CNV segment breakpoints in the defined genomic region")    
-    segbrk <- cnvdat[sort(unique(c(queryHits(seg_hits1),queryHits(seg_hits2)))),]
+    segbrk <- cnvdat[sort(unique(c(queryHits(seg_hits1),queryHits(seg_hits2))))]
     
     if(plot==TRUE){
         # Find overlap between all CNV segments and the defined genomic region for plotting
 
         seggr <- with(cnvdat, GRanges(chrom, IRanges(start=start, end=end))) 
         hits_seg = GenomicAlignments::findOverlaps(seggr,genegr)
-        seg_plot <- cnvdat[queryHits(hits_seg),]
+        seg_plot <- cnvdat[queryHits(hits_seg)]
         segcolor <- map2color(seg_plot$segmean,
                   pal=colorRampPalette(c("lightblue","white","salmon"))(256),
                   limit=cnvlim)
-        seg_plot <- remove.factors(data.frame(seg_plot,segcolor))
+        seg_plot <- data.table(seg_plot,segcolor)
     
         if(!is.null(sampleids)){
             sample_order <- 1:length(sampleids)
@@ -139,35 +142,35 @@ sv.model.view <- function(svc, cnv, chr, start, stop,
             ypos <- sample_order[sid]
             for(i in 1:nrow(seg_sample_plot)){
                 polygon(rbind(
-                    c(seg_sample_plot[i,"start"],ypos),
-                    c(seg_sample_plot[i,"start"],ypos-1),
-                    c(seg_sample_plot[i,"end"],ypos-1),
-                    c(seg_sample_plot[i,"end"],ypos)
-                ),col=seg_sample_plot[i,"segcolor"],border=NA)
+                    c(seg_sample_plot[i]$start,ypos),
+                    c(seg_sample_plot[i]$start,ypos-1),
+                    c(seg_sample_plot[i]$end,ypos-1),
+                    c(seg_sample_plot[i]$end,ypos)
+                ),col=seg_sample_plot[i]$segcolor,border=NA)
             }
         }
     
         for(sid in unique(svtab_plot_seg$sample)){
-            svtab_plot_seg_i <- svtab_plot_seg[which(svtab_plot_seg$sample == sid),]
+            svtab_plot_seg_i <- svtab_plot_seg[which(svtab_plot_seg$sample == sid)]
             ypos <- sample_order[sid]
             addrnorm <- rep(c(0,0.2,-0.2,0.1,-0.1,0.3,-0.3),nrow(svtab_plot_seg_i))
             for(i in 1:nrow(svtab_plot_seg_i)){
                 polygon(rbind(
-                    c(svtab_plot_seg_i[i,"pos1"],ypos-0.4-addrnorm[i]),
-                    c(svtab_plot_seg_i[i,"pos1"],ypos-0.6-addrnorm[i]),
-                    c(svtab_plot_seg_i[i,"pos2"],ypos-0.6-addrnorm[i]),
-                    c(svtab_plot_seg_i[i,"pos2"],ypos-0.4-addrnorm[i])
-                    ),col=NA,border=svtab_plot_seg_i[i,"svcolor"])
+                    c(svtab_plot_seg_i[i]$pos1,ypos-0.4-addrnorm[i]),
+                    c(svtab_plot_seg_i[i]$pos1,ypos-0.6-addrnorm[i]),
+                    c(svtab_plot_seg_i[i]$pos2,ypos-0.6-addrnorm[i]),
+                    c(svtab_plot_seg_i[i]$pos2,ypos-0.4-addrnorm[i])
+                    ),col=NA,border=svtab_plot_seg_i[i]$svcolor)
 
-                if(svtab_plot_seg_i[i,"svclass"] %in% addtext){
-                    if(svtab_plot_seg_i[i,"pos1"] < start){
+                if(svtab_plot_seg_i[i]$svclass %in% addtext){
+                    if(svtab_plot_seg_i[i]$pos1 < start){
                         text(start,ypos-0.5-addrnorm[i],
-                             paste("<--",svtab_plot_seg_i[i,"pos1"],sep=""),
+                             paste("<--",svtab_plot_seg_i[i]$pos1,sep=""),
                              pos=4,offset=0,cex=cex.text)
                     }
-                    if(svtab_plot_seg_i[i,"pos2"] > stop){
+                    if(svtab_plot_seg_i[i]$pos2 > stop){
                         text(stop,ypos-0.5-addrnorm[i],
-                             paste(svtab_plot_seg_i[i,"pos2"],"-->",sep=""),
+                             paste(svtab_plot_seg_i[i]$pos2,"->",sep=""),
                              pos=2,offset=0,cex=cex.text)
                     }
                 }
@@ -179,21 +182,21 @@ sv.model.view <- function(svc, cnv, chr, start, stop,
             ypos <- sample_order[sid]
             addrnorm <- rep(c(0,0.3,-0.3,0.1,-0.1,0.2,-0.2),nrow(svtab_plot_seg_i))
             for(i in 1:nrow(svtab_plot_tra_i)){
-                if(svtab_plot_tra_i[i,"chrom2"] == chr){ 
-                    points(svtab_plot_tra_i[i,"pos2"],ypos-0.5+addrnorm[i],pch=10)
-                    lines(c(svtab_plot_tra_i[i,"pos2"],svtab_plot_tra_i[i,"pos2"]),c(ypos,ypos-1),lwd=1,lty=3)
+                if(svtab_plot_tra_i[i]$chrom2 == chr){ 
+                    points(svtab_plot_tra_i[i]$pos2,ypos-0.5+addrnorm[i],pch=10)
+                    lines(c(svtab_plot_tra_i[i]$pos2,svtab_plot_tra_i[i]$pos2),c(ypos,ypos-1),lwd=1,lty=3)
                     if("TRA" %in% addtext){
-                        text(svtab_plot_tra_i[i,"pos2"],ypos-0.5+addrnorm[i],
-                             paste("-->",svtab_plot_tra_i[i,"chrom1"],":",svtab_plot_tra_i[i,"pos1"],sep=""),
+                        text(svtab_plot_tra_i[i]$pos2,ypos-0.5+addrnorm[i],
+                             paste("  ",svtab_plot_tra_i[i]$chrom1,":",svtab_plot_tra_i[i]$pos1,sep=""),
                              pos=4,offset=0,cex=cex.text)
                     }
                 }            
                 if(svtab_plot_tra_i[i,"chrom1"] == chr){
-                    points(svtab_plot_tra_i[i,"pos1"],ypos-0.5+addrnorm[i],pch=10)
-                    lines(c(svtab_plot_tra_i[i,"pos1"],svtab_plot_tra_i[i,"pos1"]),c(ypos,ypos-1),lwd=1,lty=3)
+                    points(svtab_plot_tra_i[i]$pos1,ypos-0.5+addrnorm[i],pch=10)
+                    lines(c(svtab_plot_tra_i[i]$pos1,svtab_plot_tra_i[i]$pos1),c(ypos,ypos-1),lwd=1,lty=3)
                     if("TRA" %in% addtext) {
-                        text(svtab_plot_tra_i[i,"pos1"],ypos-0.5+addrnorm[i],
-                             paste("-->",svtab_plot_tra_i[i,"chrom2"],":",svtab_plot_tra_i[i,"pos2"],sep=""),
+                        text(svtab_plot_tra_i[i]$pos1,ypos-0.5+addrnorm[i],
+                             paste("  ",svtab_plot_tra_i[i]$chrom2,":",svtab_plot_tra_i[i]$pos2,sep=""),
                              pos=4,offset=0,cex=cex.text)
                     }
                 }

@@ -9,8 +9,9 @@ cnv.break.annot(
   fc.pct = 0.2,
   genome.v = "hg19",
   genesgr = NULL,
-  upstr = 50000,
-  dnstr = 50000,
+  upstr = 150000,
+  dnstr = 150000,
+  break.width = 10000,
   min.cnv.size = NULL,
   min.num.probes = NULL,
   low.cov = NULL,
@@ -19,7 +20,7 @@ cnv.break.annot(
 )
 }
 \arguments{
-\item{cnv}{(data.frame) segmentation data with 6 columns: sample, chromosome, start, end, probes, segment_mean.}
+\item{cnv}{(S4) an object of class svcnvio containing data type 'cnv' validated by validate.cnv}
 
 \item{fc.pct}{(numeric) copy number change between 2 consecutive segments: i.e (default) cutoff = 0.2 represents a fold change of 0.8 or 1.2.}
 

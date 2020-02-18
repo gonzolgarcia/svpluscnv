@@ -2,12 +2,12 @@
 % Please edit documentation in R/breakpoint.density.r
 \name{cnv.breaks}
 \alias{cnv.breaks}
-\title{Identify read-depth breakpoints provided a segmentation file}
+\title{Identify CNV breakpoints filtered by the change in copy number logRs between contiguous segments}
 \usage{
 cnv.breaks(
   cnv,
   fc.pct = 0.2,
-  break.width = NULL,
+  break.width = 10000,
   min.cnv.size = NULL,
   min.num.probes = NULL,
   chrlist = NULL,
@@ -17,7 +17,7 @@ cnv.breaks(
 )
 }
 \arguments{
-\item{cnv}{(data.frame) segmentation data with 6 columns: sample, chromosome, start, end, probes, segment_mean}
+\item{cnv}{(S4) an object of class svcnvio containing data type 'cnv' validated by validate.cnv}
 
 \item{fc.pct}{(numeric) copy number change between 2 consecutive segments: i.e (default) cutoff = 0.2 represents a fold change of 0.8 or 1.2}
 
@@ -31,8 +31,11 @@ cnv.breaks(
 
 \item{clean.brk}{(numeric) identical breakpoints across multiple samples tend to be artifacts; remove breaks > N}
 }
+\value{
+an instance of the class 'breaks' containing breakpoint and breakpoint burden information
+}
 \description{
-Identify read-depth breakpoints provided a segmentation file
+Identify CNV breakpoints filtered by the change in copy number logRs between contiguous segments
 }
 \examples{
 

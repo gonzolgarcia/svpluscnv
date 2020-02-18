@@ -1,7 +1,8 @@
-#' Obtains inter quantile average for a defined 'x' vector and both lower and upper quantiles
-#' @param x numeric vector 
+#' Obtains interquantile average for a defined 'x' vector and both lower and upper quantiles
+#' @param x numeric vector to compute interquantile average
 #' @param lowQ lower quantile
 #' @param upQ upper quantile
+#' @return (numeric) the IQM value
 #' @keywords statistics, interquartile 
 #' @export
 #' @examples
@@ -25,9 +26,10 @@ IQM <- function(x, lowQ=0.1, upQ=0.9){
 
 
 #' Obtains inter quantile standard deviation for a defined 'x' vector and both lower and upper quantiles
-#' @param x numeric vector 
+#' @param x numeric vector to compute interquantile standard deviation
 #' @param lowQ lower quantile
 #' @param upQ upper quantile
+#' @return (numeric) the IQSD value
 #' @keywords statistics, interquartile 
 #' @export
 #' @examples
@@ -52,6 +54,7 @@ IQSD <- function(x,lowQ=0.1,upQ=0.9){
 #' @param x numeric vector 
 #' @param pal color palette
 #' @param limits numeric limit fr color mapping
+#' @return a color vector graded according to x
 #' @keywords color, number 
 #' @export
 #' @examples
@@ -69,21 +72,21 @@ map2color <- function(x, pal, limits=NULL){
 
 
 #' Generates n unique random character strings of a given length
-#' @param n character vector length to return 
+#' @param n the number of unique random strings to return
 #' @param strlen random string length
-#' @param seed set.seed value
-#' @keywords random string 
+#' @return a vector of unique random character strings
+#' @keywords random string
 #' @export
 #' @examples
-#' 
-#' createRandomString(n=10 strlen=12)
+#' # for reproducibility make sure to set the seed
+#' set.seed(123456789)
+#' createRandomString(1, 10)
 
 
-createRandomString <- function(n=1, strlen=12, seed=123456789){
+createRandomString <- function(n=1, strlen=10){
     
     strlenchain <- strlen*n*2
     
-    set.seed(seed)
     chain <- paste(sample(c(letters, LETTERS),strlenchain, replace=TRUE),collapse="")
     idresult <- strsplit(gsub(paste("(.{",strlen,"})",sep=""), "\\1 ", chain)," ")
     
@@ -93,29 +96,39 @@ createRandomString <- function(n=1, strlen=12, seed=123456789){
 }
 
 
+
 #' A function to order a list of chromosomes 
 #' @param chrlist (character): a vector containing chromosome names (chr1, chr2...chrX,chrY  ) 
+#' @return a character vector of sorted chromosomes
 #' @keywords CNV, segmentation, genes
 #' @export
 #' @examples
 #' 
-#' chr.sort(chrlist)
+#' d3gb.chr.lim(genome.v="hg19")
 #' 
 
-chr.sort <- function(chrlist){ 
-    chrunique <- gsub("chr","",unique(chrlist))
-    chrsort <- chrlist[suppressWarnings(order(as.numeric(chrunique) ))]
-    return(chrsort)
+d3gb.chr.lim <- function(genome.v){
+    
+    stopifnot(genome.v %in% c("hg19","hg38","GRCh37","GRCh38"))
+    
+    if(genome.v %in% c("hg19","GRCh37")){ bands <- GRCh37.bands
+    }else if(genome.v %in% c("hg38","GRCh38")){ bands <- GRCh38.bands}
+    
+    ends<- aggregate(end ~ chr, bands, max)
+    ends<- ends[order(ends$chr),]
+    ends<- ends[suppressWarnings(order(as.numeric(as.character(ends$chr)) )),]
+    
+    chr.lim <- data.table(paste("chr",ends$chr,sep=""),rep(0,length(ends)),ends$end)
+    colnames(chr.lim) <-c("chrom","begin","end")
+    
+    return(chr.lim)
 }
-
-
-
-
 
 #' Given two lists with (or without common names) returns a combined list; if common names their values merged and returned as unique
 #' @param x (list): input list 1
 #' @param y (list): input list 2
 #' @param fun (character): Either 'unique' or 'intersect' are accepted
+#' @return (list) merged list from x and y 
 #' @keywords merge lists 
 #' @export
 #' @examples

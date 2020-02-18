@@ -2,19 +2,22 @@
 % Please edit documentation in R/internal_functions.r
 \name{IQM}
 \alias{IQM}
-\title{Obtains inter quantile average for a defined 'x' vector and both lower and upper quantiles}
+\title{Obtains interquantile average for a defined 'x' vector and both lower and upper quantiles}
 \usage{
 IQM(x, lowQ = 0.1, upQ = 0.9)
 }
 \arguments{
-\item{x}{numeric vector}
+\item{x}{numeric vector to compute interquantile average}
 
 \item{lowQ}{lower quantile}
 
 \item{upQ}{upper quantile}
 }
+\value{
+(numeric) the IQM value
+}
 \description{
-Obtains inter quantile average for a defined 'x' vector and both lower and upper quantiles
+Obtains interquantile average for a defined 'x' vector and both lower and upper quantiles
 }
 \examples{
 

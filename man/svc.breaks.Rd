@@ -2,17 +2,20 @@
 % Please edit documentation in R/breakpoint.density.r
 \name{svc.breaks}
 \alias{svc.breaks}
-\title{Identify SV call breakpoints and filter low cov regions if provided}
+\title{Transform structural varian (SVC) data.frame into a 'breaks' object}
 \usage{
 svc.breaks(svc, low.cov = NULL)
 }
 \arguments{
-\item{svc}{(data.frame) structural variant table including  8 columns: sample, chrom1, pos1, strand1, chrom2, pos2, strand2, svclass}
+\item{svc}{(S4) an object of class svcnvio containing data type 'svc' validated by validate.svc}
 
-\item{low.cov}{(data.frame) a data.frame (chr, start, end) indicating low coverage regions to exclude from the analysis}
+\item{low.cov}{(data.table) a data.table (chrom, start, end) indicating low coverage regions to exclude from the analysis}
+}
+\value{
+an instance of the class 'breaks' containing breakpoint and breakpoint burden information
 }
 \description{
-Identify SV call breakpoints and filter low cov regions if provided
+Transform structural varian (SVC) data.frame into a 'breaks' object
 }
 \examples{
 

@@ -13,6 +13,9 @@ merge2lists(x, y, fun = "unique")
 
 \item{fun}{(character): Either 'unique' or 'intersect' are accepted}
 }
+\value{
+(list) merged list from x and y
+}
 \description{
 Given two lists with (or without common names) returns a combined list; if common names their values merged and returned as unique
 }

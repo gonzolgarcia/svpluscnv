@@ -1,7 +1,9 @@
 #' Calculate the percentage of genome changed by CNV
-#' @param cnv (data.frame) segmentation data with 6 columns: sample, chromosome, start, end, probes, segment_mean
+#' @param cnv (S4) an object of class svcnvio containing data type 'cnv' validated by validate.cnv
 #' @param fc.pct (numeric) percentage CNV gain/loss for a segment to be considered changed (i.e. 0.2 = 20 percent change 0.8 < segmean && segmean > 1.2)
-#' @param discard.sex (logical) whether sex chromosomes should be included or not
+#' @param discard.sex (logical) whether sex chromosomes should be included
+#' @return (numeric) vector containing percent genome changed values (0-1)
+#' @seealso Additional data format information in the man pages of validate.cnv
 #' @keywords CNV, segmentation
 #' @export
 #' @examples
@@ -15,40 +17,37 @@ pct.genome.changed <- function(cnv,
                                fc.pct=0.2, 
                                discard.sex=TRUE){
 
-  require(taRifx)  # contains remove.factors
+cnvdat <- cnv@data
+if(discard.sex == TRUE) cnvdat <- cnvdat[which(!cnvdat$chrom %in% c("chrX","chrY")),]
 
-    cnvdat <- validate.cnv(cnv)
+width <- cnvdat$end - cnvdat$start
+segmean <- cnvdat$segmean
+sample <- cnvdat$sample
+df <- data.table(sample,width,segmean)
+idx_changed <- c(which(df$segmean < log2(1-fc.pct)),which(df$segmean >= log2(1+fc.pct)))
+idx_normal <- setdiff(1:nrow(df),idx_changed)
+df_normal <- df[idx_normal,]
+df_changed <-  df[idx_changed,]
   
-  if(discard.sex == TRUE) cnvdat <- cnvdat[which(!cnvdat$chrom %in% c("chrX","chrY")),]
-
-  width <- cnvdat$end - cnvdat$start
-  segmean <- cnvdat$segmean
-  sample <- cnvdat$sample
-  df <- remove.factors(data.frame(sample,width,segmean))
-  idx_changed <- c(which(df$segmean < log2(1-fc.pct)),which(df$segmean >= log2(1+fc.pct)))
-  idx_normal <- setdiff(1:nrow(df),idx_changed)
-  df_normal <- df[idx_normal,]
-  df_changed <-  df[idx_changed,]
+length_changed_df <- aggregate(width~sample ,df_changed,sum)
+length_normal_df <- aggregate(width~sample ,df_normal,sum)
   
-  length_changed_df <- aggregate(width~sample ,df_changed,sum)
-  length_normal_df <- aggregate(width~sample ,df_normal,sum)
+nochange <- setdiff(length_normal_df$sample,length_changed_df$sample)
+fullchange <- setdiff(length_changed_df$sample,length_normal_df$sample)
+nochange_x <- rep(0,length(nochange))
+names(nochange_x) <- nochange
+fullchange_x <- rep(0,length(fullchange))
+names(fullchange_x) <- fullchange
   
-  nochange <- setdiff(length_normal_df$sample,length_changed_df$sample)
-  fullchange <- setdiff(length_changed_df$sample,length_normal_df$sample)
-  nochange_x <- rep(0,length(nochange))
-  names(nochange_x) <- nochange
-  fullchange_x <- rep(0,length(fullchange))
-  names(fullchange_x) <- fullchange
+length_changed <- c(length_changed_df[,2],nochange_x)
+names(length_changed)<- c(length_changed_df[,1],nochange)
   
-  length_changed <- c(length_changed_df[,2],nochange_x)
-  names(length_changed)<- c(length_changed_df[,1],nochange)
+length_normal <- c(length_normal_df[,2],fullchange_x)
+names(length_normal)<- c(length_normal_df[,1],fullchange)
   
-  length_normal <- c(length_normal_df[,2],fullchange_x)
-  names(length_normal)<- c(length_normal_df[,1],fullchange)
+pct.change<- length_changed/apply(cbind(length_normal[names(length_changed)],length_changed),1,sum)
   
-  pct.change<- length_changed/apply(cbind(length_normal[names(length_changed)],length_changed),1,sum)
-  
-  return(pct.change)
+return(pct.change)
 }
 
 

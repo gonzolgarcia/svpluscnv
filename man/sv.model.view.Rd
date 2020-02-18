@@ -23,9 +23,9 @@ sv.model.view(
 )
 }
 \arguments{
-\item{svc}{(data.frame) structural variant table including  8 columns: sample, chrom1, pos1, strand1, chrom2, pos2, strand2, svclass}
+\item{svc}{(S4) an object of class svcnvio containing data type 'svc' validated by validate.svc}
 
-\item{cnv}{(data.frame) segmentation data with 6 columns: sample, chromosome, start, end, probes, segment_mean}
+\item{cnv}{(S4) an object of class svcnvio containing data type 'cnv' validated by validate.cnv}
 
 \item{chr}{(character) chromosome (e.g chr9)}
 
@@ -40,7 +40,7 @@ sv.model.view(
 \item{cex.legend}{(numeric) the cex values for each legend}
 
 \item{addtext}{(character) a vector indicating what SV types should include text labels indicating brakpoint partners genomic locations. 
-The labeels are only added to point tbreakpoint locations outside the plot area. (e.g. c("TRA","INV") )}
+The added labels are point breakpoint locations outside the plot area. (e.g. c("TRA","INV") )}
 
 \item{plot}{(logic) whether to produce a graphical output}
 
@@ -49,6 +49,9 @@ The labeels are only added to point tbreakpoint locations outside the plot area.
 \item{...}{additional plot parameters from graphics plot function}
 
 \item{end}{(numeric) genomic coordinate from specified chromosome to stop plotting}
+}
+\value{
+a data.frame with CNV and SVN breakpoint annotations and/or plot into open device
 }
 \description{
 Integrated visualization of SVs and SNV in local genomic regions

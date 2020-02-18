@@ -13,6 +13,9 @@ map2color(x, pal, limits = NULL)
 
 \item{limits}{numeric limit fr color mapping}
 }
+\value{
+a color vector graded according to x
+}
 \description{
 Obtains inter quantile average for a defined 'x' vector and both lower and upper quantiles
 }

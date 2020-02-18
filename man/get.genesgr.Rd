@@ -11,6 +11,9 @@ get.genesgr(genome.v = "hg19", chrlist = NULL)
 
 \item{chrlist}{(character)}
 }
+\value{
+a GRanges class object from the specified human genome version
+}
 \description{
 retrieves a GRanges object containinng gene annotations for the specified genome version
 }

@@ -14,7 +14,7 @@ clean.cnv.artifact(
 )
 }
 \arguments{
-\item{cnv}{(data.frame) segmentation data with 6 columns: sample, chromosome, start, end, probes, segment_mean}
+\item{cnv}{(S4) an object of class svcnvio containing data type 'cnv' validated by validate.cnv}
 
 \item{n.reps}{(numeric) number of samples with identical segment to consider artifact}
 
@@ -25,6 +25,9 @@ clean.cnv.artifact(
 \item{verbose}{(logical)}
 
 \item{fill}{(logical) whether to fill gaps from the segmentaed file after filtering artifacts}
+}
+\value{
+a data.frame containing CNV data
 }
 \description{
 Obtain a matrix with the weighted average CN per chromosome arm

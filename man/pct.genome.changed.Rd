@@ -7,11 +7,14 @@
 pct.genome.changed(cnv, fc.pct = 0.2, discard.sex = TRUE)
 }
 \arguments{
-\item{cnv}{(data.frame) segmentation data with 6 columns: sample, chromosome, start, end, probes, segment_mean}
+\item{cnv}{(S4) an object of class svcnvio containing data type 'cnv' validated by validate.cnv}
 
 \item{fc.pct}{(numeric) percentage CNV gain/loss for a segment to be considered changed (i.e. 0.2 = 20 percent change 0.8 < segmean && segmean > 1.2)}
 
-\item{discard.sex}{(logical) whether sex chromosomes should be included or not}
+\item{discard.sex}{(logical) whether sex chromosomes should be included}
+}
+\value{
+(numeric) vector containing percent genome changed values (0-1)
 }
 \description{
 Calculate the percentage of genome changed by CNV
@@ -22,6 +25,9 @@ Calculate the percentage of genome changed by CNV
 cnv <- validate.cnv(segdat_lung_ccle)
 
 pct.genome.changed(cnv)
+}
+\seealso{
+Additional data format information in the man pages of validate.cnv
 }
 \keyword{CNV,}
 \keyword{segmentation}

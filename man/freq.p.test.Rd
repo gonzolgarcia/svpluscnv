@@ -27,6 +27,9 @@ freq.p.test(
 
 \item{plot}{(logical) whether to generate a histogram comparing observed and null frequency distributions}
 }
+\value{
+an instance of the class 'freq.cut'
+}
 \description{
 Obtains significance cutoff for the frequency of binary events encoded in a matrix
 }

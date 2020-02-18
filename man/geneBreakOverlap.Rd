@@ -11,6 +11,9 @@ geneBreakOverlap(ggr, svgr)
 
 \item{svgr}{(S4) a GenomicRanges object containing SV breakpoint ends. Metadata must contain 'rowid' and 'sampleid' fields. Seqnames are expected in the format (chr1, chr2, ...). Used by 'svc.break.annot' and 'cnv.break.annot'}
 }
+\value{
+a list containing teo lists: geneBreaks, geneSamples
+}
 \description{
 Finf overlaps between genomic features and SV breakpoints;
 }

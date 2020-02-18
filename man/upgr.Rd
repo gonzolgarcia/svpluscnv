@@ -11,6 +11,9 @@ upgr(ggr, upstr = 50000)
 
 \item{upstr}{(numeric) size in base pairs to define gene upstream region onto which breakpoint overlaps will be identified. The strand value, start and stop positions defined in genesgr will be used to create a GRanges object of upstream regions.}
 }
+\value{
+(S4) aa GRanges object of upstream regions
+}
 \description{
 generate GRanges of upstream regions
 }

@@ -15,6 +15,9 @@ match.breaks(brk1, brk2, maxgap = 1e+05, verbose = FALSE)
 
 \item{verbose}{(logical)}
 }
+\value{
+an object containing co-localizing breakpoints from two input 'breaks'
+}
 \description{
 Identify CNV breakpoints provided a segmentation file
 }

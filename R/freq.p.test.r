@@ -16,7 +16,7 @@ null.freq <- setClass("null.freq", representation(
 
 
 setMethod("show","null.freq",function(object){
-    writeLines(paste("An object of class null.freq from svcnvplus"))
+    writeLines(paste("An object of class null.freq from svpluscnv"))
 })
 
 
@@ -27,6 +27,7 @@ setMethod("show","null.freq",function(object){
 #' @param iter (numeric) Number of iterations to produce null distribution (note that null size will be iter*ncol(mat))
 #' @param zerofreq (logical) whether to remove bins with observed frequency = 0; It is recommended to set to TRUE when the bins span genomic regions of low coverage   
 #' @param plot (logical) whether to generate a histogram comparing observed and null frequency distributions   
+#' @return an instance of the class 'freq.cut'
 #' @keywords empirical p.value, p.adjust  
 #' @export
 #' @examples
@@ -89,13 +90,13 @@ if(plot == TRUE){
 
     max_freq <- max(as.numeric(names(table(obsd))),as.numeric(names(table(nulld))))
     
-    h1 <- hist(obsd, breaks=seq(xstart,max_freq,1),plot=F)
-    h2 <- hist(nulld, breaks=seq(xstart,max_freq,1),plot=F)
+    h1 <- hist(obsd, breaks=seq(xstart,max_freq,1),plot=FALSE)
+    h2 <- hist(nulld, breaks=seq(xstart,max_freq,1),plot=FALSE)
     
     max_density <- max(h1$density,h2$density)
     hist(obsd, breaks=seq(xstart,max_freq,1),col='salmon', border=NA, xlim=c(0,max_freq), ylim=c(0,max_density),
-         las=1,cex.axis=1.4,ylab="",prob = TRUE ,main="",xlab="n samples",right = T)
-    hist(nulld, breaks=seq(xstart,max_freq,1), add=T,col=scales::alpha('black',.5), 
+         las=1,cex.axis=1.4,ylab="",prob = TRUE ,main="",xlab="n samples",right = TRUE)
+    hist(nulld, breaks=seq(xstart,max_freq,1), add=TRUE,col=scales::alpha('black',.5), 
          border=NA, prob = TRUE)
     legend("top",c("Frequency distr.","Null freq. distr."),
            fill=c('salmon',scales::alpha('black',.5)),border=NA,bty='n',cex=1.1)

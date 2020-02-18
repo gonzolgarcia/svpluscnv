@@ -16,11 +16,11 @@ shattered.regions.cnv(
   num.breaks = 10,
   num.sd = 5,
   dist.iqm.cut = 1e+05,
-  verbose = FALSE
+  verbose = TRUE
 )
 }
 \arguments{
-\item{cnv}{(data.frame) segmentation data with 6 columns: sample, chromosome, start, end, probes, segment_mean}
+\item{cnv}{(S4) an object of class svcnvio containing data type 'cnv' validated by validate.cnv}
 
 \item{fc.pct}{(numeric) copy number change between 2 consecutive segments: i.e (default) cutoff = 0.2 represents 20 percent fold change}
 
@@ -41,6 +41,9 @@ shattered.regions.cnv(
 \item{dist.iqm.cut}{(numeric) interquantile average of the distance between breakpoints within a shattered region}
 
 \item{verbose}{(logical)}
+}
+\value{
+an instance of the class 'chromo.regs' containing breakpoint mapping onto genes
 }
 \description{
 Caller for the identification of shattered genomic regions based on breakpoint densities

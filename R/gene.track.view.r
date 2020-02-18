@@ -10,13 +10,14 @@
 #' @param addlegend (logic) 
 #' @param addtext (logic) 
 #' @param plot (logic)
-#' @param show.chr (character) if not null will show the chromosome name at specified location (Default "topleft")
 #' @param summary (logic) whether the function shoud return CNV segment 'segbrk' and SV 'svbrk' breakpoints tabular output
+#' @return a data.frame with gene isoform annotations and/or plot into open device
 #' @param ... additional plot parameters from graphics plot function 
 #' @keywords CNV, segmentation
 #' @export
 #' @examples
-#' plot()
+#' 
+#' gene.track.view(symbol="PTPRD", genome.v="hg19")
 
 
 gene.track.view <- function(chr=NULL, start=NULL, stop=NULL, 
@@ -24,7 +25,6 @@ gene.track.view <- function(chr=NULL, start=NULL, stop=NULL,
                        genome.v="hg19",
                        cex.text=0.6,
                        addtext=TRUE,
-                       show.chr="topleft",
                        plot = TRUE,
                        summary=TRUE,
                        ...){
@@ -38,7 +38,6 @@ gene.track.view <- function(chr=NULL, start=NULL, stop=NULL,
         refseq$df <- refseq$df[order(refseq$df$txStart),]
         refseq_gr <- with(refseq$df, GRanges(chrom, IRanges(start=txStart, end=txEnd), symbol=name2,transcript=name)) 
     }else{stop("Unspecified, or non available genome")}
-    
     
     # define genomic region to plot
     if(!is.null(symbol) && symbol %in% refseq$df$name2){
@@ -125,9 +124,8 @@ if(plot == TRUE){
     
     interval <- round((stop - start)/5000) * 1000
     xlabs <- seq(floor(start/10000)*10000, ceiling(stop/10000)*10000,interval)
-    axis(1, at = xlabs, lwd.ticks=1.5,pos=0,...)
-    if(!is.null(show.chr)) legend(show.chr,gsub("chr","Chromosome ",chr),cex=1,bty='n')
-    #mtext(xlabs, at=xlabs, side=1, cex=1)
+    axis(1, at = xlabs, lwd.ticks=1.5 ,pos=0, ...)
+    mtext(gsub("chr","Chromosome ",chr), at=xlabs[1],side=1, cex=1)
     
 }
     if(summary){

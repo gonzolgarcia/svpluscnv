@@ -8,6 +8,7 @@ cnv.freq(
   cnv,
   fc.pct = 0.2,
   genome.v = "hg19",
+  ploidy = FALSE,
   g.bin = 1,
   sampleids = NULL,
   cex.axis = 1,
@@ -19,7 +20,7 @@ cnv.freq(
 )
 }
 \arguments{
-\item{cnv}{(data.frame) segmentation data with 6 columns: sample, chromosome, start, end, probes, segment_mean}
+\item{cnv}{(S4) an object of class svcnvio containing data type 'cnv' validated by validate.cnv}
 
 \item{fc.pct}{(numeric) percentage CNV gain/loss for a segment to be considered changed (i.e. 0.2 = 20 percent change 0.8 < segmean && segmean > 1.2)}
 
@@ -36,6 +37,9 @@ cnv.freq(
 \item{summary}{(logical)  whether to return an object with a the summary}
 
 \item{verbose}{(logical)}
+}
+\value{
+an instance of the class 'cnvfreq' and optionally a plot into open device
 }
 \description{
 Plot CNV frequency across the genome using a CNV segmentation file containing multiple samples

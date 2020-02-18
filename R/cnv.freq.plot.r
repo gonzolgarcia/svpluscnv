@@ -1,7 +1,76 @@
+#' Class to store breakpoint annotations in association with genomic features (e.g. gene loci)
+#' @param freqsum (data.frame): the frequency of gains and losses in each defined genomic bin
+#' @param bin.mat (numeric): a matrix of genomic bins versus samples
+#' @param param (list): a list of parametres provided 
+#' @return an instance of the class 'cnvfreq' 
+#' @export
+
+cnvfreq <- setClass("cnvfreq", representation(
+    freqsum  = "data.table",
+    bin.mat = "matrix",
+    param = "list"
+))
+
+
+setMethod("show","cnvfreq",function(object){
+    writeLines(paste("An object of class cnvfreq from svpluscnv containing the following stats:
+                \nNumber of samples=",ncol(object@bin.mat),
+                "\nNumber of genomic bins =",nrow(object@bin.mat)))
+})
+
+
+
+#' Obtain the median segment mean from a segmentaton file; The median refers to the logR that occupies a center of all segments ordered by their log ratio
+#' @param cnv (S4) an object of class svcnvio containing data type 'cnv' validated by validate.cnv
+#' @return (numeric) a vector containing the median logR value of a segmented data.frame
+#' @keywords CNV, segmentation
+#' @export
+#' @examples
 #' 
-#'
+#' ## validate input data.frames
+#' cnv <- validate.cnv(segdat_lung_ccle)
+#' 
+#' med.segmean(cnv)
+
+
+####################
+
+
+med.segmean <- function(cnv){
+    
+    stopifnot(cnv@type == "cnv")
+    cnvdat <- cnv@data
+    
+    glen <- as.numeric(cnvdat$end-cnvdat$start)
+    sample <- cnvdat$sample
+    segmean <- cnvdat$segmean
+    dt <- data.table(sample,glen,segmean)
+    out <-rep(NA,length(unique(dt$sample)))
+    names(out) <- unique(dt$sample)
+    
+    pb <- txtProgressBar(style=3)
+    cc <-0
+    tot <- length(unique(sample))
+    
+    
+    for(i in unique(dt$sample)){
+        cc <- cc+1
+        
+        minidf <- dt[which(dt$sample == i)]
+        miniord <-minidf[order(minidf$segmean)]
+        medseg <- which(abs(cumsum(miniord$glen)/sum(miniord$glen) - 0.5) == min(abs(cumsum(miniord$glen)/sum(miniord$glen) - 0.5)))
+        out[i] <- mean(miniord$segmean[medseg])
+        
+        setTxtProgressBar(pb, cc/tot)
+        
+    }
+    close(pb)
+    return(out)
+}
+
+
 #' Plot CNV frequency across the genome using a CNV segmentation file containing multiple samples 
-#' @param cnv (data.frame) segmentation data with 6 columns: sample, chromosome, start, end, probes, segment_mean
+#' @param cnv (S4) an object of class svcnvio containing data type 'cnv' validated by validate.cnv
 #' @param fc.pct (numeric) percentage CNV gain/loss for a segment to be considered changed (i.e. 0.2 = 20 percent change 0.8 < segmean && segmean > 1.2)
 #' @param genome.v (hg19 or h38) reference genome version to draw chromosome limits and centromeres
 #' @param g.bin (numeric) size in megabases of the genmome bin to compute break density 
@@ -10,6 +79,7 @@
 #' @param plot (logical) whether to produce a graphical output
 #' @param summary (logical)  whether to return an object with a the summary
 #' @param verbose (logical) 
+#' @return an instance of the class 'cnvfreq' and optionally a plot into open device
 #' @keywords CNV, segmentation, plot
 #' @export
 #' @examples
@@ -22,6 +92,7 @@
 cnv.freq <- function(cnv,
                      fc.pct= 0.2,
                      genome.v= "hg19",
+                     ploidy=FALSE,
                      g.bin= 1,
                      sampleids=NULL,
                      cex.axis= 1,
@@ -31,26 +102,31 @@ cnv.freq <- function(cnv,
                      summary=TRUE,
                      verbose=TRUE){
   
-require(D3GB,quietly = TRUE,warn.conflicts = FALSE)
-require(taRifx,quietly = TRUE,warn.conflicts = FALSE)
-require(tidyr,quietly = TRUE,warn.conflicts = FALSE)
-require(GenomicRanges,quietly = TRUE,warn.conflicts = FALSE)
-
-    cnvdat <- validate.cnv(cnv)
+stopifnot(cnv@type == "cnv")
+cnvdat <- cnv@data
+    
 if(!is.null(sampleids)) cnvdat <- cnvdat[which(cnvdat$sample %in% sampleids),]
   
-if(genome.v == "hg19"){ bands <- GRCh37.bands
-}else if(genome.v=="h38"){ bands <- GRCh38.bands}
+if(ploidy){
+    ploidy <- med.segmean(cnv)
+    cnvdat$segmean <- cnvdat$segmean - ploidy
+}
+
+stopifnot(genome.v %in% c("hg19","hg38","GRCh37","GRCh38"))
+if(genome.v %in% c("hg19","GRCh37")){ bands <- GRCh37.bands
+}else if(genome.v %in% c("hg38","GRCh38")){ bands <- GRCh38.bands}
 
 centromeres <- bands[intersect(which(bands$score == "acen"),grep("q",bands$name)),"start"]
 names(centromeres) <- paste("chr",bands[intersect(which(bands$score == "acen"),grep("q",bands$name)),"chr"],sep="")
 
 # define chromosome mapped limits and the global genome coordinates for each chromosome start
-chrlimits <-   chromosome.limit.coords(cnvdat)
-offset <- c(0,sapply(1:(nrow(chrlimits)-1), function(i) sum(chrlimits[1:i,"end"]) + length(1:i)*g.bin ))
+chrlimits <-   chromosome.limit.coords(cnv)
+offset <- c(0,vapply(seq_len(nrow(chrlimits)-1), 
+                     function(i) sum(chrlimits[seq_len(i),"end"]) + i*g.bin,1))
 chrlabelpos <- offset + chrlimits$end/2
-chrlimits <- data.frame(offset,chrlimits,chrlabelpos)
-  
+chrlimits <- data.frame(offset,as.data.frame(chrlimits),chrlabelpos)
+rownames(chrlimits) <- chrlimits$chrom
+
 g.bin.mb <- g.bin*1e6
   
 if(verbose) message("Generating binned genome map ")
@@ -59,21 +135,21 @@ chrbins <- list()
 
 for(chr in rownames(chrlimits)){
     seqpos <- seq(chrlimits[chr,"begin"],chrlimits[chr,"end"]+g.bin.mb,g.bin.mb)
-    ranges <-  t(sapply(2:length(seqpos), function(i) c(seqpos[i-1],seqpos[i])))
+    ranges <-  t( vapply(seq(2,length(seqpos)), function(i) c(seqpos[i-1],seqpos[i]),double(2)) )
     chrcol<- rep(chr,length(seqpos)-1)
     segcol_del <- segcol_gain <- rep("grey",length(chrcol))
     segcol_del[which(ranges[,2] <= centromeres[chr])] <- "lightblue"
     segcol_del[which(ranges[,2] > centromeres[chr])] <- "blue"
     segcol_gain[which(ranges[,2] <= centromeres[chr])] <- "salmon"
     segcol_gain[which(ranges[,2] > centromeres[chr])] <- "red"
-    chrbins[[chr]] <- data.frame(chrcol,ranges,segcol_del,segcol_gain)
+    chrbins[[chr]] <- data.table(chrcol,ranges,segcol_del,segcol_gain)
 }
   
-  chrbins.df <- data.frame(do.call(rbind,unname(chrbins) ))
-  colnames(chrbins.df) <- c("chr","start","end","segcol_del","segcol_gain")
-  rownames(chrbins.df) <-  unite(chrbins.df[,1:3],paste)$paste
-  chrbins.df<-remove.factors(chrbins.df)
-  
+  chrbins.df <- do.call(rbind,unname(chrbins) )
+  chrbins.df<- data.table(chrbins.df,unite(chrbins.df[,c(1,2,3)],paste)$paste)
+  colnames(chrbins.df) <- c("chr","start","end","segcol_del","segcol_gain","binid")
+
+
   if(verbose) message("Calculating mean segmean per genomic bin")
   # find overlaps between bins and cnv segments
   binsGR <- with(chrbins.df, GRanges(chr, IRanges(start=start, end=end)))
@@ -82,9 +158,9 @@ for(chr in rownames(chrlimits)){
   
   outmat <- matrix(ncol=length(unique(cnvdat$sample)),nrow=nrow(chrbins.df))
   colnames(outmat) <- unique(cnvdat$sample)
-  rownames(outmat) <- rownames(chrbins.df)
+  rownames(outmat) <- chrbins.df$binid
 
-  for(i in 1:nrow(chrbins.df)){
+  for(i in seq_len(nrow(chrbins.df)) ){
     segtmp<- cnvdat[subjectHits(hits)[which(queryHits(hits) == i)],]
     if(nrow(segtmp)>0){
       a <- aggregate(segmean~sample,segtmp, sum)  
@@ -95,27 +171,27 @@ for(chr in rownames(chrlimits)){
   }
 
   if(verbose) message("Calculating gain/loss frequencies per genomic bin")
-  outmat[which(is.na(outmat),arr.ind=T)] <- 0
+  outmat[which(is.na(outmat),arr.ind=TRUE)] <- 0
   
   outmat_gain<-outmat_loss<-outmat
   outmat_gain[]<-outmat_loss[]<-0
   nsamples <- ncol(outmat_gain)
   
-  outmat_gain[which(outmat > log2(1+fc.pct), arr.ind=T)] <-  1
-  outmat_loss[which(outmat < log2(1-fc.pct), arr.ind=T)] <-  1
+  outmat_gain[which(outmat > log2(1+fc.pct), arr.ind=TRUE)] <-  1
+  outmat_loss[which(outmat < log2(1-fc.pct), arr.ind=TRUE)] <-  1
   freq.gains <- apply(outmat_gain,1,sum)/nsamples
   freq.loss <- apply(outmat_loss,1,sum)/nsamples
   
 if(plot == TRUE){
     plot.end<- chrlimits$offset[nrow(chrlimits)]+chrlimits$end[nrow(chrlimits)]
-    bin.loc <- chrlimits[chrbins.df[names(freq.gains),"chr"],"offset"] + chrbins.df[names(freq.gains),"start"]
+    bin.loc <- chrlimits[chrbins.df[names(freq.gains),on="binid"]$chr,"offset"] + chrbins.df[names(freq.gains),,on="binid"]$start
 
     if(verbose) message("Plotting ...")
     altcols <- rep(c(rgb(0.1,0.1,0.1,alpha=0.1),rgb(0.8,0.8,0.8,alpha=0.1)),12)
     altcols2<- rep(c(rgb(0.1,0.1,0.1,alpha=1),rgb(0.4,0.4,0.4,alpha=1)),12)
   
     plot(x=NULL,y=NULL,xlim=c(0,plot.end),ylim=c(-1,1),bty='n',xaxt='n',yaxt='n',xlab="",ylab="")
-    for(i in 1:length(chrlimits$offset) ) rect( chrlimits$offset[i],-1,chrlimits$offset[i]+chrlimits$end[i],1, col=altcols[i],border=NA )
+    for(i in seq_len(length(chrlimits$offset)) ) rect( chrlimits$offset[i],-1,chrlimits$offset[i]+chrlimits$end[i],1, col=altcols[i],border=NA )
     points(bin.loc,freq.gains,type='h',col=chrbins.df$segcol_gain)
     points(bin.loc,-freq.loss,type='h',col=chrbins.df$segcol_del)
     lines(c(0,plot.end),c(0,0),col="lightgrey")
@@ -129,19 +205,58 @@ if(plot == TRUE){
     axis(2,c(nsamples,round(nsamples/2),0,round(nsamples/2),nsamples),at=c(-1,-0.5,0,0.5,1),las=1, pos=0, cex.axis=cex.axis)
 }
   
-if(summary == TRUE){
-    summary <- data.frame(chrbins.df[,c("chr","start","end")],freq.gains,freq.loss)
-    return(list(freqsum = summary,
-                bin.mat = outmat,
-                param = list(
-                    fc.pct= fc.pct,
-                    genome.v= genome.v,
-                    g.bin= g.bin,
-                    sampleids=sampleids,
-                    cex.axis= cex.axis,
-                    cex.lab= cex.lab,
-                    label.line= label.line   
-                )))
-    }
+
+summary <- data.table(chrbins.df[,c("chr","start","end")],freq.gains,freq.loss)
+
+return(cnvfreq(
+            freqsum = summary,
+            bin.mat = outmat,
+            param = list(
+                fc.pct= fc.pct,
+                genome.v= genome.v,
+                g.bin= g.bin,
+                sampleids=sampleids,
+                cex.axis= cex.axis,
+                cex.lab= cex.lab,
+                label.line= label.line   
+                )
+            )
+       )
+}
+
+#' Obtain the average weighted segment mean log2 ratios from each sample within a CNV segmentaton data.frame
+#' @param cnv (S4) an object of class svcnvio containing data type 'cnv' validated by validate.cnv
+#' @return (numeric) a vector containing the weighted average logR from segmented data
+#' @keywords CNV, segmentation
+#' @export
+#' @examples
+#' 
+#' cnv <- validate.cnv(segdat_lung_ccle)
+#' ave.segmean(cnv)
+
+
+####################
+
+
+ave.segmean <- function(cnv){
+    
+    stopifnot(cnv@type == "cnv")
+    cnvdat <- cnv@data
+    
+    
+    width <- as.numeric(cnvdat$end - cnvdat$start)
+    sample <- cnvdat$sample
+    segmean <- cnvdat$segmean
+    
+    df <- stats::aggregate(width~sample,data.table(sample,width),sum)
+    glen <- df$width
+    names(glen) <- df$sample
+    
+    w.segmean <- segmean*width/glen[sample]
+    df2 <- stats::aggregate(w.segmean~sample,data.table(sample,w.segmean),sum)
+    ave <- df2$w.segmean
+    names(ave) <- df2$sample
+    return(ave)
+    
 }
 

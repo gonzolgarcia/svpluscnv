@@ -14,7 +14,7 @@ gene.cnv(
 )
 }
 \arguments{
-\item{cnv}{(data.frame) segmentation data with 6 columns: sample, chromosome, start, end, probes, segment_mean}
+\item{cnv}{(S4) an object of class svcnvio containing data type 'cnv' validated by validate.cnv}
 
 \item{genome.v}{(hg19 or hg38) reference genome version to draw chromosome limits and centromeres}
 
@@ -25,6 +25,9 @@ gene.cnv(
 \item{verbose}{(logical)}
 
 \item{fill}{(logical) whether to fill the gaps in the segmentation file using gap neighbour segmean average as log ratio}
+}
+\value{
+an instance of the class 'genecnv' containing gene level copy number info
 }
 \description{
 Obtain a matrix with the weighted average CN per chromosome arm

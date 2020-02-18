@@ -2,7 +2,7 @@
 % Please edit documentation in R/validate.input.data.r
 \name{validate.svc}
 \alias{validate.svc}
-\title{This function validates and reformats the SV (structural variant) calls input. It is used internaly by 'svcnvplus' functions that require this type of data.
+\title{This function validates and reformats the SV (structural variant) calls input. It is used internaly by 'svpluscnv' functions that require this type of data.
 A few formatting rules are enforced:
 1) The input must obtain 8 columns in the following order(sample ID, chromosome of origin, strand of origin, position of origin,, chromosome of destination, strand of destination, position of destination, SV class)
 2) SV classes accepted: DEL(deletion), DUP(duplication), INS(insertion), TRA(translocation), INV(inversion) and BND(break end)
@@ -10,13 +10,16 @@ A few formatting rules are enforced:
 4) pos1 < pos2 is enforced for all variants in which chromosome of origin and destination are the same
 5) The class BND can be used to operate with complex events as long as both break ends are the same chromosome}
 \usage{
-validate.svc(svc)
+validate.svc(sv.df)
 }
 \arguments{
-\item{svc}{(data.frame) structural variant table including  8 columns: sample, chrom1, pos1, strand1, chrom2, pos2, strand2, svclass}
+\item{sv.df}{(data.frame) structural variant table including the following fields: sample, chrom1, pos1, strand1, chrom2, pos2, strand2, svclass}
+}
+\value{
+(data.frame) structural variant table with validated format for other svpluscnv operations; A unique id (uid) column is also added
 }
 \description{
-This function validates and reformats the SV (structural variant) calls input. It is used internaly by 'svcnvplus' functions that require this type of data.
+This function validates and reformats the SV (structural variant) calls input. It is used internaly by 'svpluscnv' functions that require this type of data.
 A few formatting rules are enforced:
 1) The input must obtain 8 columns in the following order(sample ID, chromosome of origin, strand of origin, position of origin,, chromosome of destination, strand of destination, position of destination, SV class)
 2) SV classes accepted: DEL(deletion), DUP(duplication), INS(insertion), TRA(translocation), INV(inversion) and BND(break end)
@@ -26,7 +29,7 @@ A few formatting rules are enforced:
 }
 \examples{
 
-validate.svc(SVDATA)
+validate.svc(sv.df)
 }
 \keyword{SV,}
 \keyword{structural}

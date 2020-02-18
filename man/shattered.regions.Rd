@@ -28,9 +28,9 @@ shattered.regions(
 )
 }
 \arguments{
-\item{cnv}{(data.frame) segmentation data with 6 columns: sample, chromosome, start, end, probes, segment_mean}
+\item{cnv}{(S4) an object of class svcnvio containing data type 'cnv' validated by validate.cnv}
 
-\item{svc}{(data.frame) structural variant table including  8 columns: sample, chrom1, pos1, strand1, chrom2, pos2, strand2, svclass}
+\item{svc}{(S4) an object of class svcnvio containing data type 'svc' validated by validate.svc}
 
 \item{fc.pct}{(numeric) inherited from cnv.breaks(); copy number change between 2 consecutive segments: i.e (default) cutoff = 0.2 represents a fold change of 0.8 or 1.2}
 
@@ -65,6 +65,9 @@ shattered.regions(
 \item{interleaved.cut}{(numeric) 0-1 value indicating percentage of interleaved (non-contiguous) SV breakpoint pairs}
 
 \item{dist.iqm.cut}{(numeric) interquantile average of the distance between breakpoints within a shattered region}
+}
+\value{
+an instance of the class 'chromo.regs' containing breakpoint mapping onto genes
 }
 \description{
 Caller for shattered genomic regions based on breakpoint densities

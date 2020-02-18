@@ -6,7 +6,7 @@
 \alias{breaks}
 \title{Class to store breakpoint annotations in association with genomic features (e.g. gene loci)}
 \arguments{
-\item{breaks}{(data.frame): the breakpoint info containing data.frame, this will be occupied by the CNV segmentation data in the case of cnv.break.annot or SV for sv.break.annot. Unique random string rownames are added to the returned breaks data.frame.}
+\item{breaks}{(data.table): the breakpoint info containing data.table, this will be occupied by the CNV segmentation data in the case of cnv.break.annot or SV for sv.break.annot. Unique random string rownames are added to the returned breaks data.frame.}
 
 \item{burden}{(numeric): a vector containing the total number of breakpoints in each sample}
 
