@@ -264,7 +264,8 @@ shattered.regions <- function(cnv,
   if(verbose) message("Matching CNV and SC breakpoints")
   common.brk <- match.breaks(cnvbrk,svcbrk,
                              maxgap = maxgap, 
-                             verbose = verbose)
+                             verbose = verbose,
+                             plot=FALSE)
   
   if(is.null(chrlist)) chrlist <- unique(c(cnvdat$chrom,svcdat$chrom1,svcdat$chrom2))
   chrlist <- chr.sort(chrlist)
@@ -277,7 +278,7 @@ shattered.regions <- function(cnv,
     
     burden1 <- common.brk$restab$matched.brk1
     burden2 <- common.brk$restab$matched.brk2
-    names(burden1) <- names(burden2)  <- rownames(common.brk$restab)
+    names(burden1) <- names(burden2)  <- common.brk$restab$sample
     
   common.brk1 <- breaks(breaks = common.brk$brk1_match,
                       burden=burden1,

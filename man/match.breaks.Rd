@@ -4,7 +4,7 @@
 \alias{match.breaks}
 \title{Identify CNV breakpoints provided a segmentation file}
 \usage{
-match.breaks(brk1, brk2, maxgap = 1e+05, verbose = FALSE)
+match.breaks(brk1, brk2, maxgap = 1e+05, verbose = FALSE, plot = TRUE)
 }
 \arguments{
 \item{brk1}{(S4) an object of class breaks as returned by `svc.breaks` and `cnv.breaks`}

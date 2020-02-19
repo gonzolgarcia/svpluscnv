@@ -1,8 +1,8 @@
 ---
-title: "Introduction to svcnvplys"
+title: "Introduction to svpluscnv"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Introduction to svcnvplys}
+  %\VignetteIndexEntry{Introduction to svpluscnv}
   %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
 ---
@@ -17,13 +17,13 @@ BiocStyle::markdown()
   
 ## svncvplus: R toolkit for the analysis of structural variants and complex genomic rearrangements
 
-`svncvplus` is an R package designed for integrative analyses of somatic DNA copy number variations (CNV) and other structural variants (SV).`svpluscnv` comprises multiple analytical and visualization tools that can be applied to large datasets from cancer patients such as [TCGA](https://www.cancer.gov/about-nci/organization/ccg/research/structural-genomics/tcga) and cancer cell lines [CCLE](https://portals.broadinstitute.org/ccle).
+`svpluscnv` is an R package designed for integrative analyses of somatic DNA copy number variations (CNV) and other structural variants (SV).`svpluscnv` comprises multiple analytical and visualization tools that can be applied to large datasets from cancer patients such as [TCGA](https://www.cancer.gov/about-nci/organization/ccg/research/structural-genomics/tcga) and [PCAWG](https://dcc.icgc.org/releases/PCAWG) or cancer cell lines [CCLE](https://portals.broadinstitute.org/ccle).
   
-CNV data can be derived from genotyping and CGH arrays, as well as next generation sequencing; different segmentation algorithms are used to obtain dosage variations (gains and losses) across the genome. Alternatively, SV calls can be inferred from discordantly aligned reads from whole genome sequencing (WGS) using different algorithms (e.g [manta](https://github.com/Illumina/manta)[], [lumpy](https://github.com/arq5x/lumpy-sv), etc).
+CNV data can be derived from genotyping and CGH arrays, as well as next generation sequencing; different segmentation algorithms are used to obtain dosage variations (gains and losses) across the genome. Alternatively, SV calls can be inferred from discordantly aligned reads from whole genome sequencing (WGS) using different algorithms (e.g [manta](https://github.com/Illumina/manta), [lumpy](https://github.com/arq5x/lumpy-sv), etc).
   
-SV calls provide linkage information from discordantly aligned reads and read pairs, allowing the discovery of chromosomal translocations and variants that do not necessarily involve dosage change, such as inversions and insertions. Segmentation CNVs and alignment based SV calls produce orthogonal as well as complementary results. The integration of both data types can by highly informative to understand the somatic alterations driving many cancers and is essential to characterize complex chromosomal alterations such as chromothripsis and chromoplexy.
-  
-Most currently available cancer genomics datasets incorporate CNV characterization whereas SVs (derived from WGS) are scarcer. For this reason, `svpluscnv` tools implement functions that work with both data types separately as well as integrated.
+Structural Variation Calls (SVC) provide linkage information from discordantly aligned reads and read pairs, allowing the discovery of chromosomal translocations and variants that do not necessarily involve dosage change, such as inversions and other copy number neutral events. CNVs and SVCs produce orthogonal as well as complementary results. The integration of both data types can by highly informative to understand the somatic alterations driving many cancers and is essential to characterize complex chromosomal alterations such as chromothripsis and chromoplexy. However, most currently available cancer genomics datasets incorporate CNV characterization whereas SVs (derived from WGS) are scarcer. For this reason, `svpluscnv` tools implement functions that work with both data types separately as well as integrated. 
+
+The `svpluscnv` package implements analysis and visualization tools to evaluate chromosomal instability and ploidy, identify genes harboring recurrent SVs and systematically characterize hot-spot genomic locations harboring shattered regions such as those caused by chromothripsis and chromoplexia.
 
 
 ## Index:
@@ -69,14 +69,14 @@ def.par <- par(no.readonly = TRUE)
 Two data types are allowed:
   
 __CNV segmentation data:__ 6 columns are required in the folowing order: `sample`, `chrom`, `start`, `end`, `probes` & `segmean`. Most algorithms studying CNVs produce segmented data indicating genomic boundaries and the segment mean copy number value (segmean); `svpluscnv` assumes CNV expresed as log-ratios: __e.g.:__ $\log2(tumor/normal)$ Those values do not necesarily represent entire copy number states as many samples may contain admixture or subclonal populations.
-  
+
 __Structural Variant calls:__ 8 columns are required in the folowing order: `sample`, `chrom1`, `pos1`, `strand1`, `chrom2`, `pos2`, `strand2` & `svclass`. SV calls are obtained from WGS by identifying reads and read-pairs that align discordantly to the reference genome. The types accepted in the svclass field are: duplication(DUP), deletion(DEL), inversion(INV), insertion(INS), translocation(TRA) and breakend(BND) for undefined variants.
   
 All functions accept multiple samples. Functions that make use of both CNV and SV calls expect a common set of ids in the `sample` field.
   
 In order to explore the  functionalities of svpluscnv, two datasets have been included with the package:
   
-* CCLE lung cancer derived cell lines <https://depmap.org/portal/download/>; Two data.frames contain information about CNV segments and structural variants respectively:
+* [CCLE lung cancer derived cell lines](https://depmap.org/portal/download/); Two data.frames contain information about CNV segments and structural variants respectively:
     * `svpluscnv::segdat_lung_ccle`
     * `svpluscnv::svdat_lung_ccle`
 * [TARGET neuroblastoma dataset](https://ocg.cancer.gov/programs/target) based on Complete Genomics WGS and structural variant calls:
@@ -101,7 +101,7 @@ Validate and reformat CNV segmentation `data.frame` to be used by svpluscnv tool
 
 ```{r}
 cnv <- validate.cnv(nbl_segdat)
-cnv@data
+cnv
 ```
 
 
@@ -111,28 +111,24 @@ Validate and format structural variant `data.frame` to be used by svpluscnv tool
 
 ```{r}
 svc <- validate.svc(nbl_svdat)
-svc@data
+svc
 ```
 
 ## CNV analysys and visualization
 
 ### CNV frequency plot
 
-Visualization of CNV gain/loss frequencies across the genome; aggregates samples for a given genomic window size, which copy number log-ratio differs from 0. The thresshold `fc.pct` is represented as percentage (e.g. 0.2 -> 20% fold change compared to the referece).
+Visualization of CNV gain/loss frequencies across the genome; aggregates samples for a given genomic window size, which copy number log-ratio differs from 0. The thresshold `fc.pct` is represented as percentage (e.g. 0.2 -> 20% fold change compared to the referece). 
+If the dataset represents samples with hiperploidy, the plot would be skewed. Therefor, the possibility of ploidy correction is included; `svpluscnv` implements the function `med.segmean` that returns per sample median logR (segmean) value, which can be substracted from each sample segment's logR. This correction can be called internaly by `cnv.freq` using `ploidy=TRUE` argument.
 
 ```{r plot1,  fig.width=12, fig.height=4, fig.align='center', fig.cap = "Genome wide CNV frequencies", message=FALSE}
-cnv_freq <- cnv.freq(cnv, fc.pct = 0.2, plot=TRUE)  # plot cnv frequencies
+cnv_freq <- cnv.freq(cnv, fc.pct = 0.2, ploidy = FALSE, plot=TRUE)
+cnv_freq
 ```
-
-```{r message=FALSE}
-head(cnv_freq$freqsum)  # data.frame contains every genomic bin 
-
-```
-
 
 ### Chromosome arm CNV determination
 
-The function `chr.arm.cnv` obtains the segment weighted average log-ratios for each chromosome arm and sample; it returns a matrix formated output.
+The function `chr.arm.cnv` obtains the segment weighted average log-ratios for each chromosome arm in each sample; it returns a matrix formated output.
 
 ```{r plot1.2, fig.width=12, fig.height=7, fig.align='center', fig.cap = "SV versus CNV breakpoint burden",  message=FALSE}
 charm.mat <- chr.arm.cnv(cnv, genome.v = "hg19", verbose = FALSE)
@@ -145,20 +141,21 @@ heatmap.2(charm.mat[order(rownames(charm.mat))[1:42],],Rowv=NA,trace='none',cexC
 
 ## Assessment of chromosomal instability
 
-Chromosomal instability (CIN) is common in cancer and has a fundamental pathogenic role. CNV profiles allow quantification of this events by evaluating the percentage of the genome  copy number differing from diploid or the burden of genomic alterations in a given sample.
+Chromosomal instability (CIN) is common in cancer and has a fundamental pathogenic role. CNV profiles allow quantification of this events by evaluating the percentage of the genome's copy number logR diferring from normal or the total burden of genomic alterations in a given sample:
 
 ### Percent genome change
 
-Per sample measure of genome instability; calculates what percentage of the genome's copy number log2-ratio differs from 0 (aka. diploid for autosomal chromosomes) above a certain threshold.
+Per sample measure of genome instability; calculates what percentage of the genome's copy number log2-ratio differs from 0 (aka. diploid for autosomal chromosomes) above a certain threshold. 
 
 ```{r message=FALSE}
+# ploidy correction
 pct_change <- pct.genome.changed(cnv, fc.pct = 0.2)
 head(pct_change)
 ```
 
 ### Breakpoint burden analysis
 
-In addition to percentage of genome changed, we can measure the total burden of breakpoints derived from CNV segmention and SV calls. Both the percent genome change and breakpoint burden measures are expected to show positive correlation.
+In addition to percentage of genome changed, we can measure the total burden of breakpoints derived from CNV segmention and SV calls. Both the percent genome change and breakpoint burden measures are expected to show positive correlation as shown below.
 
 ```{r plot2, fig.width=9, fig.height=5, fig.align='center', fig.cap = "SV versus CNV breakpoint burden",  message=FALSE}
 # define breakpoints from SV data
@@ -178,9 +175,9 @@ dat2 <- log2(1+cbind(pct_change,
 
 par(mfrow=c(1,2))
 plot(dat1, xlab="log2(1+SV break count)", ylab="log2(1+CNV break count)")
-legend("bottomright",paste("Pearson's cor=",sprintf("%.2f",cor(dat1)[1,2]), sep=""))
+legend("bottomright",paste("Spearman's cor=",sprintf("%.2f",cor(dat1,method="spearman")[1,2]), sep=""))
 plot(dat2, xlab="percentage genome changed", ylab="log2(1+CNV break count)")
-legend("bottomright",paste("Pearson's cor=",sprintf("%.2f",cor(dat2)[1,2]), sep=""))
+legend("bottomright",paste("Spearman's cor=",sprintf("%.2f",cor(dat2,method="spearman")[1,2]), sep=""))
 ```
 
 ```{r echo=FALSE}
@@ -189,24 +186,13 @@ par(def.par)
 
 ## Co-localization of breakpoints
 
-Both CNV segmentation profiles and SV calls produce orthogonal results for variants that involve dosage changes (duplications and deletions). The function `match.breaks` compares the breakpoints derived from both approaches by identifying their co-localizing. This function can also be used to compare two sets of CNV brekpoints obtaind from different algorithms or SV callers since the format of both CNV and SV breaks objects have the same format within `svpluscnv`.
+Both CNV segmentation profiles and SV calls produce orthogonal results for variants that involve CN dosage changes. The function `match.breaks` compares the breakpoints derived from both approaches by identifying their co-localizing. It takes two objects of class `breaks` returned by either `svc.breaks` or `cnv.breaks` function. Thus, itt may be used to compare also two sets of CNV brekpoints obtaind from different algorithms or SV callers.
 
-```{r plot3,  fig.width=12, fig.height=5, fig.align='center', fig.cap = "Common breakpoints by sample",  message=FALSE}
-
+```{r plot3,  fig.width=12, fig.height=10, fig.align='center', fig.cap = "Common breakpoints by sample",  message=FALSE}
 common.breaks <- match.breaks(cnv_breaks, svc_breaks, 
-                              maxgap=100000, verbose=FALSE)
-
-# average percentage of colocalizing breaks
-restab <- data.frame(common.breaks$restab)[order(common.breaks$restab$total.brk2),]
-m2 <- sprintf("%.1f",100*mean(restab$matched.brk2/restab$total.brk2)) 
-
-# Plot the proportion of SV breakpoints that have colocalizing CNV breakpoints
-# This analysis has animportant quality control use case by identifying samples with low number of orthogonaly validated breakpoints
-barplot(rbind(restab$matched.brk2, restab$total.brk2 - restab$matched.brk2),
-        border=NA,las=2,xlab="",horiz=FALSE,cex.main=.7,cex.names=.4, names=rownames(restab))
-legend("top",paste("SV breaks matched by CNV breaks\n","Average = ",m2,"%",sep=""),bty='n')
-grid(ny=NULL,nx=NA)
-
+                              maxgap=100000, 
+                              verbose=FALSE,
+                              plot = TRUE)
 ```
 
 
@@ -273,6 +259,7 @@ circ.chromo.plot(shatt_lung,sample.id = "SCLC21H_LUNG")
 
 
 ```{r echo=FALSE}
+graphics.off()
 par(def.par)
 ```
 
@@ -336,6 +323,7 @@ barplot(amp_del_genes$deepdel.rank[1:20],col="blue",
 ```
 
 ```{r echo=FALSE}
+graphics.off()
 par(def.par)
 ```
 
@@ -344,8 +332,7 @@ par(def.par)
 Instead of focusing on high-level dosage changes, we evaluate whether CNV breakpoints overlap with known genes or upstream regions (gene level CNVs are studied [above](#gene-level-cnv)). `cnv.break.annot` evaluates segmentation data and returns a list of genes and associated breakpoints that can be retrieved for further analyses. In addition every gene is associated via list to the sample ids harboring the variants.
 
 ```{r message=FALSE}
-results_cnv <- cnv.break.annot(cnv, 
-                               fc.pct = 0.2, genome.v="hg19",clean.brk = 8,upstr = 100000,verbose=FALSE)
+results_cnv <- cnv.break.annot(cnv, fc.pct = 0.2, genome.v="hg19",clean.brk = 8,upstr = 100000,verbose=FALSE)
 ```
 SV calls do not incorporate dosage information, therefore we study the localization of breakpoints with respect to known genes. The annotation identifies small segmental variants overlapping with genes. For translocations (TRA) and large segmental variants (default > 200Kb) only the breakpoint overlap with genes are considered. `svc.break.annot` returns a list of genes and associated variants that can be retrieved for further analyses. In addition, every gene is associated via list to the sample ids harboring variants.
 
@@ -377,10 +364,10 @@ Integrating segmentation and SV calls is critical to understand the role of stru
 ```{r plot9,  fig.width=9, fig.height=12, fig.align='center', fig.cap = "Visualizaion of structural variants in PTPRD", message=FALSE}
 # we use gene.track.view to obtain the start and end positions of our gene of interests PTPRD (one of the top altered genes shown above)
 gene <- "PTPRD"
-df <- gene.track.view(symbol = gene, plot=FALSE, genome.v = "hg19")$df
-start <- min(df$txStart) - 200000
-stop <- max(df$txEnd) + 50000
-chr <- df$chrom[1]
+gene.dt <- gene.track.view(symbol = gene, plot=FALSE, genome.v = "hg19")
+start <- min(gene.dt@data$txStart) - 200000
+stop <- max(gene.dt@data$txEnd) + 50000
+chr <- gene.dt@data$chrom[1]
 
 #  The function `svc.model.view` has builtin breakpoint search capabilities. 
 # The argument 'sampleids' allows selecting the list of samples to be show; if null, 
@@ -398,7 +385,8 @@ sv.model.view(svc, cnv, chr, start, stop, sampleids=sampleids,
 gene.track.view(chr=chr ,start=start, stop=stop, addtext=TRUE, cex.text=1, 
                 summary = FALSE)
 ```
-    
+
+
 ```{r echo=FALSE}
 par(def.par)
 ```

@@ -293,12 +293,13 @@ if(is.null(chr.lim)){
 match.breaks <- function(brk1, 
                          brk2, 
                          maxgap=100000,
-                         verbose=FALSE){
+                         verbose=FALSE,
+                         plot=TRUE){
     
     common_samples <- intersect(names(brk1@burden),names(brk2@burden))
     stopifnot(length(common_samples) > 0, local = TRUE) 
     
-    brk1_match <- brk2_match <- restab <- list()
+    brk1_match <- brk2_match <- res <- list()
     for(id in common_samples){
         
         brk1_i <- brk1@breaks[which(brk1@breaks$sample == id),]
@@ -315,14 +316,38 @@ match.breaks <- function(brk1,
         brk_match1 <- sort(unique(queryHits(seg_seg)))
         brk_match2 <- sort(unique(subjectHits(seg_seg)))
         
-        restab[[id]] <- c(length(brk_match1), nrow(brk1_i), length(brk_match2), nrow(brk2_i))
-        names(restab[[id]]) <- c("matched.brk1", "total.brk1", "matched.brk2", "total.brk2")
+        res[[id]] <- data.table(id,length(brk_match1), nrow(brk1_i), length(brk_match2), nrow(brk2_i))
+        colnames(res[[id]]) <- c("sample","matched.brk1", "total.brk1", "matched.brk2", "total.brk2")
         
         brk1_match[[id]] <- brk1_i[brk_match1,]
         brk2_match[[id]] <- brk2_i[brk_match2,]
     }
 
-    restab <- data.frame(do.call(rbind,restab))
+    restab <- do.call(rbind,res)
+    
+    if(plot == TRUE){
+      def.par <- par(no.readonly = TRUE)
+      par(mfrow=c(2,1))
+      restab <- restab[order(restab$total.brk2)]
+      m2 <- sprintf("%.1f",100*mean(na.omit(restab$matched.brk2/restab$total.brk2))) 
+      barplot(rbind(restab$matched.brk2, restab$total.brk2 - restab$matched.brk2),
+              border=NA,las=2,xlab="",horiz=FALSE,cex.main=.7,cex.names=.4, names=restab$sample )
+      legend("top",paste(brk2@param$datatype," breaks matched by ",
+                         brk1@param$datatype,
+                         " breaks\n","Average = ",m2,"%",sep=""),bty='n')
+      grid(ny=NULL,nx=NA)
+
+            restab <- restab[order(restab$total.brk1)]
+      m2 <- sprintf("%.1f",100*mean(na.omit(restab$matched.brk1/restab$total.brk1))) 
+      barplot(rbind(restab$matched.brk1, restab$total.brk1 - restab$matched.brk1),
+              border=NA,las=2,xlab="",horiz=FALSE,cex.main=.7,cex.names=.4, names=restab$sample)
+      legend("top",paste(brk1@param$datatype,
+                         " breaks matched by ",brk2@param$datatype,
+                         " breaks\n","Average = ",m2,"%",sep=""),bty='n')
+      grid(ny=NULL,nx=NA)
+      par(def.par)
+    }
+    
     return(list(
         brk1_match = do.call(rbind,brk1_match),
         brk2_match = do.call(rbind,brk2_match),

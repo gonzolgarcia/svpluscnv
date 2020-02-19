@@ -48,23 +48,15 @@ med.segmean <- function(cnv){
     out <-rep(NA,length(unique(dt$sample)))
     names(out) <- unique(dt$sample)
     
-    pb <- txtProgressBar(style=3)
-    cc <-0
-    tot <- length(unique(sample))
-    
-    
+
     for(i in unique(dt$sample)){
-        cc <- cc+1
-        
+
         minidf <- dt[which(dt$sample == i)]
         miniord <-minidf[order(minidf$segmean)]
         medseg <- which(abs(cumsum(miniord$glen)/sum(miniord$glen) - 0.5) == min(abs(cumsum(miniord$glen)/sum(miniord$glen) - 0.5)))
         out[i] <- mean(miniord$segmean[medseg])
-        
-        setTxtProgressBar(pb, cc/tot)
-        
+
     }
-    close(pb)
     return(out)
 }
 
@@ -108,8 +100,8 @@ cnvdat <- cnv@data
 if(!is.null(sampleids)) cnvdat <- cnvdat[which(cnvdat$sample %in% sampleids),]
   
 if(ploidy){
-    ploidy <- med.segmean(cnv)
-    cnvdat$segmean <- cnvdat$segmean - ploidy
+    ploidy_val <- med.segmean(cnv)
+    cnvdat$segmean <- cnvdat$segmean - ploidy_val[cnvdat$sample]
 }
 
 stopifnot(genome.v %in% c("hg19","hg38","GRCh37","GRCh38"))

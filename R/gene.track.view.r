@@ -31,29 +31,29 @@ gene.track.view <- function(chr=NULL, start=NULL, stop=NULL,
     
     if(genome.v %in% c("hg19","GRCh37")){
         refseq <- refseq_hg19
-        refseq$df <- refseq$df[order(refseq$df$txStart),]
-        refseq_gr <- with(refseq$df, GRanges(chrom, IRanges(start=txStart, end=txEnd), symbol=name2,transcript=name)) 
+        refseq@data <- refseq@data[order(refseq@data$txStart)]
+        refseq_gr <- with(refseq@data, GRanges(chrom, IRanges(start=txStart, end=txEnd), symbol=name2,transcript=name)) 
     }else if(genome.v %in% c("hg38","GRCh38")){
         refseq <- refseq_hg38
-        refseq$df <- refseq$df[order(refseq$df$txStart),]
-        refseq_gr <- with(refseq$df, GRanges(chrom, IRanges(start=txStart, end=txEnd), symbol=name2,transcript=name)) 
+        refseq@data <- refseq@data[order(refseq@data$txStart),]
+        refseq_gr <- with(refseq@data, GRanges(chrom, IRanges(start=txStart, end=txEnd), symbol=name2,transcript=name)) 
     }else{stop("Unspecified, or non available genome")}
     
     # define genomic region to plot
-    if(!is.null(symbol) && symbol %in% refseq$df$name2){
-        isonames <- refseq$df$name2[which(refseq$df$name2 == symbol)]
-        names(isonames) <- refseq$df$name[which(refseq$df$name2 == symbol)]
+    if(!is.null(symbol) && symbol %in% refseq@data$name2){
+        isonames <- refseq@data$name2[which(refseq@data$name2 == symbol)]
+        names(isonames) <- refseq@data$name[which(refseq@data$name2 == symbol)]
         
-        strand <- refseq$df$strand[which(refseq$df$name2 == symbol)][1]
+        strand <- refseq@data$strand[which(refseq@data$name2 == symbol)][1]
         if(is.null(upstr)) upstr= 10000
         if(is.null(dnstr)) dnstr= 5000
-        chr <- unique(refseq$df$chrom[which(refseq$df$name2 == symbol)])
+        chr <- unique(refseq@data$chrom[which(refseq@data$name2 == symbol)])
         if(strand == "-"){
-            start <- min(refseq$df$txStart[which(refseq$df$name2 == symbol)]) - dnstr
-            stop <- max(refseq$df$txEnd[which(refseq$df$name2 == symbol)]) + upstr
+            start <- min(refseq@data$txStart[which(refseq@data$name2 == symbol)]) - dnstr
+            stop <- max(refseq@data$txEnd[which(refseq@data$name2 == symbol)]) + upstr
         }else{
-            start <- min(refseq$df$txStart[which(refseq$df$name2 == symbol)]) - upstr
-            stop <- max(refseq$df$txEnd[which(refseq$df$name2 == symbol)]) + dnstr
+            start <- min(refseq@data$txStart[which(refseq@data$name2 == symbol)]) - upstr
+            stop <- max(refseq@data$txEnd[which(refseq@data$name2 == symbol)]) + dnstr
         }
     }else if(!is.null(chr) && !is.null(start) && !is.null(stop)){
         coordgr <- with(data.frame(chr,start,stop), GRanges(chr, IRanges(start=start, end=stop))) 
@@ -65,12 +65,12 @@ gene.track.view <- function(chr=NULL, start=NULL, stop=NULL,
     }
     
     isonames_list <- sapply(unique(isonames), function(i) names(which(isonames==i)),simplify = FALSE)
-    exons_coord <- sapply(names(isonames), function(i) cbind(refseq$exonStarts[[i]],refseq$exonEnds[[i]]) ,simplify = FALSE)
-    refseq_df <- refseq$df[which(refseq$df$name %in% names(exons_coord)),]
+    exons_coord <- sapply(names(isonames), function(i) cbind(refseq@exonStarts[[i]],refseq@exonEnds[[i]]) ,simplify = FALSE)
+    refseq_df <- refseq@data[which(refseq@data$name %in% names(exons_coord)),]
     rownames(refseq_df) <- names(exons_coord)
 if(plot == TRUE){
     geneRanges <- t(sapply(names(isonames), function(i)
-        c(min(refseq$df$txStart[which(refseq$df$name == i)]),max(refseq$df$txEnd[which(refseq$df$name == i)]))))
+        c(min(refseq@data$txStart[which(refseq@data$name == i)]),max(refseq@data$txEnd[which(refseq@data$name == i)]))))
 
     hits <- findOverlaps(IRanges(geneRanges[,1],geneRanges[,2]))
     hitsNames  <- data.frame(names(isonames)[queryHits(hits)],names(isonames)[subjectHits(hits)])
@@ -91,21 +91,23 @@ if(plot == TRUE){
         for(iso in isonames_list[[gene]]){
             isoct <- isoct +1
             ypos <- seqYpos[isoct]
-            iso_length <- refseq_df[iso,"txEnd"]-refseq_df[iso,"txStart"]
+            refseq_iso <-  refseq_df[which(refseq_df$name == iso)]
+            
+            iso_length <- refseq_iso$txEnd - refseq_iso$txStart
             plot_length <-  stop-start
             narrows <- ceiling(20*iso_length/plot_length)
-            arrow_x <- seq(refseq_df[iso,"txStart"],refseq_df[iso,"txEnd"], iso_length/narrows)
+            arrow_x <- seq(refseq_iso$txStart,refseq_iso$txEnd , iso_length/narrows)
             
             strandpos <- exons_coord[[iso]][1,1]-(stop-start)/100
-            if(refseq_df[iso,"strand"] == "-" ){ 
+            if(refseq_iso$strand == "-" ){ 
                 points(strandpos, ypos, pch="-", col="red")
                 arrows(arrow_x[2:(narrows+1)]+plot_length/200,rep(ypos,narrows), arrow_x[1:narrows],rep(ypos,narrows),length=0.1)
-            }else if(refseq_df[iso,"strand"] == "+" ){
+            }else if(refseq_iso$strand == "+" ){
                 points(strandpos,ypos,pch="+",cex=1,col="blue")
                 arrows(arrow_x[1:narrows]-plot_length/200,rep(ypos,narrows),arrow_x[2:(narrows+1)],rep(ypos,narrows),length=0.1)
             }
             
-            lines(matrix(c(refseq_df[iso,"txStart"],refseq_df[iso,"txEnd"],ypos,ypos),2,2),lwd=2)
+            lines(matrix(c(refseq_iso$txStart,refseq_iso$txEnd, ypos, ypos), 2, 2), lwd=2)
             
             bordercolor <- "black"; bgcolor<-"grey"
             for(i in 1:nrow(exons_coord[[iso]])){ 
@@ -117,7 +119,7 @@ if(plot == TRUE){
                 ),lwd=1,col=bgcolor,border=bordercolor)
             }
             if(addtext == TRUE){
-                text(refseq_df[iso,"txEnd"],ypos,label=iso,cex=cex.text,pos=4)
+                text(refseq_iso$txEnd,ypos,label=iso,cex=cex.text,pos=4)
             }
         }
     }
@@ -129,9 +131,12 @@ if(plot == TRUE){
     
 }
     if(summary){
-        return(list(df=refseq_df,
-                exonStarts = refseq$exonStarts[names(isonames)],
-                exonEnds = refseq$exonEnds[names(isonames)]))
+        return(
+            refSeqDat(data=refseq@data[which(refseq@data$name %in% unlist(isonames_list))],
+                exonStarts = refseq@exonStarts[unlist(isonames_list)],
+                exonEnds = refseq@exonEnds[unlist(isonames_list)],
+                genome.v=genome.v)
+               )
     }
 }
 

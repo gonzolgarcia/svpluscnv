@@ -1,13 +1,365 @@
+---
+title: "Introduction to svpluscnv"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Introduction to svpluscnv}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
 
+
+
+<script type="text/javascript">
+document.addEventListener("DOMContentLoaded", function() {
+  document.querySelector("h1").className = "title";
+});
+</script>
+<script type="text/javascript">
+document.addEventListener("DOMContentLoaded", function() {
+  var links = document.links;  
+  for (var i = 0, linksLength = links.length; i < linksLength; i++)
+    if (links[i].hostname != window.location.hostname)
+      links[i].target = '_blank';
+});
+</script>
+<style type="text/css" scoped>
+body {
+  margin: 0px auto;
+  max-width: 1134px;
+  font-family: sans-serif;
+  font-size: 10pt;
+}
+
+/* Table of contents style */
+
+div#TOC ul {
+  padding: 0px 0px 0px 45px;
+  list-style: none;
+  background-image: none;
+  background-repeat: none;
+  background-position: 0;
+  font-size: 10pt;
+  font-family: Helvetica, Arial, sans-serif;
+}
+
+div#TOC > ul {
+  padding: 0px 150px 0px 65px;
+  font-size: 12pt;
+}
+
+div#TOC > ul > li {
+  padding: 5px 0px 0px 0px;
+}
+
+div#TOC ul ul {
+  font-size: 11pt;
+}
+
+div#TOC.tocify ul {
+  padding: 0px;
+  font-size: inherit;
+  font-family: inherit;
+}
+
+div#TOC.tocify li {
+  padding: 5px;
+  font-size: inherit;
+  font-family: inherit;
+}
+
+p, dl {
+  padding: 0px 150px 0px 65px;
+  text-align: justify;
+}
+
+/* vertical content spacing */
+p, img, table {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+/* lists */
+ol, ul {
+  padding: 0px 150px 0px 100px;
+  list-style: square;
+}
+
+li ol, li ul {
+  padding: 0px 0px 0px 35px;
+}
+
+li p {
+  padding: 0;
+}
+
+pre {
+  margin: 0em 150px 0.5em 0em;
+  padding: 0px 0px 0px 65px;
+  border: 0px none;
+  background-color: #f0f0f0;
+  white-space: pre;
+  overflow-x: auto;
+  font-size: 90%;
+}
+
+li pre {
+  margin: 0em 0px 0.5em -65px;
+  padding: 0px 0px 0px 65px;
+}
+pre code {
+  background-color: inherit;
+  display: block;
+  padding: 10px 10px 10px 0px;
+  overflow-x: inherit;
+  font-size: 100%;
+}
+
+/* markdown v1 */
+pre code[class] {
+  background-color: inherit;
+}
+
+/* markdown v2 */
+pre[class] code {
+  background-color: inherit;
+}
+
+tt, code, pre {
+   font-family: 'DejaVu Sans Mono', 'Droid Sans Mono', 'Lucida Console', Consolas, Monaco, monospace;
+}
+
+h1, h2, h3, h4, h5, h6 { 
+  font-family: Helvetica, Arial, sans-serif;
+  margin: 1.2em 150px 0.6em 0em;
+/* hanging headings */
+  padding-left: 65px;
+  text-indent: -65px;
+}
+
+h1.title {
+  color: #87b13f;
+  line-height: 1.1em;
+  margin-top: 25px;
+  border-bottom: 0px;
+}
+
+h1 {
+  line-height: 1.4em;
+  border-bottom: 1px #1a81c2 solid;
+}
+
+h1, h2, h3 {
+  color: #1a81c2;
+}
+
+h1 {
+  font-size: 18.0pt;
+}
+
+h2 {
+  font-size: 14.5pt;
+}
+
+h3, h4 {
+  font-size: 12pt;
+}
+
+span.header-section-number {
+  float: left;
+  width: 65px;
+}
+
+/* document header */
+
+p.author-name {
+  font-size: 14.5pt;
+  font-weight: bold;
+  font-style: italic;
+  text-align: left;
+}
+
+.date {
+  text-indent: 0px;
+  font-weight: bold;
+}
+
+.abstract, .package {
+  font-weight: bold;
+}
+
+/* formatting of inline code */
+code { 
+  background-color: #f0f0f0;
+  color: #404040;
+  font-size: 90%;
+}
+
+/* figures */
+
+.figure { 
+  margin: 0em 0px 0.5em;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+  padding: 0px 150px 0px 130px;
+}
+
+p > img {
+  padding-left: 65px;
+  padding-right: 0px;
+}
+
+img.smallfigure {
+  padding-left: 195px;
+  padding-right: 280px;
+}
+
+p > img.smallfigure {
+  padding-left: 130px;
+  padding-right: 130px;
+}
+
+img.widefigure {
+  padding-left: 65px;
+  padding-right: 85px;
+  margin-right: -65px;
+}
+
+p > img.widefigure {
+  padding-left: 0px;
+  padding-right: 0px;
+  margin-right: -65px;
+}
+
+p.caption, caption {
+  color: inherit;
+  font-size: 8pt;
+}
+
+p.caption {
+  padding-left: 130px;
+  padding-right: 85px;
+  margin-bottom: 20px;
+}
+
+caption {
+  padding: 0px;
+  margin-bottom: 10px;
+  min-width: 583;
+}
+span.caption-title {
+  color: #1a81c2;
+  font-weight: bold;
+}
+
+span.caption-label {
+  font-weight: bold;
+}
+
+/* tables */
+
+table {
+  margin-left: 130px;
+  margin-right: 85px;
+}
+
+.table {
+  max-width: 518px;
+}
+
+/* definition lists */
+
+dd {
+  margin-left: 65px;
+  margin-bottom: 10px;
+}
+
+/* code folding buttons */
+
+.code-folding-btn {
+  position: relative;
+  margin-top: -26px;
+  top: 26px;
+}
+
+.col-md-12 {
+  min-height: 0px;
+}
+
+/* footnotes as sidenotes */
+
+.sidenote {
+  float: right;
+  clear: right;
+  margin-right: -150px;
+  width: 130px;
+  margin-top: 0;
+  margin-bottom: 1rem;
+  font-size: 8pt;
+  line-height: 1.3;
+  vertical-align: baseline;
+  position: relative;
+  text-align: left;
+}
+
+.sidenote-number, .affil-mark {
+  position: relative;
+  vertical-align: super;
+  font-size: 7.5pt;
+  font-weight: normal;
+  font-style: normal;
+  line-height: normal;
+}
+
+input.margin-toggle { display: none; }
+
+label.sidenote-number { display: inline; }
+
+label.margin-toggle:not(.sidenote-number) { display: none; }
+
+/* Class described in https://benjeffrey.com/posts/pandoc-syntax-highlighting-css
+   Colours from https://gist.github.com/robsimmons/1172277 */
+
+code > span.kw { color: #E07020; } /* Function calls */
+code > span.dt { color: #404040; } /* Function args */
+code > span.dv { color: #D02070; } /* DecVal (decimal values) */
+code > span.bn { color: #d14; } /* BaseN */
+code > span.fl { color: #D02070; } /* Float */
+code > span.ch { color: #40A040; } /* Char */
+code > span.st { color: #40A040; } /* String */
+code > span.co { color: #808080; font-style: italic; } /* Comment */
+code > span.ot { color: #2020F0; } /* Keywords */
+code > span.al { color: #ff0000; font-weight: bold; } /* AlertToken */
+code > span.fu { color: #E07020; } /* Function calls */ 
+code > span.er { color: #FF0000; } /* ErrorTok */
+
+code > span.identifier { color: #404040; }
+code > span.number { color: #D02070; }
+code > span.string { color: #40A040; }
+code > span.comment { color: #808080; font-style: italic; }
+code > span.keyword { color: #2020F0; }
+code > span.literal { color: #2020F0; }
+code > span.operator { color: #000000;}
+code > span.paren { color: #000000;}
+
+/* proper positioning of ggplotly graphics, see https://support.bioconductor.org/p/97609/ */
+
+.js-plotly-plot .plotly {
+  padding-left: 65px;
+}
+</style>
+  
 ## svncvplus: R toolkit for the analysis of structural variants and complex genomic rearrangements
 
-`svncvplus` is an R package designed for integrative analyses of somatic DNA copy number variations (CNV) and other structural variants (SV).`svpluscnv` comprises multiple analytical and visualization tools that can be applied to large datasets from cancer patients such as [TCGA](https://www.cancer.gov/about-nci/organization/ccg/research/structural-genomics/tcga) and cancer cell lines [CCLE](https://portals.broadinstitute.org/ccle).
+`svpluscnv` is an R package designed for integrative analyses of somatic DNA copy number variations (CNV) and other structural variants (SV).`svpluscnv` comprises multiple analytical and visualization tools that can be applied to large datasets from cancer patients such as [TCGA](https://www.cancer.gov/about-nci/organization/ccg/research/structural-genomics/tcga) and [PCAWG](https://dcc.icgc.org/releases/PCAWG) or cancer cell lines [CCLE](https://portals.broadinstitute.org/ccle).
   
-CNV data can be derived from genotyping and CGH arrays, as well as next generation sequencing; different segmentation algorithms are used to obtain dosage variations (gains and losses) across the genome. Alternatively, SV calls can be inferred from discordantly aligned reads from whole genome sequencing (WGS) using different algorithms (e.g [manta](https://github.com/Illumina/manta)[], [lumpy](https://github.com/arq5x/lumpy-sv), etc).
+CNV data can be derived from genotyping and CGH arrays, as well as next generation sequencing; different segmentation algorithms are used to obtain dosage variations (gains and losses) across the genome. Alternatively, SV calls can be inferred from discordantly aligned reads from whole genome sequencing (WGS) using different algorithms (e.g [manta](https://github.com/Illumina/manta), [lumpy](https://github.com/arq5x/lumpy-sv), etc).
   
-SV calls provide linkage information from discordantly aligned reads and read pairs, allowing the discovery of chromosomal translocations and variants that do not necessarily involve dosage change, such as inversions and insertions. Segmentation CNVs and alignment based SV calls produce orthogonal as well as complementary results. The integration of both data types can by highly informative to understand the somatic alterations driving many cancers and is essential to characterize complex chromosomal alterations such as chromothripsis and chromoplexy.
-  
-Most currently available cancer genomics datasets incorporate CNV characterization whereas SVs (derived from WGS) are scarcer. For this reason, `svpluscnv` tools implement functions that work with both data types separately as well as integrated.
+Structural Variation Calls (SVC) provide linkage information from discordantly aligned reads and read pairs, allowing the discovery of chromosomal translocations and variants that do not necessarily involve dosage change, such as inversions and other copy number neutral events. CNVs and SVCs produce orthogonal as well as complementary results. The integration of both data types can by highly informative to understand the somatic alterations driving many cancers and is essential to characterize complex chromosomal alterations such as chromothripsis and chromoplexy. However, most currently available cancer genomics datasets incorporate CNV characterization whereas SVs (derived from WGS) are scarcer. For this reason, `svpluscnv` tools implement functions that work with both data types separately as well as integrated. 
+
+The `svpluscnv` package implements analysis and visualization tools to evaluate chromosomal instability and ploidy, identify genes harboring recurrent SVs and systematically characterize hot-spot genomic locations harboring shattered regions such as those caused by chromothripsis and chromoplexia.
 
 
 ## Index:
@@ -51,14 +403,14 @@ devtools::install_github("gonzolgarcia/svpluscnv")
 Two data types are allowed:
   
 __CNV segmentation data:__ 6 columns are required in the folowing order: `sample`, `chrom`, `start`, `end`, `probes` & `segmean`. Most algorithms studying CNVs produce segmented data indicating genomic boundaries and the segment mean copy number value (segmean); `svpluscnv` assumes CNV expresed as log-ratios: __e.g.:__ $\log2(tumor/normal)$ Those values do not necesarily represent entire copy number states as many samples may contain admixture or subclonal populations.
-  
+
 __Structural Variant calls:__ 8 columns are required in the folowing order: `sample`, `chrom1`, `pos1`, `strand1`, `chrom2`, `pos2`, `strand2` & `svclass`. SV calls are obtained from WGS by identifying reads and read-pairs that align discordantly to the reference genome. The types accepted in the svclass field are: duplication(DUP), deletion(DEL), inversion(INV), insertion(INS), translocation(TRA) and breakend(BND) for undefined variants.
   
 All functions accept multiple samples. Functions that make use of both CNV and SV calls expect a common set of ids in the `sample` field.
   
 In order to explore the  functionalities of svpluscnv, two datasets have been included with the package:
   
-* CCLE lung cancer derived cell lines <https://depmap.org/portal/download/>; Two data.frames contain information about CNV segments and structural variants respectively:
+* [CCLE lung cancer derived cell lines](https://depmap.org/portal/download/); Two data.frames contain information about CNV segments and structural variants respectively:
     * `svpluscnv::segdat_lung_ccle`
     * `svpluscnv::svdat_lung_ccle`
 * [TARGET neuroblastoma dataset](https://ocg.cancer.gov/programs/target) based on Complete Genomics WGS and structural variant calls:
@@ -108,22 +460,11 @@ Validate and reformat CNV segmentation `data.frame` to be used by svpluscnv tool
 
 ```r
 cnv <- validate.cnv(nbl_segdat)
-cnv@data
+cnv
 ```
 
 ```
-##        sample chrom     start       end probes segmean          uid
-##     1: PAISNS  chr1     11000    833000    337 -0.0270 cnv_MhMDAsTz
-##     2: PAISNS  chr1    835000   2715000    916 -1.0257 cnv_awwQvrPZ
-##     3: PAISNS  chr1   2717000   5969000   1552 -0.8316 cnv_bbwzYWxx
-##     4: PAISNS  chr1   5971000  12481000   3256 -0.9593 cnv_IJQyBull
-##     5: PAISNS  chr1  12483000  12777000    148 -0.2305 cnv_TEiWSqui
-##    ---                                                             
-## 17676: PAUDDK  chrX 154932522 155259280    164  0.5846 cnv_eUKeRAUj
-## 17677: PAUDDK  chrY   2650760  10103276   3677 -1.4198 cnv_mzVgbANs
-## 17678: PAUDDK  chrY  13105276  13933000    365 -1.2145 cnv_UhmSayCz
-## 17679: PAUDDK  chrY  13935000  28575000   7246 -1.4205 cnv_MRtSUUIz
-## 17680: PAUDDK  chrY  28577000  59033024    204 -1.2404 cnv_afhpWucz
+## An object of class svcnvio from svpluscnv storing cnv data from 135 samples
 ```
 
 
@@ -134,50 +475,41 @@ Validate and format structural variant `data.frame` to be used by svpluscnv tool
 
 ```r
 svc <- validate.svc(nbl_svdat)
-svc@data
+svc
 ```
 
 ```
-##       sample chrom1      pos1 strand1 chrom2      pos2 strand2 svclass          uid
-##    1: PAISNS   chr1  12481576       -   chr7 123358964       +     TRA svc_rfnkQdgG
-##    2: PAISNS   chr1 120543859       -   chr2  65103235       -     TRA svc_qIYsoCEj
-##    3: PAISNS   chr2 231680218       +  chr21  40045998       +     TRA svc_XFAMclFN
-##    4: PAISNS   chr3  54814482       -  chr17  42657036       +     TRA svc_AjNhylln
-##    5: PAISNS   chr4  97761321       -   chr4  97765146       +     INV svc_rmdUhcYd
-##   ---                                                                              
-## 7362: PAUDDK  chr11  29960468       -  chr11  29960752       -     DUP svc_CwmdMQWD
-## 7363: PAUDDK  chr11  55113661       +  chr11  55114655       +     DEL svc_tFTEIcXr
-## 7364: PAUDDK  chr12  21955628       -  chr12  21955692       -     DUP svc_wwPgeRyC
-## 7365: PAUDDK  chr13 114455686       -  chr13 114455846       -     DUP svc_qQcQUVHW
-## 7366: PAUDDK   chrX 150098753       +   chrX 150146849       +     DEL svc_kAmlVfnL
+## An object of class svcnvio from svpluscnv storing svc data from 135 samples
 ```
 
 ## CNV analysys and visualization
 
 ### CNV frequency plot
 
-Visualization of CNV gain/loss frequencies across the genome; aggregates samples for a given genomic window size, which copy number log-ratio differs from 0. The thresshold `fc.pct` is represented as percentage (e.g. 0.2 -> 20% fold change compared to the referece).
+Visualization of CNV gain/loss frequencies across the genome; aggregates samples for a given genomic window size, which copy number log-ratio differs from 0. The thresshold `fc.pct` is represented as percentage (e.g. 0.2 -> 20% fold change compared to the referece). 
+If the dataset represents samples with hiperploidy, the plot would be skewed. Therefor, the possibility of ploidy correction is included; `svpluscnv` implements the function `med.segmean` that returns per sample median logR (segmean) value, which can be substracted from each sample segment's logR. This correction can be called internaly by `cnv.freq` using `ploidy=TRUE` argument.
 
 
 ```r
-cnv_freq <- cnv.freq(cnv, fc.pct = 0.2, plot=TRUE)  # plot cnv frequencies
+cnv_freq <- cnv.freq(cnv, fc.pct = 0.2, ploidy = FALSE, plot=TRUE)
 ```
 
 <img src="figure/plot1-1.png" title="Genome wide CNV frequencies" alt="Genome wide CNV frequencies" style="display: block; margin: auto;" />
 
-
 ```r
-head(cnv_freq$freqsum)  # data.frame contains every genomic bin 
+cnv_freq
 ```
 
 ```
-## Error in cnv_freq$freqsum: $ operator not defined for this S4 class
+## An object of class cnvfreq from svpluscnv containing the following stats:
+##                 
+## Number of samples= 135 
+## Number of genomic bins = 3022
 ```
-
 
 ### Chromosome arm CNV determination
 
-The function `chr.arm.cnv` obtains the segment weighted average log-ratios for each chromosome arm and sample; it returns a matrix formated output.
+The function `chr.arm.cnv` obtains the segment weighted average log-ratios for each chromosome arm in each sample; it returns a matrix formated output.
 
 
 ```r
@@ -193,14 +525,15 @@ heatmap.2(charm.mat[order(rownames(charm.mat))[1:42],],Rowv=NA,trace='none',cexC
 
 ## Assessment of chromosomal instability
 
-Chromosomal instability (CIN) is common in cancer and has a fundamental pathogenic role. CNV profiles allow quantification of this events by evaluating the percentage of the genome  copy number differing from diploid or the burden of genomic alterations in a given sample.
+Chromosomal instability (CIN) is common in cancer and has a fundamental pathogenic role. CNV profiles allow quantification of this events by evaluating the percentage of the genome's copy number logR diferring from normal or the total burden of genomic alterations in a given sample:
 
 ### Percent genome change
 
-Per sample measure of genome instability; calculates what percentage of the genome's copy number log2-ratio differs from 0 (aka. diploid for autosomal chromosomes) above a certain threshold.
+Per sample measure of genome instability; calculates what percentage of the genome's copy number log2-ratio differs from 0 (aka. diploid for autosomal chromosomes) above a certain threshold. 
 
 
 ```r
+# ploidy correction
 pct_change <- pct.genome.changed(cnv, fc.pct = 0.2)
 head(pct_change)
 ```
@@ -212,7 +545,7 @@ head(pct_change)
 
 ### Breakpoint burden analysis
 
-In addition to percentage of genome changed, we can measure the total burden of breakpoints derived from CNV segmention and SV calls. Both the percent genome change and breakpoint burden measures are expected to show positive correlation.
+In addition to percentage of genome changed, we can measure the total burden of breakpoints derived from CNV segmention and SV calls. Both the percent genome change and breakpoint burden measures are expected to show positive correlation as shown below.
 
 
 ```r
@@ -233,9 +566,9 @@ dat2 <- log2(1+cbind(pct_change,
 
 par(mfrow=c(1,2))
 plot(dat1, xlab="log2(1+SV break count)", ylab="log2(1+CNV break count)")
-legend("bottomright",paste("Pearson's cor=",sprintf("%.2f",cor(dat1)[1,2]), sep=""))
+legend("bottomright",paste("Spearman's cor=",sprintf("%.2f",cor(dat1,method="spearman")[1,2]), sep=""))
 plot(dat2, xlab="percentage genome changed", ylab="log2(1+CNV break count)")
-legend("bottomright",paste("Pearson's cor=",sprintf("%.2f",cor(dat2)[1,2]), sep=""))
+legend("bottomright",paste("Spearman's cor=",sprintf("%.2f",cor(dat2,method="spearman")[1,2]), sep=""))
 ```
 
 <img src="figure/plot2-1.png" title="SV versus CNV breakpoint burden" alt="SV versus CNV breakpoint burden" style="display: block; margin: auto;" />
@@ -244,23 +577,14 @@ legend("bottomright",paste("Pearson's cor=",sprintf("%.2f",cor(dat2)[1,2]), sep=
 
 ## Co-localization of breakpoints
 
-Both CNV segmentation profiles and SV calls produce orthogonal results for variants that involve dosage changes (duplications and deletions). The function `match.breaks` compares the breakpoints derived from both approaches by identifying their co-localizing. This function can also be used to compare two sets of CNV brekpoints obtaind from different algorithms or SV callers since the format of both CNV and SV breaks objects have the same format within `svpluscnv`.
+Both CNV segmentation profiles and SV calls produce orthogonal results for variants that involve CN dosage changes. The function `match.breaks` compares the breakpoints derived from both approaches by identifying their co-localizing. It takes two objects of class `breaks` returned by either `svc.breaks` or `cnv.breaks` function. Thus, itt may be used to compare also two sets of CNV brekpoints obtaind from different algorithms or SV callers.
 
 
 ```r
 common.breaks <- match.breaks(cnv_breaks, svc_breaks, 
-                              maxgap=100000, verbose=FALSE)
-
-# average percentage of colocalizing breaks
-restab <- data.frame(common.breaks$restab)[order(common.breaks$restab$total.brk2),]
-m2 <- sprintf("%.1f",100*mean(restab$matched.brk2/restab$total.brk2)) 
-
-# Plot the proportion of SV breakpoints that have colocalizing CNV breakpoints
-# This analysis has animportant quality control use case by identifying samples with low number of orthogonaly validated breakpoints
-barplot(rbind(restab$matched.brk2, restab$total.brk2 - restab$matched.brk2),
-        border=NA,las=2,xlab="",horiz=FALSE,cex.main=.7,cex.names=.4, names=rownames(restab))
-legend("top",paste("SV breaks matched by CNV breaks\n","Average = ",m2,"%",sep=""),bty='n')
-grid(ny=NULL,nx=NA)
+                              maxgap=100000, 
+                              verbose=FALSE,
+                              plot = TRUE)
 ```
 
 <img src="figure/plot3-1.png" title="Common breakpoints by sample" alt="Common breakpoints by sample" style="display: block; margin: auto;" />
@@ -438,8 +762,7 @@ Instead of focusing on high-level dosage changes, we evaluate whether CNV breakp
 
 
 ```r
-results_cnv <- cnv.break.annot(cnv, 
-                               fc.pct = 0.2, genome.v="hg19",clean.brk = 8,upstr = 100000,verbose=FALSE)
+results_cnv <- cnv.break.annot(cnv, fc.pct = 0.2, genome.v="hg19",clean.brk = 8,upstr = 100000,verbose=FALSE)
 ```
 SV calls do not incorporate dosage information, therefore we study the localization of breakpoints with respect to known genes. The annotation identifies small segmental variants overlapping with genes. For translocations (TRA) and large segmental variants (default > 200Kb) only the breakpoint overlap with genes are considered. `svc.break.annot` returns a list of genes and associated variants that can be retrieved for further analyses. In addition, every gene is associated via list to the sample ids harboring variants.
 
@@ -473,10 +796,10 @@ Integrating segmentation and SV calls is critical to understand the role of stru
 ```r
 # we use gene.track.view to obtain the start and end positions of our gene of interests PTPRD (one of the top altered genes shown above)
 gene <- "PTPRD"
-df <- gene.track.view(symbol = gene, plot=FALSE, genome.v = "hg19")$df
-start <- min(df$txStart) - 200000
-stop <- max(df$txEnd) + 50000
-chr <- df$chrom[1]
+gene.dt <- gene.track.view(symbol = gene, plot=FALSE, genome.v = "hg19")
+start <- min(gene.dt@data$txStart) - 200000
+stop <- max(gene.dt@data$txEnd) + 50000
+chr <- gene.dt@data$chrom[1]
 
 #  The function `svc.model.view` has builtin breakpoint search capabilities. 
 # The argument 'sampleids' allows selecting the list of samples to be show; if null, 
@@ -496,5 +819,6 @@ gene.track.view(chr=chr ,start=start, stop=stop, addtext=TRUE, cex.text=1,
 ```
 
 <img src="figure/plot9-1.png" title="Visualizaion of structural variants in PTPRD" alt="Visualizaion of structural variants in PTPRD" style="display: block; margin: auto;" />
-    
+
+
 
