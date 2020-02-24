@@ -438,7 +438,7 @@ barplot(rev(sort(unlist(lapply(upstreamSamples,length)),decreasing=TRUE)[1:20]),
 
 ### Integrated visualization of SVs and CNV in recurrently altered genes
 
-Integrating segmentation and SV calls is critical to understand the role of structural variants in recurrently altered genes. `svpluscnv` includes an integrated visualization tool `svc.model.view` that overlays data from CNV segmentation data and SV calls. This function allows to glance all variants affecting a specified genomic region (e.g. gene locus). This functionality is complemented with a genomic track plot function (`gene.track.view`) that can be used to build layouts; The `gene.track.view` function can also be used to retrieve information about isoforms and exonic regions of each gene.
+Integrating segmentation and SV calls is critical to understand the role of structural variants in recurrently altered genes. `svpluscnv` includes an integrated visualization tool `sv.model.view` that overlays data from CNV segmentation data and SV calls. This function allows to glance all variants affecting a specified genomic region (e.g. gene locus). This functionality is complemented with a genomic track plot function (`gene.track.view`) that can be used to build layouts; The `gene.track.view` function can also be used to retrieve information about isoforms and exonic regions of each gene.
 
 
 ```r
@@ -449,14 +449,14 @@ start <- min(gene.dt@data$txStart) - 200000
 stop <- max(gene.dt@data$txEnd) + 50000
 chr <- gene.dt@data$chrom[1]
 
-#  The function `svc.model.view` has builtin breakpoint search capabilities. 
+#  The function `sv.model.view` has builtin breakpoint search capabilities. 
 # The argument 'sampleids' allows selecting the list of samples to be show; if null, 
 # samples with breakpoints will be searched in the defined genomic region
 # In this case we are using the list of samples with SV breakpoints disrupting PTPRD as determined with `svc.break.annot`
 
 sampleids <- sort(results_svc@disruptSamples[[gene]])
 
-# We build a layout to combine `svc.model.view` and `gene.track.view` using the same set of genomic coordinates
+# We build a layout to combine `sv.model.view` and `gene.track.view` using the same set of genomic coordinates
 layout(matrix(c(1,1,2,2),2,2 ,byrow = TRUE),heights = c(8,2))
 par(mar=c(0,10,1,1))
 sv.model.view(svc, cnv, chr, start, stop, sampleids=sampleids, 
