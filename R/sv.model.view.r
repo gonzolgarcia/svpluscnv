@@ -1,15 +1,16 @@
 #' Integrated visualization of SVs and CNVs in local genomic regions
 #' @param cnv (S4) an object of class svcnvio containing data type 'cnv' validated by validate.cnv
 #' @param svc (S4) an object of class svcnvio containing data type 'svc' validated by validate.svc
-#' @param chr (character) chromosome (e.g chr9)
+#' @param chr (character) chromosome (e.g. chr9)
 #' @param start (numeric) genomic coordinate from specified chromosome to start plotting
-#' @param sampleids (character)
-#' @param end (numeric) genomic coordinate from specified chromosome to stop plotting
+#' @param stop (numeric) genomic coordinate from specified chromosome to stop plotting
+#' @param sampleids (character) vector containing list of samples to include in plot. if set to NULL, all samples in the input will be used
 #' @param cnvlim (numeric) limits for color coding of background CNV log-ratios. Use to modify the CNV color contrast at different levels.
 #' @param addlegend (character) one of 'sv' (show SV type legend), 'cnv' (show CNV background color legend) or 'both'.
 #' @param cex.legend (numeric) the cex values for each legend
-#' @param addtext (character) a vector indicating what SV types should include text labels indicating brakpoint partners genomic locations. 
-#' The added labels are point breakpoint locations outside the plot area. (e.g. c("TRA","INV") )
+#' @param addtext (character) a vector indicating what SV types should include text labels indicating breakpoint partners' genomic locations. 
+#' The added labels are breakpoint locations outside the plot area. (e.g. c("TRA","INV") )
+#' @param cex.text (numeric) the cex value for text
 #' @param plot (logic) whether to produce a graphical output
 #' @param summary (logic) whether the function shoud return CNV segment 'segbrk' and SV 'svbrk' breakpoints tabular output
 #' @param ... additional plot parameters from graphics plot function 
