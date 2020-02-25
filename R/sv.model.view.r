@@ -1,4 +1,4 @@
-#' Integrated visualization of SVs and SNV in local genomic regions
+#' Integrated visualization of SVs and CNVs in local genomic regions
 #' @param cnv (S4) an object of class svcnvio containing data type 'cnv' validated by validate.cnv
 #' @param svc (S4) an object of class svcnvio containing data type 'svc' validated by validate.svc
 #' @param chr (character) chromosome (e.g chr9)
