@@ -65,11 +65,11 @@ med.segmean <- function(cnv){
 #' @param cnv (S4) an object of class svcnvio containing data type 'cnv' validated by validate.cnv
 #' @param fc.pct (numeric) percentage CNV gain/loss for a segment to be considered changed (i.e. 0.2 = 20 percent change 0.8 < segmean && segmean > 1.2)
 #' @param genome.v (hg19 or h38) reference genome version to draw chromosome limits and centromeres
-#' @param g.bin (numeric) size in megabases of the genmome bin to compute break density 
+#' @param g.bin (numeric) size in megabases of the genome bin to compute break density 
 #' @param sampleids (character) vector containing list of samples to include in plot. if set to NULL, all samples in the input will be used
 #' @param cex.axis,cex.lab,label.line (numeric) plot parameters
 #' @param plot (logical) whether to produce a graphical output
-#' @param summary (logical)  whether to return an object with a the summary
+#' @param summary (logical)  whether to return an object with a summary
 #' @param verbose (logical) 
 #' @return an instance of the class 'cnvfreq' and optionally a plot into open device
 #' @keywords CNV, segmentation, plot
