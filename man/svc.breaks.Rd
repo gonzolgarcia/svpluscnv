@@ -2,7 +2,7 @@
 % Please edit documentation in R/breakpoint.density.r
 \name{svc.breaks}
 \alias{svc.breaks}
-\title{Transform structural varian (SVC) data.frame into a 'breaks' object}
+\title{Transform structural variant (SVC) data.frame into a 'breaks' object}
 \usage{
 svc.breaks(svc, low.cov = NULL)
 }
@@ -15,7 +15,7 @@ svc.breaks(svc, low.cov = NULL)
 an instance of the class 'breaks' containing breakpoint and breakpoint burden information
 }
 \description{
-Transform structural varian (SVC) data.frame into a 'breaks' object
+Transform structural variant (SVC) data.frame into a 'breaks' object
 }
 \examples{
 

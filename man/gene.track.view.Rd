@@ -2,7 +2,7 @@
 % Please edit documentation in R/gene.track.view.r
 \name{gene.track.view}
 \alias{gene.track.view}
-\title{Integrated visualization of SVs and SNV in local genomic regions}
+\title{Plot genome tracks in local genomic regions}
 \usage{
 gene.track.view(
   chr = NULL,
@@ -48,7 +48,7 @@ gene.track.view(
 a data.frame with gene isoform annotations and/or plot into open device
 }
 \description{
-Integrated visualization of SVs and SNV in local genomic regions
+Plot genome tracks in local genomic regions
 }
 \examples{
 

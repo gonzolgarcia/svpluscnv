@@ -2,13 +2,7 @@
 % Please edit documentation in R/validate.input.data.r
 \name{validate.svc}
 \alias{validate.svc}
-\title{This function validates and reformats the SV (structural variant) calls input. It is used internaly by 'svpluscnv' functions that require this type of data.
-A few formatting rules are enforced:
-1) The input must obtain 8 columns in the following order(sample ID, chromosome of origin, strand of origin, position of origin,, chromosome of destination, strand of destination, position of destination, SV class)
-2) SV classes accepted: DEL(deletion), DUP(duplication), INS(insertion), TRA(translocation), INV(inversion) and BND(break end)
-3) Any variant in which chromosome of origin and destination differ are encoded as TRA (translocation)
-4) pos1 < pos2 is enforced for all variants in which chromosome of origin and destination are the same
-5) The class BND can be used to operate with complex events as long as both break ends are the same chromosome}
+\title{Validate and reformat SV (structural variant) calls input}
 \usage{
 validate.svc(sv.df)
 }
@@ -19,7 +13,7 @@ validate.svc(sv.df)
 (data.frame) structural variant table with validated format for other svpluscnv operations; A unique id (uid) column is also added
 }
 \description{
-This function validates and reformats the SV (structural variant) calls input. It is used internaly by 'svpluscnv' functions that require this type of data.
+This function validates and reformats SV (structural variant) calls input. It is used internally by 'svpluscnv' functions that require this type of data.
 A few formatting rules are enforced:
 1) The input must obtain 8 columns in the following order(sample ID, chromosome of origin, strand of origin, position of origin,, chromosome of destination, strand of destination, position of destination, SV class)
 2) SV classes accepted: DEL(deletion), DUP(duplication), INS(insertion), TRA(translocation), INV(inversion) and BND(break end)

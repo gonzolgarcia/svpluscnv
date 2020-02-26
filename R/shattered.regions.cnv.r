@@ -1,4 +1,4 @@
-#' Caller for the identification of shattered genomic regions based on breakpoint densities
+#' Caller for the identification of shattered genomic regions based on breakpoint densities (from CNV data only)
 #' @param cnv (S4) an object of class svcnvio containing data type 'cnv' validated by validate.cnv
 #' @param fc.pct (numeric) copy number change between 2 consecutive segments: i.e (default) cutoff = 0.2 represents 20 percent fold change
 #' @param min.cnv.size (numeric) The minimun segment size (in base pairs) to include in the analysis 

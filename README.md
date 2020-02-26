@@ -1,4 +1,3 @@
-
 ## svncvplus: R toolkit for the analysis of structural variants and complex genomic rearrangements
 
 `svpluscnv` is an R package designed for integrative analyses of somatic DNA copy number variations (CNV) and other structural variants (SV).`svpluscnv` comprises multiple analytical and visualization tools that can be applied to large datasets from cancer patients such as [TCGA](https://www.cancer.gov/about-nci/organization/ccg/research/structural-genomics/tcga) and [PCAWG](https://dcc.icgc.org/releases/PCAWG) or cancer cell lines [CCLE](https://portals.broadinstitute.org/ccle).
@@ -17,7 +16,7 @@ The `svpluscnv` package implements analysis and visualization tools to evaluate 
 * [Validate data types](#validate-data-types)
     * [Validate segmentation data format](#validate-segmentation-data-format)
     * [Validate structural variant data format](#validate-structural-variant-data-format)
-* [CNV analysis and visualization](#cnv-analysys-and-visualization)
+* [CNV analysis and visualization](#cnv-analysis-and-visualization)
     * [CNV frequency plot](#cnv-frequency-plot)
     * [Chromosome arm CNV determination](#chromosome-arm-cnv-determination)
 * [Assessment of chromosomal instability](#assessment-of-chromosomal-instability)
@@ -181,7 +180,6 @@ Per sample measure of genome instability; calculates what percentage of the geno
 
 
 ```r
-# ploidy correction
 pct_change <- pct.genome.changed(cnv, fc.pct = 0.2)
 head(pct_change)
 ```
@@ -394,10 +392,10 @@ The output of the function `amp.del` contains a ranking of genes based on the nu
 
 ```r
 par(mfrow=c(1,2),mar=c(4,7,1,1))
-barplot(amp_del_genes$amplified.rank[1:20],col="red",
+barplot(amp_del_genes$amplified.rank[1:20],col="red", 
         las=1,main="Amplified genes",horiz=TRUE,xlab="#samples")
-barplot(amp_del_genes$deepdel.rank[1:20],col="blue",
-        las=1,main="Candidate homozigously deleted genes",horiz=TRUE,xlab="#samples")
+barplot(amp_del_genes$deepdel.rank[1:20],col="blue", 
+        las=1,main="Candidate homozygously deleted genes",horiz=TRUE,xlab="#samples")
 ```
 
 <img src="figure/plot6-1.png" title="Recurrently altered genes with overlapping CNV breakpoints" alt="Recurrently altered genes with overlapping CNV breakpoints" style="display: block; margin: auto;" />

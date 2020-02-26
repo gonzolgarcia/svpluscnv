@@ -1,6 +1,6 @@
 #' Integrated visualization of SVs and CNVs in local genomic regions
-#' @param cnv (S4) an object of class svcnvio containing data type 'cnv' validated by validate.cnv
 #' @param svc (S4) an object of class svcnvio containing data type 'svc' validated by validate.svc
+#' @param cnv (S4) an object of class svcnvio containing data type 'cnv' validated by validate.cnv
 #' @param chr (character) chromosome (e.g. chr9)
 #' @param start (numeric) genomic coordinate from specified chromosome to start plotting
 #' @param stop (numeric) genomic coordinate from specified chromosome to stop plotting
