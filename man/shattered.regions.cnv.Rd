@@ -2,7 +2,7 @@
 % Please edit documentation in R/shattered.regions.cnv.r
 \name{shattered.regions.cnv}
 \alias{shattered.regions.cnv}
-\title{Caller for the identification of shattered genomic regions based on breakpoint densities}
+\title{Caller for the identification of shattered genomic regions based on breakpoint densities (from CNV data only)}
 \usage{
 shattered.regions.cnv(
   cnv,
@@ -46,7 +46,7 @@ shattered.regions.cnv(
 an instance of the class 'chromo.regs' containing breakpoint mapping onto genes
 }
 \description{
-Caller for the identification of shattered genomic regions based on breakpoint densities
+Caller for the identification of shattered genomic regions based on breakpoint densities (from CNV data only)
 }
 \examples{
 

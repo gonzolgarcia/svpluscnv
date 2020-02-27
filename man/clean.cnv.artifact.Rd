@@ -2,7 +2,7 @@
 % Please edit documentation in R/clean.cnv.artifact.r
 \name{clean.cnv.artifact}
 \alias{clean.cnv.artifact}
-\title{Obtain a matrix with the weighted average CN per chromosome arm}
+\title{Remove likely artifacts from segmentation data and fill gaps in segmentation data}
 \usage{
 clean.cnv.artifact(
   cnv,
@@ -30,7 +30,7 @@ clean.cnv.artifact(
 a data.frame containing CNV data
 }
 \description{
-Obtain a matrix with the weighted average CN per chromosome arm
+Remove likely artifacts from segmentation data and fill gaps in segmentation data
 }
 \examples{
 

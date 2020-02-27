@@ -2,7 +2,7 @@
 % Please edit documentation in R/break.annot.r
 \name{svc.break.annot}
 \alias{svc.break.annot}
-\title{Identify recurrently altered genes by strutural variants. The function will identify overlaps between genomic features (e.g. genes) and SVs breakpoints.}
+\title{Identify recurrently altered genes by structural variants. The function will identify overlaps between genomic features (e.g. genes) and SVs breakpoints.}
 \usage{
 svc.break.annot(
   svc,
@@ -31,7 +31,7 @@ svc.break.annot(
 an instance of the class 'break.annot' containing breakpoint mapping onto genes
 }
 \description{
-Identify recurrently altered genes by strutural variants. The function will identify overlaps between genomic features (e.g. genes) and SVs breakpoints.
+Identify recurrently altered genes by structural variants. The function will identify overlaps between genomic features (e.g. genes) and SVs breakpoints.
 }
 \examples{
 

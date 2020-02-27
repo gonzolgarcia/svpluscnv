@@ -1,4 +1,3 @@
-
 ## svncvplus: R toolkit for the analysis of structural variants and complex genomic rearrangements
 
 `svpluscnv` is an R package designed for integrative analyses of somatic DNA copy number variations (CNV) and other structural variants (SV).`svpluscnv` comprises multiple analytical and visualization tools that can be applied to large datasets from cancer patients such as [TCGA](https://www.cancer.gov/about-nci/organization/ccg/research/structural-genomics/tcga) and [PCAWG](https://dcc.icgc.org/releases/PCAWG) or cancer cell lines [CCLE](https://portals.broadinstitute.org/ccle).
@@ -17,7 +16,7 @@ The `svpluscnv` package implements analysis and visualization tools to evaluate 
 * [Validate data types](#validate-data-types)
     * [Validate segmentation data format](#validate-segmentation-data-format)
     * [Validate structural variant data format](#validate-structural-variant-data-format)
-* [CNV analysys and visualization](#cnv-analysys-and-visualization)
+* [CNV analysis and visualization](#cnv-analysis-and-visualization)
     * [CNV frequency plot](#cnv-frequency-plot)
     * [Chromosome arm CNV determination](#chromosome-arm-cnv-determination)
 * [Assessment of chromosomal instability](#assessment-of-chromosomal-instability)
@@ -50,7 +49,7 @@ devtools::install_github("gonzolgarcia/svpluscnv")
 
 Two data types are allowed:
   
-__CNV segmentation data:__ 6 columns are required in the folowing order: `sample`, `chrom`, `start`, `end`, `probes` & `segmean`. Most algorithms studying CNVs produce segmented data indicating genomic boundaries and the segment mean copy number value (segmean); `svpluscnv` assumes CNV expresed as log-ratios: __e.g.:__ $\log2(tumor/normal)$ Those values do not necesarily represent entire copy number states as many samples may contain admixture or subclonal populations.
+__CNV segmentation data:__ 6 columns are required in the following order: `sample`, `chrom`, `start`, `end`, `probes` & `segmean`. Most algorithms studying CNVs produce segmented data indicating genomic boundaries and the segment mean copy number value (segmean); `svpluscnv` assumes CNV expressed as log-ratios: __e.g.:__ $\log2(tumor/normal)$ Those values do not necessarily represent entire copy number states as many samples may contain admixture or subclonal populations.
 
 __Structural Variant calls:__ 8 columns are required in the folowing order: `sample`, `chrom1`, `pos1`, `strand1`, `chrom2`, `pos2`, `strand2` & `svclass`. SV calls are obtained from WGS by identifying reads and read-pairs that align discordantly to the reference genome. The types accepted in the svclass field are: duplication(DUP), deletion(DEL), inversion(INV), insertion(INS), translocation(TRA) and breakend(BND) for undefined variants.
   
@@ -130,12 +129,12 @@ svc
 ## An object of class svcnvio from svpluscnv storing svc data from 135 samples
 ```
 
-## CNV analysys and visualization
+## CNV analysis and visualization
 
 ### CNV frequency plot
 
-Visualization of CNV gain/loss frequencies across the genome; aggregates samples for a given genomic window size, which copy number log-ratio differs from 0. The thresshold `fc.pct` is represented as percentage (e.g. 0.2 -> 20% fold change compared to the referece). 
-If the dataset represents samples with hiperploidy, the plot would be skewed. Therefor, the possibility of ploidy correction is included; `svpluscnv` implements the function `med.segmean` that returns per sample median logR (segmean) value, which can be substracted from each sample segment's logR. This correction can be called internaly by `cnv.freq` using `ploidy=TRUE` argument.
+Visualization of CNV gain/loss frequencies across the genome; aggregates samples for a given genomic window size, which copy number log-ratio differs from 0. The threshold `fc.pct` is represented as percentage (e.g. 0.2 -> 20% fold change compared to the reference). 
+If the dataset represents samples with hyperploidy, the plot would be skewed. Therefore, the possibility of ploidy correction is included; `svpluscnv` implements the function `med.segmean` that returns per sample median logR (segmean) value, which can be substracted from each sample segment's logR. This correction can be called internally by `cnv.freq` using `ploidy=TRUE` argument.
 
 
 ```r
@@ -173,7 +172,7 @@ heatmap.2(charm.mat[order(rownames(charm.mat))[1:42],],Rowv=NA,trace='none',cexC
 
 ## Assessment of chromosomal instability
 
-Chromosomal instability (CIN) is common in cancer and has a fundamental pathogenic role. CNV profiles allow quantification of this events by evaluating the percentage of the genome's copy number logR diferring from normal or the total burden of genomic alterations in a given sample:
+Chromosomal instability (CIN) is common in cancer and has a fundamental pathogenic role. CNV profiles allow quantification of these events by evaluating the percentage of the genome's copy number logR differing from normal or the total burden of genomic alterations in a given sample:
 
 ### Percent genome change
 
@@ -181,7 +180,6 @@ Per sample measure of genome instability; calculates what percentage of the geno
 
 
 ```r
-# ploidy correction
 pct_change <- pct.genome.changed(cnv, fc.pct = 0.2)
 head(pct_change)
 ```
@@ -225,7 +223,7 @@ legend("bottomright",paste("Spearman's cor=",sprintf("%.2f",cor(dat2,method="spe
 
 ## Co-localization of breakpoints
 
-Both CNV segmentation profiles and SV calls produce orthogonal results for variants that involve CN dosage changes. The function `match.breaks` compares the breakpoints derived from both approaches by identifying their co-localizing. It takes two objects of class `breaks` returned by either `svc.breaks` or `cnv.breaks` function. Thus, itt may be used to compare also two sets of CNV brekpoints obtaind from different algorithms or SV callers.
+Both CNV segmentation profiles and SV calls produce orthogonal results for variants that involve CN dosage changes. The function `match.breaks` compares the breakpoints derived from both approaches by identifying their co-localizing. It takes two objects of class `breaks` returned by either `svc.breaks` or `cnv.breaks` function. Thus, it may be used to compare also two sets of CNV breakpoints obtained from different algorithms or SV callers.
 
 
 ```r
@@ -266,7 +264,7 @@ svc <- validate.svc(svdat_lung_ccle)
     * Breakpoints are defined using `cnv.breaks` (CNV), `svc.breaks` (SV) and `match.breaks` (common) and then mapped into bins; minimum thresholds are set using `num.cnv.breaks = 6`, `num.svc.breaks = 6` and `num.common.breaks = 3` respectively.
     * The number of breaks must be of shattered regions are spected to be out-liers therefor the n times above the average in each sample can be defined using `num.cnv.sd = 5`, `num.svc.sd = 5` and `num.common.sd = 0`
 
-2) Identification if shattered regions
+2) Identification of shattered regions
     * Contiguous bins with high density of breakpoints are collapsed into shattered regions
     * To discard complex focal events such as circular amplifications or double minutes, the interquartile average of the distances between breaks is set to `dist.iqm.cut = 150000`.
     * Finally, shattered regions such as chromothripsis and chromoplexy produce interleaved SVs. We set the percentage of interleaved SVs with `interleaved.cut = 0.33` to discard regions with less than 33% interleaved variants.
@@ -289,7 +287,7 @@ shatt_lung
 
 ### Chromosome shattering using CNV data only
 
-A simplified version of `shattered regions` uses only CNV segmentation data, which is available in more often and in larger datasets. The `shattered.regions.cnv` follows the same approach but disregards parameters that are only available for SV data.
+A simplified version of `shattered regions` uses only CNV segmentation data, which is available more often and in larger datasets. The `shattered.regions.cnv` follows the same approach but disregards parameters that are only available for SV data.
 
 
 ```r
@@ -394,10 +392,10 @@ The output of the function `amp.del` contains a ranking of genes based on the nu
 
 ```r
 par(mfrow=c(1,2),mar=c(4,7,1,1))
-barplot(amp_del_genes$amplified.rank[1:20],col="red",
+barplot(amp_del_genes$amplified.rank[1:20],col="red", 
         las=1,main="Amplified genes",horiz=TRUE,xlab="#samples")
-barplot(amp_del_genes$deepdel.rank[1:20],col="blue",
-        las=1,main="Candidate homozigously deleted genes",horiz=TRUE,xlab="#samples")
+barplot(amp_del_genes$deepdel.rank[1:20],col="blue", 
+        las=1,main="Candidate homozygously deleted genes",horiz=TRUE,xlab="#samples")
 ```
 
 <img src="figure/plot6-1.png" title="Recurrently altered genes with overlapping CNV breakpoints" alt="Recurrently altered genes with overlapping CNV breakpoints" style="display: block; margin: auto;" />
@@ -419,7 +417,7 @@ SV calls do not incorporate dosage information, therefore we study the localizat
 results_svc <- svc.break.annot(svc, svc.seg.size = 200000, genome.v="hg19",upstr = 100000, verbose=FALSE)
 ```
 
-We can then integrate results obtained from scanning SV and CNV breks using the 'merge2lists' function 
+We can then integrate results obtained from scanning SV and CNV breaks using the 'merge2lists' function 
 
 ```r
 # intersect elements from two lists
@@ -438,7 +436,7 @@ barplot(rev(sort(unlist(lapply(upstreamSamples,length)),decreasing=TRUE)[1:20]),
 
 ### Integrated visualization of SVs and CNV in recurrently altered genes
 
-Integrating segmentation and SV calls is critical to understand the role of structural variants in recurrently altered genes. `svpluscnv` includes an integrated visualization tool `svc.model.view` that overlays data from CNV segmentation data and SV calls. This function allows to glance all variants affecting a specified genomic region (e.g. gene locus). This functionality is complemented with a genomic track plot function (`gene.track.view`) that can be used to build layouts; The `gene.track.view` function can also be used to retrieve information about isoforms and exonic regions of each gene.
+Integrating segmentation and SV calls is critical to understand the role of structural variants in recurrently altered genes. `svpluscnv` includes an integrated visualization tool `sv.model.view` that overlays data from CNV segmentation data and SV calls. This function allows to glance all variants affecting a specified genomic region (e.g. gene locus). This functionality is complemented with a genomic track plot function (`gene.track.view`) that can be used to build layouts; The `gene.track.view` function can also be used to retrieve information about isoforms and exonic regions of each gene.
 
 
 ```r
@@ -449,14 +447,14 @@ start <- min(gene.dt@data$txStart) - 200000
 stop <- max(gene.dt@data$txEnd) + 50000
 chr <- gene.dt@data$chrom[1]
 
-#  The function `svc.model.view` has builtin breakpoint search capabilities. 
+#  The function `sv.model.view` has builtin breakpoint search capabilities. 
 # The argument 'sampleids' allows selecting the list of samples to be show; if null, 
 # samples with breakpoints will be searched in the defined genomic region
 # In this case we are using the list of samples with SV breakpoints disrupting PTPRD as determined with `svc.break.annot`
 
 sampleids <- sort(results_svc@disruptSamples[[gene]])
 
-# We build a layout to combine `svc.model.view` and `gene.track.view` using the same set of genomic coordinates
+# We build a layout to combine `sv.model.view` and `gene.track.view` using the same set of genomic coordinates
 layout(matrix(c(1,1,2,2),2,2 ,byrow = TRUE),heights = c(8,2))
 par(mar=c(0,10,1,1))
 sv.model.view(svc, cnv, chr, start, stop, sampleids=sampleids, 

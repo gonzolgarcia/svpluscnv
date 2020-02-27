@@ -1,4 +1,4 @@
-#' Plot CNV frequency across the human genome from a seg file sontaining multiple samples 
+#' Visualize the aggregate map of shattered regions for all samples
 #' @param chromo.regs.obj (chromo.regs) An object of class chromo.regs 
 #' @param conf (character) either 'hc' for high confidence objects or else all included
 #' @param genome.v (hg19 or hg38) reference genome version to draw chromosome limits and centromeres

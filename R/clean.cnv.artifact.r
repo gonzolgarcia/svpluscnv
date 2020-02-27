@@ -68,7 +68,7 @@ segment.gap <- function(cnv,
 }
 
 
-#' Obtain a matrix with the weighted average CN per chromosome arm 
+#' Remove likely artifacts from segmentation data and fill gaps in segmentation data
 #' @param cnv (S4) an object of class svcnvio containing data type 'cnv' validated by validate.cnv
 #' @param n.reps (numeric) number of samples with identical segment to consider artifact
 #' @param cnv.size (numeric) only smaller segments will be modified in the cnv data.frame

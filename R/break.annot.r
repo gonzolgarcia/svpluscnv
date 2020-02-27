@@ -33,7 +33,7 @@ setMethod("show","break.annot",function(object){
 
 
 
-#' Finf overlaps between genomic features and SV breakpoints; 
+#' Find overlaps between genomic features and SV breakpoints; 
 #' @param ggr (S4) a GenomicRanges object containing gene annotations. It is crutial that the genome version 'genesgr' and the input 'sv' are the same. The GRanges object must contain 'strand' and a metadata field 'gene_id' with unique values. Seqnames are expected in the format (chr1, chr2, ...). 
 #' @param svgr (S4) a GenomicRanges object containing SV breakpoint ends. Metadata must contain 'rowid' and 'sampleid' fields. Seqnames are expected in the format (chr1, chr2, ...). Used by 'svc.break.annot' and 'cnv.break.annot'
 #' @return a list containing teo lists: geneBreaks, geneSamples
@@ -94,7 +94,7 @@ dngr <- function(ggr,dnstr=50000){
     return(dnstreamgr)
 }
 
-#' Identify recurrently altered genes by strutural variants. The function will identify overlaps between genomic features (e.g. genes) and SVs breakpoints. 
+#' Identify recurrently altered genes by structural variants. The function will identify overlaps between genomic features (e.g. genes) and SVs breakpoints. 
 #' 
 #' @param svc (S4) an object of class svcnvio containing data type 'svc' validated by validate.svc
 #' @param genome.v (character): either 'hg19' or 'hg38' accepted; reference genome version to retrieve gene annotations including genomic coordinates and strand

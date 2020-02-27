@@ -26,7 +26,7 @@ cnv.freq(
 
 \item{genome.v}{(hg19 or h38) reference genome version to draw chromosome limits and centromeres}
 
-\item{g.bin}{(numeric) size in megabases of the genmome bin to compute break density}
+\item{g.bin}{(numeric) size in megabases of the genome bin to compute break density}
 
 \item{sampleids}{(character) vector containing list of samples to include in plot. if set to NULL, all samples in the input will be used}
 
@@ -34,7 +34,7 @@ cnv.freq(
 
 \item{plot}{(logical) whether to produce a graphical output}
 
-\item{summary}{(logical)  whether to return an object with a the summary}
+\item{summary}{(logical)  whether to return an object with a summary}
 
 \item{verbose}{(logical)}
 }

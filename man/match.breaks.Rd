@@ -2,16 +2,16 @@
 % Please edit documentation in R/breakpoint.density.r
 \name{match.breaks}
 \alias{match.breaks}
-\title{Identify CNV breakpoints provided a segmentation file}
+\title{Compare two different sets of breakpoints}
 \usage{
 match.breaks(brk1, brk2, maxgap = 1e+05, verbose = FALSE, plot = TRUE)
 }
 \arguments{
-\item{brk1}{(S4) an object of class breaks as returned by `svc.breaks` and `cnv.breaks`}
+\item{brk1}{(S4) an object of class breaks as returned by `svc.breaks` or `cnv.breaks`}
 
-\item{brk2}{(S4) an object of class breaks as returned by `svc.breaks` and `cnv.breaks` to compare against brk1}
+\item{brk2}{(S4) an object of class breaks as returned by `svc.breaks` or `cnv.breaks` to compare against brk1}
 
-\item{maxgap}{(numeric) distance (base pairs) limit for nreakpoints to be consider colocalized}
+\item{maxgap}{(numeric) distance (base pairs) limit for breakpoints to be considered colocalized}
 
 \item{verbose}{(logical)}
 }
@@ -19,7 +19,7 @@ match.breaks(brk1, brk2, maxgap = 1e+05, verbose = FALSE, plot = TRUE)
 an object containing co-localizing breakpoints from two input 'breaks'
 }
 \description{
-Identify CNV breakpoints provided a segmentation file
+Compare two different sets of breakpoints
 }
 \examples{
 

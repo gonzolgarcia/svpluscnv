@@ -2,7 +2,7 @@
 % Please edit documentation in R/break.annot.r
 \name{geneBreakOverlap}
 \alias{geneBreakOverlap}
-\title{Finf overlaps between genomic features and SV breakpoints;}
+\title{Find overlaps between genomic features and SV breakpoints;}
 \usage{
 geneBreakOverlap(ggr, svgr)
 }
@@ -15,6 +15,6 @@ geneBreakOverlap(ggr, svgr)
 a list containing teo lists: geneBreaks, geneSamples
 }
 \description{
-Finf overlaps between genomic features and SV breakpoints;
+Find overlaps between genomic features and SV breakpoints;
 }
 \keyword{internal}

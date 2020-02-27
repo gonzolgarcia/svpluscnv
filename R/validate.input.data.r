@@ -13,7 +13,9 @@ setMethod("show","svcnvio",function(object){
     writeLines(paste("An object of class svcnvio from svpluscnv storing",object@type,"data from",length(unique(object@data$sample)),"samples"))
 })
 
-#' This function validates and reformats the SV (structural variant) calls input. It is used internaly by 'svpluscnv' functions that require this type of data.
+#' Validate and reformat SV (structural variant) calls input
+#' 
+#' This function validates and reformats SV (structural variant) calls input. It is used internally by 'svpluscnv' functions that require this type of data.
 #' A few formatting rules are enforced:
 #' 1) The input must obtain 8 columns in the following order(sample ID, chromosome of origin, strand of origin, position of origin,, chromosome of destination, strand of destination, position of destination, SV class)
 #' 2) SV classes accepted: DEL(deletion), DUP(duplication), INS(insertion), TRA(translocation), INV(inversion) and BND(break end)
@@ -94,7 +96,7 @@ chr.sort <- function(chrlist){
 
 
 
-#' This function calculates the percent genome changed by CNV
+#' Validate and reformat CNV segmentation input
 #' @param cnv.df (data.frame) segmentation data with at least 6 columns: sample, chromosome, start, end, probes, segment_mean
 #' @return  (data.frame) CNV segmentation table with validated format for other svpluscnv operations;  A unique id (uid) column is also added
 #' @keywords CNV, segmentation

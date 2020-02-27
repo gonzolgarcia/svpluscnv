@@ -2,7 +2,7 @@
 % Please edit documentation in R/shattered.map.plot.r
 \name{shattered.map.plot}
 \alias{shattered.map.plot}
-\title{Plot CNV frequency across the human genome from a seg file sontaining multiple samples}
+\title{Visualize the aggregate map of shattered regions for all samples}
 \usage{
 shattered.map.plot(
   chromo.regs.obj,
@@ -27,7 +27,7 @@ shattered.map.plot(
 a plot into open device
 }
 \description{
-Plot CNV frequency across the human genome from a seg file sontaining multiple samples
+Visualize the aggregate map of shattered regions for all samples
 }
 \examples{
 

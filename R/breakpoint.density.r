@@ -116,7 +116,7 @@ return(breaks(breaks=breakpoints,
 
 
 
-#' Transform structural varian (SVC) data.frame into a 'breaks' object 
+#' Transform structural variant (SVC) data.frame into a 'breaks' object 
 #' @param svc (S4) an object of class svcnvio containing data type 'svc' validated by validate.svc
 #' @param low.cov (data.table) a data.table (chrom, start, end) indicating low coverage regions to exclude from the analysis
 #' @return an instance of the class 'breaks' containing breakpoint and breakpoint burden information
@@ -258,11 +258,11 @@ if(is.null(chr.lim)){
 
 
 
-#' Identify CNV breakpoints provided a segmentation file
+#' Compare two different sets of breakpoints
 #' 
-#' @param brk1 (S4) an object of class breaks as returned by `svc.breaks` and `cnv.breaks`
-#' @param brk2 (S4) an object of class breaks as returned by `svc.breaks` and `cnv.breaks` to compare against brk1
-#' @param maxgap (numeric) distance (base pairs) limit for nreakpoints to be consider colocalized 
+#' @param brk1 (S4) an object of class breaks as returned by `svc.breaks` or `cnv.breaks`
+#' @param brk2 (S4) an object of class breaks as returned by `svc.breaks` or `cnv.breaks` to compare against brk1
+#' @param maxgap (numeric) distance (base pairs) limit for breakpoints to be considered colocalized 
 #' @param verbose (logical) 
 #' @return an object containing co-localizing breakpoints from two input 'breaks'  
 #' @keywords CNV, SV, genomic breakpoints

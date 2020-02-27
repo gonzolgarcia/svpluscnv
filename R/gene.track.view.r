@@ -1,5 +1,5 @@
 #' 
-#' Integrated visualization of SVs and SNV in local genomic regions
+#' Plot genome tracks in local genomic regions
 #' @param chr (character) chromosome (e.g chr9)
 #' @param start (numeric) genomic coordinate from specified chromosome to start plotting
 #' @param end (numeric) genomic coordinate from specified chromosome to stop plotting

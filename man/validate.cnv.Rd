@@ -2,7 +2,7 @@
 % Please edit documentation in R/validate.input.data.r
 \name{validate.cnv}
 \alias{validate.cnv}
-\title{This function calculates the percent genome changed by CNV}
+\title{Validate and reformat CNV segmentation input}
 \usage{
 validate.cnv(cnv.df)
 }
@@ -13,7 +13,7 @@ validate.cnv(cnv.df)
 (data.frame) CNV segmentation table with validated format for other svpluscnv operations;  A unique id (uid) column is also added
 }
 \description{
-This function calculates the percent genome changed by CNV
+Validate and reformat CNV segmentation input
 }
 \examples{
 validate.cnv()

@@ -2,7 +2,7 @@
 % Please edit documentation in R/sv.model.view.r
 \name{sv.model.view}
 \alias{sv.model.view}
-\title{Integrated visualization of SVs and SNV in local genomic regions}
+\title{Integrated visualization of SVs and CNVs in local genomic regions}
 \usage{
 sv.model.view(
   svc,
@@ -27,11 +27,13 @@ sv.model.view(
 
 \item{cnv}{(S4) an object of class svcnvio containing data type 'cnv' validated by validate.cnv}
 
-\item{chr}{(character) chromosome (e.g chr9)}
+\item{chr}{(character) chromosome (e.g. chr9)}
 
 \item{start}{(numeric) genomic coordinate from specified chromosome to start plotting}
 
-\item{sampleids}{(character)}
+\item{stop}{(numeric) genomic coordinate from specified chromosome to stop plotting}
+
+\item{sampleids}{(character) vector containing list of samples to include in plot. if set to NULL, all samples in the input will be used}
 
 \item{cnvlim}{(numeric) limits for color coding of background CNV log-ratios. Use to modify the CNV color contrast at different levels.}
 
@@ -39,22 +41,22 @@ sv.model.view(
 
 \item{cex.legend}{(numeric) the cex values for each legend}
 
-\item{addtext}{(character) a vector indicating what SV types should include text labels indicating brakpoint partners genomic locations. 
-The added labels are point breakpoint locations outside the plot area. (e.g. c("TRA","INV") )}
+\item{addtext}{(character) a vector indicating what SV types should include text labels indicating breakpoint partners' genomic locations. 
+The added labels are breakpoint locations outside the plot area. (e.g. c("TRA","INV") )}
+
+\item{cex.text}{(numeric) the cex value for text}
 
 \item{plot}{(logic) whether to produce a graphical output}
 
 \item{summary}{(logic) whether the function shoud return CNV segment 'segbrk' and SV 'svbrk' breakpoints tabular output}
 
 \item{...}{additional plot parameters from graphics plot function}
-
-\item{end}{(numeric) genomic coordinate from specified chromosome to stop plotting}
 }
 \value{
 a data.frame with CNV and SVN breakpoint annotations and/or plot into open device
 }
 \description{
-Integrated visualization of SVs and SNV in local genomic regions
+Integrated visualization of SVs and CNVs in local genomic regions
 }
 \examples{
 plot()
