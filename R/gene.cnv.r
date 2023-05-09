@@ -117,11 +117,11 @@ return(out)
 
 amp.del <- function(genecnv.obj, logr.cut=2){
     
-    amp_list <- apply(genecnv.obj@cnvmat, 1, function(x) names(which(x >= 2)))
+    amp_list <- apply(genecnv.obj@cnvmat, 1, function(x) names(which(x >= logr.cut)))
     amp_list <- amp_list[which(unlist(lapply(amp_list,length)) > 0)]
     amp_rank <- sort(unlist(lapply(amp_list,length)),decreasing=TRUE)
 
-    del_list <- apply(genecnv.obj@cnvmat, 1, function(x) names(which(x <= -2)))
+    del_list <- apply(genecnv.obj@cnvmat, 1, function(x) names(which(x <= -logr.cut)))
     del_list <- del_list[which(unlist(lapply(del_list,length)) > 0)]
     del_rank <- sort(unlist(lapply(del_list,length)),decreasing=TRUE)
     
