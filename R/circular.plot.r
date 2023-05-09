@@ -160,14 +160,14 @@ circ.wg.plot <- function(cnv,
     colores[which(cnvcirc$segmean < log2(1 - lrr.pct)) ] <- "blue"
     colores[which(cnvcirc$segmean > log2(1 + lrr.pct)) ] <- "red"
     cnvcirc <- data.table(cnvcirc,colores)
-    cnvcirc[which(cnvcirc$segmean < log2(1/lrr.max) ),"segmean"] <- log2(1/lrr.max) 
+    cnvcirc[which(cnvcirc$segmean < log2(1/lrr.max)),"segmean"] <- log2(1/lrr.max) 
     cnvcirc[which(cnvcirc$segmean > log2(lrr.max)),"segmean"] <- log2(lrr.max)
     allcnvlist <- list()
     for(i in chrlist) allcnvlist[[i]] <- as.data.frame(cnvcirc[which(cnvcirc$chrom == i),])
     
     circos.initializeWithIdeogram(species=genome.v, chromosome.index=chrlist, plotType=c("ideogram","labels"))
-    text(0, 0,  gsub("_","\n",sample.id), cex = 1)
-    circos.genomicTrackPlotRegion(allcnvlist, bg.lwd =0.2, bg.col=rainbow(length(allcnvlist),alpha=0.1),ylim=c(-2.4,2.4), track.height=0.2, panel.fun = function(region, value, ...) {
+    text(0.8, 1,  gsub("_","\n",sample.id), cex = 1)
+    circos.genomicTrackPlotRegion(allcnvlist, bg.lwd =0.2, bg.col=rainbow(length(allcnvlist),alpha=0.1),ylim=c(log2(1/lrr.max),log2(lrr.max)), track.height=0.2, panel.fun = function(region, value, ...) {
         circos.genomicLines(region, value, col=as.character(allcnvlist[[CELL_META$sector.index]][,"colores"]), numeric.column = c(1), type="segment")
     })
     circos.genomicLink(alllinks1, alllinks2, col = alllinkcolors, border = NA)
